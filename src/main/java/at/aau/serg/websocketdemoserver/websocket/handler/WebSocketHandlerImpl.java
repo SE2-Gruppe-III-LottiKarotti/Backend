@@ -15,6 +15,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         // TODO handle the messages here
         session.sendMessage(new TextMessage("echo from handler: " + message.getPayload()));
 
+
     }
 
     @Override
