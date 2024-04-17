@@ -2,12 +2,14 @@ package at.aau.serg.websocketdemoserver.msg;
 
 public class SpielerMessage {
 
+    private MessageType messageType = MessageType.SPIELER;
     private ActionType actionType;
     private String spielerID;
     private String name;
 
     //constructor or default constructor???
     public SpielerMessage () {
+        this.messageType = MessageType.SPIELER;
     }
 
     public enum ActionType {
