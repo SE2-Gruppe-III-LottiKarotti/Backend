@@ -1,11 +1,13 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Gameboard {
     private Feld[] felder;
     private int carrotCounter;
+    SecureRandom random = new SecureRandom();
 
     public Gameboard(int players) {
         this.felder = new Feld[26]; //26 felder inkl. karotte
@@ -23,7 +25,6 @@ public class Gameboard {
     }
 
     private void initMaulwurfhuegel() {
-        Random random = new Random();
         int maxMaulwurfhuegel = 6; // Maximale Anzahl von Maulwurfhügeln
 
         // Zufällig ausgewählte Felder als Maulwurfhügel markieren
@@ -56,14 +57,12 @@ public class Gameboard {
 
         // Weitere Felder initialisieren
         for (int i = 0; i < felder.length; i++) {
-            if (i != maulwurfshoehleIndex && i != brueckeIndex && i != gatterIndex) {
-                if (felder[i] == null) {
-                    // Normale Felder initialisieren
-                    felder[i] = new Feld(false);
+            if (i != maulwurfshoehleIndex && i != brueckeIndex && i != gatterIndex && felder[i] == null) {
+                // Normale Felder initialisieren
+                felder[i] = new Feld(false);
                 }
             }
         }
-    }
 
     private void initFiguren(int players) {
         //Jeder Spieler hat 4 Spielfiguren

@@ -6,9 +6,6 @@ import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
     public class GameboardTest {
         private Gameboard gameboard;
@@ -39,18 +36,4 @@ import static org.junit.Assert.assertTrue;
             }
             assertEquals(maxMolehills, molehillCount);
         }
-/*
-        @Test
-        public void testPlayerInitialization() {
-            // Check that the players have been initialized correctly
-            int players = 2;
-            int maxFiguresPerPlayer = 4;
-
-            for (int i = 0; i < players; i++) {
-                Spieler spieler = gameboard.getSpieler()[i];
-                assertEquals("Spieler " + (i + 1), spieler.getName());
-                assertEquals(Spieler.Farbe.values()[i], spieler.getFarbe());
-                assertEquals(maxFiguresPerPlayer, spieler.getUnusedBunnies().size());
-            }
-        }*/
     }
