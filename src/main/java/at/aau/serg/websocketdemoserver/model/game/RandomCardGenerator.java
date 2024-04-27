@@ -1,6 +1,4 @@
-package at.aau.serg.websocketdemoserver.logic;
-
-import at.aau.serg.websocketdemoserver.repository.InMemorySpielerRepo;
+package at.aau.serg.websocketdemoserver.model.game;
 
 import java.util.Random;
 
