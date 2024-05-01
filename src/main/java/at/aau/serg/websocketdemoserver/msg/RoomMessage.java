@@ -1,37 +1,25 @@
-package at.aau.serg.websocketdemoserver.model.raum;
+package at.aau.serg.websocketdemoserver.msg;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
-public class Room {
+public class RoomMessage {
+
+    private final MessageType messageType = MessageType.ROOM;
+    private RoomMessage.ActionType actionType;
+
     private String roomID;
     private String roomName;
     private ArrayList<Spieler> listOfPlayers;
     private int maxPlayers;
-    private int availablePlayersSpace;
     private Gameboard gameboard;
     private Spieler currentPlayer; // oder spielerID ...
+    private Spieler addPlayer;
 
-    //TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
-    /***/
-
-    public Room(int maxPlayers, String roomName) {
-        this.roomID = UUID.randomUUID().toString();
-        this.maxPlayers = maxPlayers;
-        this.availablePlayersSpace = maxPlayers;
-        this.listOfPlayers = new ArrayList<>();
-        //TODO: vll auch das gameboard hier initialisieren...
-    }
-
-    public int getAvailablePlayersSpace() {
-        return availablePlayersSpace;
-    }
-
-    public void setAvailabePlayersSpace(int availabePlayersSpace) {
-        this.availablePlayersSpace = availabePlayersSpace;
+    public RoomMessage() {
+        //default
     }
 
     public String getRoomID() {
@@ -82,13 +70,23 @@ public class Room {
         this.currentPlayer = currentPlayer;
     }
 
-    public void addPlayer(Spieler spieler) {
-        if (availablePlayersSpace > 0) {
-            listOfPlayers.add(spieler);
-            availablePlayersSpace--;
-        } else {
-            System.out.println("raum voll");
-            //der punkt sollte eigentlich nie erreicht werden
-        }
+    public Spieler getAddPlayer() {
+        return addPlayer;
+    }
+
+    public void setAddPlayer(Spieler addPlayer) {
+        this.addPlayer = addPlayer;
+    }
+
+    public RoomMessage.ActionType getActionType() {
+        return actionType;
+    }
+
+    public void setActionType(RoomMessage.ActionType actionType) {
+        this.actionType = actionType;
+    }
+
+    public enum ActionType {
+        OPENROOM, JOINROOM, GAMEPLAY
     }
 }
