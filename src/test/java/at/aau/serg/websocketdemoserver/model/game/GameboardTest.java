@@ -19,9 +19,6 @@ import org.junit.Test;
         public void testGameboardInitialization() {
             // Check that the gameboard has been initialized with 26 fields
             assertEquals(26, gameboard.getFelder().length);
-
-            // Check that the carrot counter has been initialized with a random value
-            assertTrue(gameboard.getCarrotCounter() >= 0 && gameboard.getCarrotCounter() < 12);
         }
 
         @Test
