@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Gameboard {
     private Feld[] felder;
-    //private int carrotCounter;??
     SecureRandom random = new SecureRandom();
     private final int maxPosition; // Separate Variable für maximale Position des Spielbretts
 
@@ -121,6 +120,7 @@ public class Gameboard {
                     break;
                 case "1":
                     newPosition += 1;
+                    break;
                 default:
                     break;
             }
@@ -160,12 +160,4 @@ public class Gameboard {
     public void setFelder(Feld[] felder) {
         this.felder = felder;
     }
-
-    /*public int getCarrotCounter() {
-        return carrotCounter;
-    }
-
-    public void setCarrotCounter(int carrotCounter) {
-        this.carrotCounter = carrotCounter;
-    }*/
 }
