@@ -24,20 +24,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     @Autowired
     private final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
 
-    /*@Autowired
-    public WebSocketHandlerImpl(InMemoryRoomRepo roomRepo) {
-        this.roomRepo = roomRepo;
-    }*/
-
-    //private static final Set<Room> roomsRepo = new HashSet<>();
-
-    //@Autowired
-    //private InMemoryRoomRepo roomRepo;
-
-    /*@PostConstruct
-    public void init() {
-        this.roomRepo = InMemoryRoomRepo.getInstance();
-    }*/
 
 
     List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
@@ -77,16 +63,20 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
     private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
+        //1 nachricht, welche vom server reinkommt und durch den messageHandler durch ist verwenden...
+        // aus der json wieder das Objekt basteln --> also deserialisieren
         Gson gson = new Gson();
         RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
         System.out.println(payload);
         System.out.println("open room message handler reached");
 
+        //2 daten extrahieren
         String roomName = roomSetupMessage.getRoomName();
         String playerName = roomSetupMessage.getPlayerName();
         int maxPlayers = Integer.parseInt(roomSetupMessage.getNumPlayers());
         String messageIdentifier = roomSetupMessage.getMessageIdentifier();
 
+        //3 checks
         if (roomName == null || roomName.length() == 0 || playerName == null || playerName.length() == 0 || maxPlayers < 2 || maxPlayers > 4 || messageIdentifier == null) {
             //fehlerhafte Werte
             roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
@@ -102,14 +92,17 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
 
 
+        //4 checks --> wenn der raum schon existiert...
         if (foundRoom != null) {
             // Room already exists
+            // 4_1 senden...
             roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
             String errorPayload = gson.toJson(roomSetupMessage);
             session.sendMessage(new TextMessage(errorPayload));
             return;
         }
 
+        //5 positive case --> der raum wird hinzugefügt
         //else
         //room does not exist already
         Room roomToAdd = new Room(maxPlayers, roomName);
@@ -119,9 +112,11 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         roomToAdd.addPlayer(creator);
         System.out.println("after adding player " + roomToAdd.getAvailablePlayersSpace());
 
+        //5_1 raum auch zur repo --> also zur DB hinzufügen
         //add room to repo
         roomRepo.addRoom(roomToAdd);
 
+        //5_2 message vorbereiten und senden --> serialisieren
         //now prepare message
         roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_OK);
         roomSetupMessage.setRoomID(roomToAdd.getRoomID());
@@ -134,6 +129,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
         //RoomSetupMessage roomSetupMessage = new RoomSetupMessage(roomName, "emptyRoomID", creatorName, "emptyPlayerID", finalNumPlayers, messageIdentifierOpenRoom, RoomSetupMessage.ActionType.OPEN_ROOM);
 
+        //5_3 hier wird schlussendlich die positive nachricht versendet...
         //prepare positive payload
         String positivePayload = gson.toJson(roomSetupMessage);
         session.sendMessage(new TextMessage(positivePayload));
@@ -143,71 +139,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     }
 
-
-
-    /*private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
-
-        //TODO: use the situation, that for roomID is send emtpyRoomID
-        //TODO: and for playerID is send emptyPlayerID
-        //TODO: so it should be easier to check for duplicates ;)
-
-        System.out.println("open room message handler reached");
-        Gson gson = new Gson();
-        RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
-        String roomName = roomSetupMessage.getRoomName();
-        int maxPlayers = Integer.parseInt(roomSetupMessage.getNumPlayers());
-        String playerName = roomSetupMessage.getPlayerName();
-
-        // Check for existing room using findRoomByName
-        Room existingRoom = roomRepo.findRoomByName(roomName);
-
-        if (existingRoom != null) {
-            System.out.println("Room already exists");
-            // Room already exists, send error
-            roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
-            String errorPayload = gson.toJson(roomSetupMessage);
-            session.sendMessage(new TextMessage(errorPayload));
-            return;
-        }
-
-        // Create a new room if it doesn't exist
-        Room roomToAdd = new Room(maxPlayers, roomName);
-        System.out.println("add room");
-        roomRepo.addRoom(roomToAdd);
-
-        // Check if room is full before adding player
-        if (roomToAdd.getAvailablePlayersSpace() == 0) {
-            System.out.println("Raum voll");
-            roomSetupMessage.setActionType(RoomSetupMessage.ActionType.ROOM_FULL);
-            String fullRoomPayload = gson.toJson(roomSetupMessage);
-            session.sendMessage(new TextMessage(fullRoomPayload));
-            System.out.println("end of send raum voll");
-            return;
-        }
-
-        // Add player to the new room
-
-        System.out.println("before adding player " + roomToAdd.getAvailablePlayersSpace());
-
-        System.out.println("player hinzugefügt");
-
-        roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_OK);
-
-        Spieler spieler = new Spieler(playerName);
-        String spielerId = spieler.getSpielerID();
-        roomToAdd.addPlayer(spieler);
-        System.out.println("after adding player " + roomToAdd.getAvailablePlayersSpace());
-
-
-        roomSetupMessage.setRoomID(roomToAdd.getRoomID());
-        roomSetupMessage.setPlayerID(spielerId);
-        String positivePayload = gson.toJson(roomSetupMessage);
-        session.sendMessage(new TextMessage(positivePayload));
-        System.out.println("end of player hinzugefügt");
-        System.out.println(positivePayload);
-    }
-
-     */
 
 
 
