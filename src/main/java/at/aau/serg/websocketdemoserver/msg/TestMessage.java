@@ -1,15 +1,32 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 public class TestMessage {
-    private final MessageType messageType = MessageType.TEST;
+    //private final MessageType messageType = MessageType.TEST;
+    //private MessageType messageType;// = MessageType.TEST;
+    MessageType messageType;
+    String text;
 
-    private String text;
+    String messageIdentifier;
 
-    public TestMessage() {
+
+    //private String text;
+
+    /*public TestMessage() {
+    }*/
+
+    /*public TestMessage(String text) {
+        this.text = text;
+    }*/
+    public String getMessageIdentifier() {
+        return messageIdentifier;
     }
 
-    public TestMessage(String text) {
-        this.text = text;
+    public void setMessageIdentifier(String messageIdentifier) {
+        this.messageIdentifier = messageIdentifier;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
     }
 
     public MessageType getMessageType() {

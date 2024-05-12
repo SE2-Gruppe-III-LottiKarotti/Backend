@@ -9,15 +9,43 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-@Repository
+//@Repository
 public class InMemoryRoomRepo {
-    private Set<Room> roomsRepo;
 
-    public InMemoryRoomRepo() {
-        this.roomsRepo = new HashSet<>();
+    //private static final InMemoryRoomRepo instance = new InMemoryRoomRepo();
+    private final Set<Room> roomsRepo = new HashSet();
+
+    public static InMemoryRoomRepo roomRepo2;
+
+    /*public InMemoryRoomRepo() {
+        roomRepo2 = this;
+    }*/
+
+    /*private InMemoryRoomRepo() {
+        //this.roomsRepo = new HashSet<>();
+        //initTestRoom();
+    }*/
+
+    /*public static Set<Room> getRoomsRepo() {
+        return roomsRepo;
+    }*/
+
+    /*
+    public static InMemoryRoomRepo getInstance() {
+        return instance;
+    }*/
+
+
+    //for checking select room and join room
+    private void initTestRoom() {
+        Room testRoom = new Room(4, "testRoom");
+        roomsRepo.add(testRoom);
     }
 
     public void addRoom(Room room) {
+        if (room == null) {
+            return;
+        }
         roomsRepo.add(room);
     }
 
@@ -49,9 +77,14 @@ public class InMemoryRoomRepo {
 
 
     public Room findRoomByName(String roomName) {
+        if (roomName == null) {
+            return null;
+        }
         System.out.println("Searching for room with name: " + roomName);
         for (Room room : roomsRepo) {
-            if (room != null && room.getRoomName() != null && room.getRoomName().equals(roomName)) {
+            //assert (room != null && room.getRoomName() != null);
+            if (room.getRoomName().equals(roomName)) {
+                //room != null && room.getRoomName() != null &&
                 System.out.println("Room found: " + room);
                 return room;
             }

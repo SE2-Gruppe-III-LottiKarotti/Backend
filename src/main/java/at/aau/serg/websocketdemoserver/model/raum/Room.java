@@ -19,6 +19,7 @@ public class Room {
     /***/
 
     public Room(int maxPlayers, String roomName) {
+        this.roomName = roomName;
         this.roomID = UUID.randomUUID().toString();
         this.maxPlayers = maxPlayers;
         this.availablePlayersSpace = maxPlayers;
