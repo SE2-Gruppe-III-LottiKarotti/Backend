@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler;
 
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
+import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import com.google.gson.Gson;
@@ -10,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import java.util.logging.Logger;
 
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
@@ -153,16 +157,49 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
     private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception{
-        //TODO:
-        /**
-         * es kommt eine SetupRoomMessage rein...
-         * bei welcher ActionType == ASK_FOR_ROOM_LIST ist
-         * bekommt der server diese nachricht, kommt man in diesen handler
-         * dieser handler hat die Aufgabe eine Liste an den Client via json zu transportieren
-         * aber nur räume, wo zumindest noch ein Spieler beitreten kann...
-         * RoomInfo würde sich gut dazu eignen, da dort nur die Variablen definiert sind, welche
-         * benötigt werden*/
+        Logger logger = Logger.getLogger(getClass().getName());
+        Gson gson = new Gson();
+        logger.info("ask for room list reached");
 
+        RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
+
+        //get repo List
+        ArrayList<Room> roomList = roomRepo.listAllRooms();
+
+        //arrayList for request
+        ArrayList<RoomInfo> roomInfoList = new ArrayList<>();
+
+        for (Room room : roomList) {
+            //nur räume, welche mehr oder gleich einen platz haben, welcher noch unbesetzt ist...
+            //es macht keinen sinn volle räume zu übermitteln...
+            if (room.getAvailablePlayersSpace() >= 1) {
+                RoomInfo roomInfo = new RoomInfo();
+                roomInfo.setRoomID(room.getRoomID());
+                roomInfo.setRoomName(room.getRoomName());
+                roomInfo.setCreator(room.getCreatorName());
+                roomInfo.setAvailablePlayersSpace(room.getAvailablePlayersSpace());
+                roomInfoList.add(roomInfo);
+                logger.info(roomInfo + " " + roomInfo.getRoomName() + " " + roomInfo.getCreator() + " " + roomInfo.getAvailablePlayersSpace());
+            }
+
+        }
+        logger.info("###");
+        logger.info(String.valueOf(roomInfoList));
+        logger.info("###");
+
+        //msg
+        RoomSetupMessage response = new RoomSetupMessage();
+        response.setActionType(RoomSetupMessage.ActionType.ANSWER_ROOM_LIST);
+        response.setRoomInfoList(roomInfoList);
+        response.setMessageIdentifier(roomSetupMessage.getMessageIdentifier());
+
+        //prepare and send
+        String responsePayload = gson.toJson(response);
+        session.sendMessage(new TextMessage(responsePayload));
+
+        logger.info("###");
+        logger.info(responsePayload);
+        logger.info("###");
 
     }
 
