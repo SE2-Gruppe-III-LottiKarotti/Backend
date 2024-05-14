@@ -5,7 +5,9 @@ import at.aau.serg.websocketdemoserver.model.raum.Room;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -15,32 +17,12 @@ public class InMemoryRoomRepo {
     //private static final InMemoryRoomRepo instance = new InMemoryRoomRepo();
     private final Set<Room> roomsRepo = new HashSet();
 
-    public static InMemoryRoomRepo roomRepo2;
-
-    /*public InMemoryRoomRepo() {
-        roomRepo2 = this;
-    }*/
-
-    /*private InMemoryRoomRepo() {
-        //this.roomsRepo = new HashSet<>();
-        //initTestRoom();
-    }*/
-
-    /*public static Set<Room> getRoomsRepo() {
-        return roomsRepo;
-    }*/
-
-    /*
-    public static InMemoryRoomRepo getInstance() {
-        return instance;
-    }*/
-
 
     //for checking select room and join room
-    private void initTestRoom() {
+    /*public void initTestRoom() {
         Room testRoom = new Room(4, "testRoom");
         roomsRepo.add(testRoom);
-    }
+    }*/
 
     public void addRoom(Room room) {
         if (room == null) {
@@ -92,8 +74,11 @@ public class InMemoryRoomRepo {
         return null;
     }
 
-    public Set<Room> listAllRooms() {
+    /*public Set<Room> listAllRooms() {
         return roomsRepo;
+    }*/
+    public ArrayList<Room> listAllRooms() {
+        return new ArrayList<>(roomsRepo);
     }
 
     public void addPlayerToRoom(String roomID, Spieler spieler) {

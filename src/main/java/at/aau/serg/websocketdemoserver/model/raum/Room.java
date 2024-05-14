@@ -15,6 +15,8 @@ public class Room {
     private Gameboard gameboard;
     private Spieler currentPlayer; // oder spielerID ...
 
+    private String creatorName;
+
     //TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
     /***/
 
@@ -25,6 +27,14 @@ public class Room {
         this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
         //TODO: vll auch das gameboard hier initialisieren...
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     public int getAvailablePlayersSpace() {

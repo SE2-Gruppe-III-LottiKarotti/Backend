@@ -5,8 +5,17 @@ import java.util.ArrayList;
 public class RoomInfo {
     private String roomID;
     private String roomName;
-    private int maxPlayers;
+    //private int maxPlayers;
+    private String creator;
     private int availablePlayersSpace;
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 
     private ArrayList<Room> availableRooms;
 
@@ -24,14 +33,6 @@ public class RoomInfo {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
-    }
-
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
     }
 
     public int getAvailablePlayersSpace() {
