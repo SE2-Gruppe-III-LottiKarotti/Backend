@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import java.util.logging.Logger;
+
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
 
@@ -155,8 +157,9 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
     private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception{
+        Logger logger = Logger.getLogger(getClass().getName());
         Gson gson = new Gson();
-        System.out.println("ask for room list reached");
+        logger.info("ask for room list reached");
 
         RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
 
@@ -176,13 +179,13 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 roomInfo.setCreator(room.getCreatorName());
                 roomInfo.setAvailablePlayersSpace(room.getAvailablePlayersSpace());
                 roomInfoList.add(roomInfo);
-                System.out.println(roomInfo + " " + roomInfo.getRoomName() + " " + roomInfo.getCreator() + " " + roomInfo.getAvailablePlayersSpace());
+                logger.info(roomInfo + " " + roomInfo.getRoomName() + " " + roomInfo.getCreator() + " " + roomInfo.getAvailablePlayersSpace());
             }
 
         }
-        System.out.println("###");
-        System.out.println(roomInfoList);
-        System.out.println("###");
+        logger.info("###");
+        logger.info(String.valueOf(roomInfoList));
+        logger.info("###");
 
         //msg
         RoomSetupMessage response = new RoomSetupMessage();
@@ -194,9 +197,9 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         String responsePayload = gson.toJson(response);
         session.sendMessage(new TextMessage(responsePayload));
 
-        System.out.println("###");
-        System.out.println(responsePayload);
-        System.out.println("###");
+        logger.info("###");
+        logger.info(responsePayload);
+        logger.info("###");
 
     }
 
