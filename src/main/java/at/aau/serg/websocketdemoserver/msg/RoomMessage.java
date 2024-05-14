@@ -87,6 +87,6 @@ public class RoomMessage {
     }
 
     public enum ActionType {
-        OPENROOM, JOINROOM, GAMEPLAY
+        OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER
     }
 }

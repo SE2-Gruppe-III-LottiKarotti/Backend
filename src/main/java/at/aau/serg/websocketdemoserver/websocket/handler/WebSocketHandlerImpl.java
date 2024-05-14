@@ -1,5 +1,6 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
+import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.msg.*;
@@ -10,8 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static java.lang.Math.random;
 
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
@@ -120,11 +125,39 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     }
 
+    public void handleSetupField(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+
+        ArrayList<Spieler> PlayerList = new ArrayList<Spieler>();
+        PlayerList = roomMessage.getListOfPlayers();
+        Random random = new Random();
+        int playerToStart = random.nextInt(4)+1;
+        roomMessage.setCurrentPlayer(PlayerList.get(playerToStart));
+
+        Gameboard gameboard = new Gameboard(PlayerList.size());
+        roomMessage.setGameboard(gameboard);
+
+        String positivePayload = gson.toJson(roomMessage);
+        session.sendMessage(new TextMessage(positivePayload));
+    }
+
+    public void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+    }
+
 
     public void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception{
-        //TODO: Gamelogic...
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
 
-
+        switch(roomMessage.getActionType()) {
+            case DRAWCARD -> handleDrawCard(session, payload);
+            case CHAT -> handleChatMessage(session, payload);
+            case SETUPFIELD -> handleSetupField(session, payload);
+            case GUESSCHEATER -> handleGuessCheater(session, payload);
+        }
     }
 
     private void handleSetupRoomMessage(WebSocketSession session, String payload) throws Exception {
