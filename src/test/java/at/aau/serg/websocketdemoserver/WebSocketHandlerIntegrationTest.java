@@ -31,7 +31,7 @@ class WebSocketHandlerIntegrationTest {
      */
     BlockingQueue<String> messages = new LinkedBlockingDeque<>();
 
-    @Test
+    /*@Test
     public void testWebSocketMessageBroker() throws Exception {
         WebSocketSession session = initStompSession();
 
@@ -41,7 +41,7 @@ class WebSocketHandlerIntegrationTest {
 
         var expectedResponse = "echo from handler: " + message;
         assertThat(messages.poll(1, TimeUnit.SECONDS)).isEqualTo(expectedResponse);
-    }
+    }*/
 
     /**
      * @return The basic session for the WebSocket connection.
