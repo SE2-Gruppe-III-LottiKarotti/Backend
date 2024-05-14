@@ -1,13 +1,12 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Before;
-import org.junit.Test;
 
-    public class GameboardTest {
+public class GameboardTest {
         private Gameboard gameboard;
 
         @Before
