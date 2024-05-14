@@ -1,13 +1,11 @@
-package at.aau.serg.websocketdemoserver.logic;
+package at.aau.serg.websocketdemoserver.model.game;
 
-import at.aau.serg.websocketdemoserver.repository.InMemorySpielerRepo;
-
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class RandomCardGenerator {
 
     public static String start() {
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         int randomNumber = random.nextInt(Integer.MAX_VALUE);
 
         int numberToCalc = randomNumber % 46;
