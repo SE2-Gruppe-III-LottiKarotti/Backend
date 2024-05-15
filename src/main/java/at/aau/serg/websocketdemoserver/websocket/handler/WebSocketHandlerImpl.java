@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -67,9 +68,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        //hinzufügen von Testrooms
         if (counter == 0) {
-            //initTestRooms();
             counter++;
         }
         System.out.println("reached point handleMessage");
@@ -147,7 +146,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         Room room = roomRepo.findRoomById(roomMessage.getRoomID());
 
         ArrayList<Spieler> playerList = room.getListOfPlayers();
-        Random random = new Random();
+        Random random = new SecureRandom();
         int playerToStart = random.nextInt(4)+1;
         roomMessage.setCurrentPlayer(playerList.get(playerToStart));
         roomMessage.setPlayerIndex(playerToStart);
