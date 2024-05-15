@@ -57,6 +57,10 @@ public class InMemoryRoomRepo {
         //nicht gefunden
     }*/
 
+    public Set<Room> getAllRooms() {
+        return roomsRepo;
+    }
+
 
     public Room findRoomByName(String roomName) {
         if (roomName == null) {
