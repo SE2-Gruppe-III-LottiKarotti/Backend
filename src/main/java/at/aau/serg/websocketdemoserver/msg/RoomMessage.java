@@ -9,7 +9,7 @@ import java.util.ArrayList;
 @Data
 public class RoomMessage {
 
-    private final MessageType messageType = MessageType.GAMEBOARD;
+   // private final MessageType messageType = MessageType.GAMEBOARD;
     private RoomMessage.ActionType actionType;
 
     private String roomID;
