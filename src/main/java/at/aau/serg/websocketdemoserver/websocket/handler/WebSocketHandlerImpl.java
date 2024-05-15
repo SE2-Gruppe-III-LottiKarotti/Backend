@@ -228,6 +228,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
          * */
     }
 
+    /*
     private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception{
         Logger logger = Logger.getLogger(getClass().getName());
         Gson gson = new Gson();
@@ -273,7 +274,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         logger.info(responsePayload);
         logger.info("###");
 
-    }
+    */
     /*
     private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
         //1 nachricht, welche vom server reinkommt und durch den messageHandler durch ist verwenden...
