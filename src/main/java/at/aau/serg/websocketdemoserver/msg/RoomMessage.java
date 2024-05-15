@@ -16,7 +16,10 @@ public class RoomMessage {
     private int maxPlayers;
     private Gameboard gameboard;
     private Spieler currentPlayer; // oder spielerID ...
+    private Spieler nextPlayer;
     private Spieler addPlayer;
+    private String randomCart;
+    private int playerIndex;
 
     public RoomMessage() {
         //default
@@ -86,7 +89,31 @@ public class RoomMessage {
         this.actionType = actionType;
     }
 
+    public String getRandomCart() {
+        return randomCart;
+    }
+
+    public void setRandomCart(String randomCart) {
+        this.randomCart = randomCart;
+    }
+
+    public Spieler getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public void setNextPlayer(Spieler nextPlayer) {
+        this.nextPlayer = nextPlayer;
+    }
+
+    public int getPlayerIndex() {
+        return playerIndex;
+    }
+
+    public void setPlayerIndex(int playerIndex) {
+        this.playerIndex = playerIndex;
+    }
+
     public enum ActionType {
-        OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER
+        OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER, NEXTPlAYER,
     }
 }
