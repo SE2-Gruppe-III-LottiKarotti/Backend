@@ -1,21 +1,26 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
+import at.aau.serg.websocketdemoserver.model.game.Gameboard;
+import at.aau.serg.websocketdemoserver.model.game.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
+import ch.qos.logback.core.joran.spi.EventPlayer;
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import java.util.logging.Logger;
+import static java.lang.Math.random;
 
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
@@ -23,8 +28,11 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     @Autowired
     private final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
 
-    static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
+    private final Gson gson = new Gson();
+    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
+    static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
+/*
     private void initTestRooms() {
         String playerName = "FranzSissi";
         String player2 = "Daniel";
@@ -48,8 +56,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         roomRepo.addRoom(testRoom2);
         roomRepo.addRoom(testRoom3);
     }
+ */
 
-    List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
 
     @Override
@@ -60,9 +68,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        //hinzufügen von Testrooms
         if (counter == 0) {
-            initTestRooms();
             counter++;
         }
         System.out.println("reached point handleMessage");
@@ -84,7 +90,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             switch (messageType) {
                 case TEST -> handleTestMessage(session, payload);
                 //case SPIELER -> handleSpielerMessage(session, payload);
-                case SETUP_ROOM -> handleSetupRoomMessage(session, payload);
+                case CREATE_ROOM -> createRoomMessage(session, payload);
                 case GAMEBOARD -> handleGameBoardMessage(session, payload);
                 case CHAT -> handleChatMessage(session, payload);
                 case DRAW_CARD -> handleDrawCard(session, payload);
@@ -107,6 +113,16 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
          * 1 oder 2, oder 3 oder Karotte --> spieler schummelt und der Spieler wird so lange
          * als schummler deklariert, bis er wieder am Zug ist,...
          * in dieser Zeit kann er auch als schummler erwischt werden*/
+        Gson gson = new Gson();
+        DrawCardMessage drawCardMessage = gson.fromJson(payload, DrawCardMessage.class);
+
+        RandomCardGenerator randomCardGenerator = new RandomCardGenerator();
+        String randomCart = randomCardGenerator.start();
+        DrawCardResponse drawCardResponse = new DrawCardResponse();
+        drawCardResponse.setCard(randomCart);
+
+        String positivePayload = gson.toJson(drawCardResponse);
+        session.sendMessage(new TextMessage(positivePayload));
     }
 
     public void handleChatMessage(WebSocketSession session, String payload) throws Exception{
@@ -124,13 +140,67 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     }
 
+    public void handleSetupField(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+        Room room = roomRepo.findRoomById(roomMessage.getRoomID());
 
-    public void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception{
-        //TODO: Gamelogic...
+        ArrayList<Spieler> playerList = room.getListOfPlayers();
+        Random random = new SecureRandom();
+        int playerToStart = random.nextInt(4)+1;
+        roomMessage.setCurrentPlayer(playerList.get(playerToStart));
+        roomMessage.setPlayerIndex(playerToStart);
 
+        Gameboard gameboard = new Gameboard(playerList.size());
+        roomMessage.setGameboard(gameboard);
 
+        String positivePayload = gson.toJson(roomMessage);
+        session.sendMessage(new TextMessage(positivePayload));
     }
 
+    public void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+    }
+
+    public void handleNextPlayer(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+        ArrayList<Spieler> PlayerList;
+        PlayerList = roomMessage.getListOfPlayers();
+        int playerIndex = roomMessage.getPlayerIndex();
+        roomMessage.setNextPlayer(PlayerList.get((playerIndex+1) % PlayerList.size()));
+        roomMessage.setCurrentPlayer(roomMessage.getNextPlayer());
+
+        String positivePayload = gson.toJson(roomMessage);
+        session.sendMessage(new TextMessage(positivePayload));
+    }
+
+    public void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception{
+        Gson gson = new Gson();
+        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+
+        switch(roomMessage.getActionType()) {
+            case DRAWCARD -> handleDrawCard(session, payload);
+            case CHAT -> handleChatMessage(session, payload);
+            case SETUPFIELD -> handleSetupField(session, payload);
+            case GUESSCHEATER -> handleGuessCheater(session, payload);
+            case NEXTPlAYER -> handleNextPlayer(session,payload);
+        }
+    }
+
+    private void createRoomMessage(WebSocketSession session, String payload) throws Exception{
+        CreateRoomMessage createRoomMessage = gson.fromJson(payload, CreateRoomMessage.class);
+        Room room =  new Room();
+        room.setRoomName(createRoomMessage.getRoomName());
+        Spieler spieler = new Spieler();
+        spieler.setName(createRoomMessage.getPlayerName());
+        room.addPlayer(spieler);
+        roomRepo.addRoom(room);
+        String message = gson.toJson(room.getRoomID());
+        session.sendMessage(new TextMessage(message));
+    }
+/*
     private void handleSetupRoomMessage(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         //1 deserialisierung
@@ -142,6 +212,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             case ASK_FOR_JOIN_ROOM -> handleAskForJoinRoom(session, payload);
         }
     }
+ */
 
     private void handleAskForJoinRoom(WebSocketSession session, String payload) throws Exception {
         //TODO:implement the logic here
@@ -156,6 +227,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
          * */
     }
 
+    /*
     private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception{
         Logger logger = Logger.getLogger(getClass().getName());
         Gson gson = new Gson();
@@ -201,8 +273,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         logger.info(responsePayload);
         logger.info("###");
 
-    }
-
+    */
+    /*
     private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
         //1 nachricht, welche vom server reinkommt und durch den messageHandler durch ist verwenden...
         // aus der json wieder das Objekt basteln --> also deserialisieren
@@ -218,7 +290,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         String messageIdentifier = roomSetupMessage.getMessageIdentifier();
 
         //3 checks
-        if (roomName == null || roomName.length() == 0 || playerName == null || playerName.length() == 0 || maxPlayers < 2 || maxPlayers > 4 || messageIdentifier == null) {
+        if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty() || maxPlayers < 2 || maxPlayers > 4 || messageIdentifier == null) {
             //fehlerhafte Werte
             roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
             String errorPayload = gson.toJson(roomSetupMessage);
@@ -249,7 +321,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             /*roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
             String errorPayload = gson.toJson(roomSetupMessage);
             session.sendMessage(new TextMessage(errorPayload));
-            return;*/
+            return;
         }
 
 
@@ -290,8 +362,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
 
     }
-
-
+    */
 
 
     private void handleTestMessage(WebSocketSession session, String payload) throws Exception {
