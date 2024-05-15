@@ -16,7 +16,7 @@ public class RoomSetupMessageTest {
     public void testParameterizedConstructorAndGetters() {
         String roomName = "Test Room";
         String roomID = "123";
-        String playerName = "Alice";
+        String playerName = "Daniel";
         String playerID = "456";
         String numPlayers = "4";
         String messageIdentifier = "789";
@@ -38,7 +38,6 @@ public class RoomSetupMessageTest {
     public void testSettersAndGettersForRoomInfoList() {
         RoomSetupMessage message = new RoomSetupMessage();
         ArrayList<RoomInfo> roomInfoList = new ArrayList<>();
-        // Add some RoomInfo objects to the list
 
         message.setRoomInfoList(roomInfoList);
 

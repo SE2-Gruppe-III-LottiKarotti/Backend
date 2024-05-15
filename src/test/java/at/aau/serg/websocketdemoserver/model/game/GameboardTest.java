@@ -1,6 +1,5 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import at.aau.serg.websocketdemoserver.msg.ChatMessage;
 import org.testng.annotations.Test;
 
 import static org.junit.Assert.*;
