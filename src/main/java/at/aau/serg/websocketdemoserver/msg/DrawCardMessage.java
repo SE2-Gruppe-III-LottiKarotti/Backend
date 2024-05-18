@@ -8,4 +8,13 @@ public class DrawCardMessage {
     String roomID;
     String playerID;
     String card;
+    ActionTypeDrawCard actionTypeDrawCard;
+
+    /*message maybe need to be broadcasted*/
+
+
+    enum ActionTypeDrawCard {
+        ASK_FOR_CARD,
+        RETURN_CARD
+    }
 }
