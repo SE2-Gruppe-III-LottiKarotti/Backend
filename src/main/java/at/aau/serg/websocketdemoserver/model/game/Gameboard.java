@@ -1,11 +1,11 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
+import java.security.SecureRandom;
 
-import java.util.Random;
 
 public class Gameboard {
     private Feld[] felder;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private int holeCounter1;// = random.nextInt((26/2));
     private int holeCounter2;// = (holeCounter1+(18%26)%26-4);
 
@@ -40,76 +40,78 @@ public class Gameboard {
     //korrigiert
     private void initFields() {
         for (int i = 0; i < 26; i++) {
-            //felder[i] = new Feld();
-            //init maulwurfhügel
             if (i == 3 || i == 6 || i == 9 || i == 15 || i == 18 || i == 20 || i == 24) {
-                felder[i] = new Feld(true);
+                felder[i] = new Feld(true); // Maulwurfhügel
                 felder[i].setOpen(false);
-            }
-            //normal fields
-            else {
-                felder[i] = new Feld(false);
-            }
-            if (i == 2 || i == 13 || i == 22) {
-                felder[i].setSpecialField(false);
+            } else {
+                felder[i] = new Feld(false); // Normale Felder
             }
         }
-        specialFieldSwitch(holeCounter1);
 
-        //initialize fist open molewholes();
+        // Initiale Spezialfelder setzen
+        felder[2].setSpecialField(false); // Maulwurfhöhle
+        felder[13].setSpecialField(false); // Brücke
+        felder[22].setSpecialField(false); // Gatter
+
+        // Initiale Maulwurflöcher öffnen
         oldPositionCounter1 = holeCounter1;
         oldPositionCounter2 = holeCounter2;
         felder[oldPositionCounter1].setOpen(true);
         felder[oldPositionCounter2].setOpen(true);
+
+        specialFieldSwitch(holeCounter1); // Spezialfelder initial umschalten
     }
 
+
     public void twistTheCarrot() {
-        //die löcher die vormals geöffnet wurden, werden beim nächsten drehen ja wieder verschlossen
+        // Die Löcher, die vormals geöffnet wurden, werden beim nächsten Drehen wieder verschlossen
         felder[oldPositionCounter1].setOpen(false);
         felder[oldPositionCounter2].setOpen(false);
-        //increment 0 to 15
-        //wie es auf <= gesetzt wurde, ging es aus dem gültigen bereich raus
-        if (holeCounter1 >= 0 && holeCounter1 < 15) {
+
+        // Inkrementiere holeCounter1 von 0 bis 15
+        if (holeCounter1 < 15) {
             holeCounter1++;
         } else {
             holeCounter1 = 0;
         }
 
-        //dekrement to 16 - 25
-        if (holeCounter2 > 16 && holeCounter2 <= 25) {
+        // Dekrementiere holeCounter2 von 25 bis 16
+        if (holeCounter2 > 16) {
             holeCounter2--;
         } else {
             holeCounter2 = 25;
         }
-        if (felder[holeCounter1].isIstEsEinMaulwurfLoch() == true) {
+
+        // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
+        if (felder[holeCounter1].isIstEsEinMaulwurfLoch()) {
             felder[holeCounter1].setOpen(true);
             oldPositionCounter1 = holeCounter1;
         }
 
-        if (felder[holeCounter2].isIstEsEinMaulwurfLoch() == true) {
+        if (felder[holeCounter2].isIstEsEinMaulwurfLoch()) {
             felder[holeCounter2].setOpen(true);
             oldPositionCounter2 = holeCounter2;
         }
+        // Schalte die Spezialfelder entsprechend dem neuen holeCounter1 um
         specialFieldSwitch(holeCounter1);
     }
-
     //korrigiert
     //feld 2 == maulwurfhöhle, feld 13 == brücke, feld 22 == gatter
     private void specialFieldSwitch(int holeCounter1) {
-        if(holeCounter1%3 == 0) {
-            felder[2].setSpecialField(true);
+        if(holeCounter1 % 3 == 0) {
+            felder[2].setSpecialField(true); // Maulwurfhöhle
             felder[13].setSpecialField(false);
             felder[22].setSpecialField(false);
         }
-        if(holeCounter1%3 == 1) {
+        if(holeCounter1 % 3 == 1) {
             felder[2].setSpecialField(false);
-            felder[13].setSpecialField(true);
+            felder[13].setSpecialField(true); // Brücke
             felder[22].setSpecialField(false);
         }
-        if(holeCounter1%3 == 2) {
+        if(holeCounter1 % 3 == 2) {
             felder[2].setSpecialField(false);
             felder[13].setSpecialField(false);
-            felder[22].setSpecialField(true);
+            felder[22].setSpecialField(true); // Gatter
         }
     }
 
@@ -118,7 +120,6 @@ public class Gameboard {
             if (felder[i].getSpielfigur() == spielfigur) {
                 return i;
             }
-
         }
         return -1;
     }
