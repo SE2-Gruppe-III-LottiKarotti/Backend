@@ -17,12 +17,13 @@ public class Room {
     private Gameboard gameboard;
     private Spieler currentPlayer; // oder spielerID ...
 
+
     private String creatorName;
 
     //TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
     /***/
 
-    public Room() {
+    public Room(int i, String testRoom) {
         this.roomID = UUID.randomUUID().toString();
         this.listOfPlayers = new ArrayList<>();
         //TODO: vll auch das gameboard hier initialisieren...
