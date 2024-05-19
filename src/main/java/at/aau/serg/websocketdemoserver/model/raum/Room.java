@@ -2,12 +2,10 @@ package at.aau.serg.websocketdemoserver.model.raum;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
-import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Data
 public class Room {
     private String roomID;
     private String roomName;
@@ -15,17 +13,14 @@ public class Room {
     private int maxPlayers;
     private int availablePlayersSpace;
     private Gameboard gameboard;
-    private Spieler currentPlayer; // oder spielerID ...
-
+    private String currentPlayerId; // Spieler der aktuell dran ist
     private ArrayList<String> cheaters;
     private String creatorName;
-
-    //TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
-    /***/
-
+    private String winner;
 
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
+        this.roomName = roomName;
         this.maxPlayers = maxPlayers;
         this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
@@ -33,6 +28,16 @@ public class Room {
         this.gameboard = new Gameboard();
     }
 
+    //method to check at the beginning or the end, if someone has one the game --> maybe at the end
+    public void checkAndSetWinner() {
+        if (gameboard.hasWinner()) {
+            this.winner = gameboard.getWinner();
+        }
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
 
     public Spieler getPlayerById(String spielerID) {
         for (Spieler spieler : listOfPlayers) {
@@ -43,6 +48,75 @@ public class Room {
         return null;
     }
 
+    public int getAvailablePlayersSpace() {
+        return availablePlayersSpace;
+    }
+
+    public void setAvailabePlayersSpace(int availabePlayersSpace) {
+        this.availablePlayersSpace = availabePlayersSpace;
+    }
+
+    public String getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(String roomID) {
+        this.roomID = roomID;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
+
+    public void setAvailablePlayersSpace(int availablePlayersSpace) {
+        this.availablePlayersSpace = availablePlayersSpace;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public ArrayList<Spieler> getListOfPlayers() {
+        return listOfPlayers;
+    }
+
+    public void setListOfPlayers(ArrayList<Spieler> listOfPlayers) {
+        this.listOfPlayers = listOfPlayers;
+    }
+
+
+    public Gameboard getGameboard() {
+        return gameboard;
+    }
+
+    public void setGameboard(Gameboard gameboard) {
+        this.gameboard = gameboard;
+    }
+
+    public String getCurrentPlayerId() {
+        return currentPlayerId;
+    }
+
+    public void setCurrentPlayerId(String currentPlayerId) {
+        this.currentPlayerId = currentPlayerId;
+    }
+
     public void addPlayer(Spieler spieler) {
         if (availablePlayersSpace > 0) {
             listOfPlayers.add(spieler);
@@ -51,6 +125,11 @@ public class Room {
             System.out.println("raum voll");
             //der punkt sollte eigentlich nie erreicht werden
         }
+    }
+
+    //cheating operations
+    public boolean searchPlayerIdInCheatList(String playerId) {
+        return cheaters.contains(playerId);
     }
 
     public void addPlayerToCheatList(String playerId) {
@@ -65,5 +144,22 @@ public class Room {
         }
     }
 
+    public Spieler getNextPlayer(String currentPlayerId) {
+        int index = -1;
 
+        for (int i = 0; i < listOfPlayers.size(); i++) {
+            if (listOfPlayers.get(i).getSpielerID().equals(currentPlayerId)) {
+                index = i;
+                break;
+            }
+        }
+
+        //this should never happen
+        if (index == -1) {
+            return null;
+        }
+
+        int nextPlayer = (index + 1) % listOfPlayers.size();
+        return listOfPlayers.get(nextPlayer);
+    }
 }
