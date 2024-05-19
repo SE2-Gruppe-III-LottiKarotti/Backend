@@ -17,7 +17,7 @@ public class Gameboard {
     public Gameboard() {
         this.felder = new Feld[26]; //26 felder inkl. karotte
         this.maxPosition = felder.length - 1; // Maximale Position ist die Länge des Arrays-1
-        this.holeCounter1 = random.nextInt((26/2));
+        this.holeCounter1 = random.nextInt((14));
         this.holeCounter2 = (holeCounter1 + (18 % 26) % 26 - 4);
         winner = null;
         initFields();
@@ -37,7 +37,7 @@ public class Gameboard {
 
     //korrigiert
     private void initFields() {
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < maxPosition; i++) {
             if (i == 3 || i == 6 || i == 9 || i == 15 || i == 18 || i == 20 || i == 24) {
                 felder[i] = new Feld(true); // Maulwurfhügel
                 felder[i].setOpen(false);
@@ -51,6 +51,14 @@ public class Gameboard {
         felder[13].setSpecialField(false); // Brücke
         felder[22].setSpecialField(false); // Gatter
 
+        //bugfix
+        while (true) {
+            if (holeCounter1 <= 15 && holeCounter2 <=24) {
+                break;
+            }
+            holeCounter1 = random.nextInt((14));
+            holeCounter2 = (holeCounter1 + (18 % 26) % 26 - 4);
+        }
         // Initiale Maulwurflöcher öffnen
         oldPositionCounter1 = holeCounter1;
         oldPositionCounter2 = holeCounter2;
