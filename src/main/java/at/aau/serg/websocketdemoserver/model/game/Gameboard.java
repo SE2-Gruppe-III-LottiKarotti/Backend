@@ -1,10 +1,11 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import java.util.Random;
+import java.security.SecureRandom;
+
 
 public class Gameboard {
     private Feld[] felder;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private int holeCounter1;// = random.nextInt((26/2));
     private int holeCounter2;// = (holeCounter1+(18%26)%26-4);
 
