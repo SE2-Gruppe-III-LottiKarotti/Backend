@@ -2,28 +2,21 @@ package at.aau.serg.websocketdemoserver.model.game;
 
 import java.security.SecureRandom;
 
-public class RandomCardGenerator {
-
-    public static String start() {
+public class RandomCardGenerator implements CardGenerator {
+    @Override
+    public String drawCard() {
         SecureRandom random = new SecureRandom();
-        int randomNumber = random.nextInt(Integer.MAX_VALUE);
+        int randomNumber = random.nextInt(46); // Es gibt 46 mögliche Werte (0 bis 45)
 
-        int numberToCalc = randomNumber % 46;
-
-        if (numberToCalc <=3) { // keine grenze nach unten, weil modulo!
-            return "3"; //3 felder weiter
+        if (randomNumber <= 3) { // keine Grenze nach unten, weil modulo!
+            return "3"; // 3 Felder weiter
+        } else if (randomNumber >= 4 && randomNumber <= 10) {
+            return "2"; // 2 Felder weiter
+        } else if (randomNumber >= 11 && randomNumber <= 21) {
+            return "Karotte"; // Karotte drehen
+        } else {
+            // für 22 bis 45
+            return "1"; // 1 Feld weiter
         }
-        else if (numberToCalc >= 4 && numberToCalc <=10) {
-            return "2"; //2 felder weiter
-        }
-        else if (numberToCalc >=11 && numberToCalc <=21) {
-            return "Karotte"; //karotte drehen
-        }
-        else {
-            //für 22 bis 45
-            return "1"; //1 feld weiter
-        }
-
-
     }
 }
