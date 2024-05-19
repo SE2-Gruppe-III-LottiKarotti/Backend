@@ -1,6 +1,5 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-
 import java.util.Random;
 
 public class Gameboard {
@@ -118,7 +117,6 @@ public class Gameboard {
             if (felder[i].getSpielfigur() == spielfigur) {
                 return i;
             }
-
         }
         return -1;
     }
