@@ -10,6 +10,10 @@ public class Spieler {
     private ArrayList<Spielfigur> unusedBunnies;
     private boolean isCheater;
 
+    public Spieler() {
+        //default
+    }
+
     public Spieler (String name) {
         this.spielerID = UUID.randomUUID().toString();
         this.name = name;
@@ -25,9 +29,12 @@ public class Spieler {
         return spielerID;
     }
 
-    public void setSpielerID(String spielerID) {
+    /*public void setSpielerID(String spielerID) {
         this.spielerID = spielerID;
-    }
+    }*/
+    /*public void setSpielerID() {
+        this.spielerID = UUID.randomUUID().toString();
+    }*/
 
     public String getName() {
         return name;
