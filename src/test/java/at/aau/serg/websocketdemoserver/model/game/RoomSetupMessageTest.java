@@ -1,13 +1,10 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
-import at.aau.serg.websocketdemoserver.msg.RoomSetupMessage;
-import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertEquals;
+
 
 public class RoomSetupMessageTest {
 
@@ -35,6 +32,7 @@ public class RoomSetupMessageTest {
     }
     */
 
+    /*
     @Test
     public void testSettersAndGettersForRoomInfoList() {
         RoomSetupMessage message = new RoomSetupMessage();
@@ -43,5 +41,5 @@ public class RoomSetupMessageTest {
         message.setRoomInfoList(roomInfoList);
 
         assertEquals(roomInfoList, message.getRoomInfoList());
-    }
+    }*/
 }

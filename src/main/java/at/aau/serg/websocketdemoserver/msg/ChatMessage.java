@@ -1,28 +1,64 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 public class ChatMessage {
-    String sender;
+    private final MessageType messageType = MessageType.CHAT;
+
+    String playerName;
+    String playerId;
     String text;
     String roomID;
-    String msgIdentifier;
 
-    public ChatMessage(String sender, String text, String roomID, String msgIdentifier) {
-        this.sender = sender;
+    ActionTypeChat actionTypeChat;
+
+    /*message need to be broadcasted*/
+
+
+    //String msgIdentifier; //da der socket eh bekannt ist
+
+    public ChatMessage(String playerName, String playerId, String text, String roomID) {
+        this.playerName = playerName;
+        this.playerId = playerId;
         this.text = text;
         this.roomID = roomID;
-        this.msgIdentifier = msgIdentifier;
+
     }
 
     public ChatMessage() {
         //default
     }
 
-    public String getSender() {
-        return sender;
+    public MessageType getMessageType() {
+        return messageType;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public enum ActionTypeChat {
+        CHAT_MSG_TO_SERVER,
+        CHAT_MSG_TO_CLIENTS_OK,
+        CHAT_MSG_TO_CLIENTS_ERR
+    }
+
+    public ActionTypeChat getActionTypeChat() {
+        return actionTypeChat;
+    }
+
+    public void setActionTypeChat(ActionTypeChat actionTypeChat) {
+        this.actionTypeChat = actionTypeChat;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     public String getText() {
@@ -41,11 +77,5 @@ public class ChatMessage {
         this.roomID = roomID;
     }
 
-    public String getMsgIdentifier() {
-        return msgIdentifier;
-    }
 
-    public void setMsgIdentifier(String msgIdentifier) {
-        this.msgIdentifier = msgIdentifier;
-    }
 }

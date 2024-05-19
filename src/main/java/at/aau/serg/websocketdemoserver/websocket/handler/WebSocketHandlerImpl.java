@@ -1,26 +1,20 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
-import at.aau.serg.websocketdemoserver.model.game.Gameboard;
-import at.aau.serg.websocketdemoserver.model.game.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
-import ch.qos.logback.core.joran.spi.EventPlayer;
-import com.google.gson.Gson;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import static java.lang.Math.random;
+import java.util.logging.Logger;
 
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
@@ -32,13 +26,27 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
     static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
-/*
+
+    //broadcasting
+    private void broadcastMsg(String message) throws Exception{
+        if (message == null) {
+            System.out.println("error: message to broadcast was null");
+            //assert (false);
+            //sollte mit logger ausgetauscht werden
+            return;
+        }
+        for (WebSocketSession client: sessions) {
+            client.sendMessage(new TextMessage(message));
+        }
+
+    }
+
     private void initTestRooms() {
         String playerName = "FranzSissi";
         String player2 = "Daniel";
         Spieler spieler1 = new Spieler(playerName);
         Spieler spieler2 = new Spieler(player2);
-        Room testRoom1 = new Room(2, "TestRo1");
+        Room testRoom1 = new Room(2, "TestRoom");
         testRoom1.setCreatorName(playerName);
         testRoom1.addPlayer(spieler1);
         Room testRoom2 = new Room(3, "TestRo2");
@@ -56,7 +64,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         roomRepo.addRoom(testRoom2);
         roomRepo.addRoom(testRoom3);
     }
- */
 
 
 
@@ -69,6 +76,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (counter == 0) {
+            initTestRooms(); //for checking if list is working and default room till that time
             counter++;
         }
         System.out.println("reached point handleMessage");
@@ -88,44 +96,47 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         if (baseMessage != null) {
             MessageType messageType = baseMessage.getMessageType();
             switch (messageType) {
+                //testMsg at startup
                 case TEST -> handleTestMessage(session, payload);
-                //case SPIELER -> handleSpielerMessage(session, payload);
-                case CREATE_ROOM -> createRoomMessage(session, payload);
+                //msg for constant load on network (ping - pong - ping - ...)
+                case HEARTBEAT -> handleHeartbeat(session, payload);
+                //messages for opening, joining and listing rooms
+                case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
+                case JOIN_ROOM -> handleAskForJoinRoom(session, payload);
+                case LIST_ROOMS -> handleAskForRoomList(session, payload);
+                //messages for gameboard logic
                 case GAMEBOARD -> handleGameBoardMessage(session, payload);
                 case CHAT -> handleChatMessage(session, payload);
                 case DRAW_CARD -> handleDrawCard(session, payload);
+                //def.
                 default -> System.out.println("unknown message type received");
             }
         }
     }
 
-    public void handleDrawCard(WebSocketSession session, String payload) throws Exception {
-        //TODO:
-        /**
-         * Spieler "zieht" clientseitig eine karte...
-         * der spieler übermittelt dabei eine message, welche folgende bestandteile aufweist
-         * roomID, spielerID, messageIdentifier (damit die nachricht exakt an den zurück geht,
-         * welcher die nachricht abgesendet hat (da jedoch nur einer pro Raum zum gleichen
-         * Zeitpunkt am ziehen sein kann, kann man sich den msgIdentifier vll. sparen)
-         * die wichtigste Variable ist jedoch der String, welcher übermittelt wird,...
-         *
-         * random => spieler schummelt nicht und bekommt eine Karte zufällig übermittelt
-         * 1 oder 2, oder 3 oder Karotte --> spieler schummelt und der Spieler wird so lange
-         * als schummler deklariert, bis er wieder am Zug ist,...
-         * in dieser Zeit kann er auch als schummler erwischt werden*/
-        Gson gson = new Gson();
-        DrawCardMessage drawCardMessage = gson.fromJson(payload, DrawCardMessage.class);
+    private void handleHeartbeat(WebSocketSession session, String payload) throws Exception {
+        HeartbeatMessage heartbeatMessage = gson.fromJson(payload, HeartbeatMessage.class);
 
-        RandomCardGenerator randomCardGenerator = new RandomCardGenerator();
-        String randomCart = randomCardGenerator.start();
-        DrawCardResponse drawCardResponse = new DrawCardResponse();
-        drawCardResponse.setCard(randomCart);
+        if (heartbeatMessage != null && heartbeatMessage.getText().equals("ping")) {
+            /*heartbeatMessage.setText("pong");
+            String response = gson.toJson(heartbeatMessage);
+            session.sendMessage(new TextMessage(response));*/
+            System.out.println("valid message");
 
-        String positivePayload = gson.toJson(drawCardResponse);
-        session.sendMessage(new TextMessage(positivePayload));
+        }
+        else {
+            System.out.println("invalid message");
+        }
+
+
     }
 
-    public void handleChatMessage(WebSocketSession session, String payload) throws Exception{
+    private void handleDrawCard(WebSocketSession session, String payload) throws Exception {
+
+
+    }
+
+    private void handleChatMessage(WebSocketSession session, String payload) throws Exception {
         //TODO:
         /**
          * nachricht erreicht den handler
@@ -140,14 +151,14 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     }
 
-    public void handleSetupField(WebSocketSession session, String payload) throws Exception {
-        Gson gson = new Gson();
+    private void handleSetupField(WebSocketSession session, String payload) throws Exception {
+        /*Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
         Room room = roomRepo.findRoomById(roomMessage.getRoomID());
 
         ArrayList<Spieler> playerList = room.getListOfPlayers();
         Random random = new SecureRandom();
-        int playerToStart = random.nextInt(4)+1;
+        int playerToStart = random.nextInt(4) + 1;
         roomMessage.setCurrentPlayer(playerList.get(playerToStart));
         roomMessage.setPlayerIndex(playerToStart);
 
@@ -155,64 +166,116 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         roomMessage.setGameboard(gameboard);
 
         String positivePayload = gson.toJson(roomMessage);
-        session.sendMessage(new TextMessage(positivePayload));
+        session.sendMessage(new TextMessage(positivePayload));*/
     }
 
-    public void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
+    private void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
     }
 
-    public void handleNextPlayer(WebSocketSession session, String payload) throws Exception {
+    private void handleNextPlayer(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
         ArrayList<Spieler> PlayerList;
         PlayerList = roomMessage.getListOfPlayers();
         int playerIndex = roomMessage.getPlayerIndex();
-        roomMessage.setNextPlayer(PlayerList.get((playerIndex+1) % PlayerList.size()));
+        roomMessage.setNextPlayer(PlayerList.get((playerIndex + 1) % PlayerList.size()));
         roomMessage.setCurrentPlayer(roomMessage.getNextPlayer());
 
         String positivePayload = gson.toJson(roomMessage);
         session.sendMessage(new TextMessage(positivePayload));
     }
 
-    public void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception{
+    private void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
 
-        switch(roomMessage.getActionType()) {
+        switch (roomMessage.getActionType()) {
             case DRAWCARD -> handleDrawCard(session, payload);
             case CHAT -> handleChatMessage(session, payload);
             case SETUPFIELD -> handleSetupField(session, payload);
             case GUESSCHEATER -> handleGuessCheater(session, payload);
-            case NEXTPlAYER -> handleNextPlayer(session,payload);
+            case NEXTPlAYER -> handleNextPlayer(session, payload);
         }
     }
 
-    private void createRoomMessage(WebSocketSession session, String payload) throws Exception{
-        CreateRoomMessage createRoomMessage = gson.fromJson(payload, CreateRoomMessage.class);
-        Room room =  new Room();
-        room.setRoomName(createRoomMessage.getRoomName());
-        Spieler spieler = new Spieler();
-        spieler.setName(createRoomMessage.getPlayerName());
-        room.addPlayer(spieler);
-        roomRepo.addRoom(room);
-        String message = gson.toJson(room.getRoomID());
-        session.sendMessage(new TextMessage(message));
-    }
-/*
-    private void handleSetupRoomMessage(WebSocketSession session, String payload) throws Exception {
-        Gson gson = new Gson();
-        //1 deserialisierung
-        RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
+    private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
+        //1 extract
+        OpenRoomMessage openRoomMessage = gson.fromJson(payload, OpenRoomMessage.class);
 
-        switch(roomSetupMessage.getActionType()) {
-            case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
-            case ASK_FOR_ROOM_LIST -> handleAskForRoomList(session, payload);
-            case ASK_FOR_JOIN_ROOM -> handleAskForJoinRoom(session, payload);
+        //2 set local variables
+        String roomName = openRoomMessage.getRoomName();
+        String playerName = openRoomMessage.getPlayerName();
+        int maxPlayers = Integer.parseInt(openRoomMessage.getNumPlayers());
+
+        //3_1 checks1
+        if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty() || maxPlayers < 2 || maxPlayers > 4) {
+            //fehlerhafte Werte
+            openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR);
+            String errorPayload = gson.toJson(openRoomMessage);
+            session.sendMessage(new TextMessage(errorPayload));
+            return;
         }
+
+        //3_2 check2
+        Room foundRoom = roomRepo.findRoomByName(roomName);
+        System.out.println("****");
+        System.out.println(foundRoom);
+        System.out.println("****");
+
+        //4 checks --> wenn der raum schon existiert...
+        if (foundRoom != null) {
+            // Room already exists
+            // 4_1 senden...
+            if (foundRoom.getRoomName().equals(openRoomMessage.getRoomName())) {
+                openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR);
+                String errorPayload = gson.toJson(openRoomMessage);
+                session.sendMessage(new TextMessage(errorPayload));
+                System.out.println("toClient: " + errorPayload);
+                return;
+
+            }
+
+        }
+
+        //5 positive case --> der raum wird hinzugefügt
+        //else
+        //room does not exist already
+        Room roomToAdd = new Room(maxPlayers, roomName);
+        //Spieler erschaffen
+        Spieler creator = new Spieler(playerName);
+        String creatorId = creator.getSpielerID();
+        roomToAdd.addPlayer(creator);
+        roomToAdd.setCreatorName(playerName);
+        System.out.println("after adding player " + roomToAdd.getAvailablePlayersSpace());
+
+        //5_1 raum auch zur repo --> also zur DB hinzufügen
+        //add room to repo
+        roomRepo.addRoom(roomToAdd);
+
+        //5_2 message vorbereiten und senden --> serialisieren
+        //now prepare message
+        openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK);
+        openRoomMessage.setRoomId(roomToAdd.getRoomID());
+        openRoomMessage.setRoomName(roomToAdd.getRoomName());
+        openRoomMessage.setPlayerId(creatorId);
+        openRoomMessage.setPlayerName(creator.getName());
+        openRoomMessage.setNumPlayers(Integer.toString(maxPlayers));
+        //openRoomMessage.setMessageIdentifier(messageIdentifier);
+
+
+
+        //5_3 hier wird schlussendlich die positive nachricht versendet...
+        //prepare positive payload
+        String positivePayload = gson.toJson(openRoomMessage);
+        session.sendMessage(new TextMessage(positivePayload));
+        System.out.println("end of player hinzugefügt");
+        System.out.println("toClient: " + positivePayload);
+
+
     }
- */
+
 
     private void handleAskForJoinRoom(WebSocketSession session, String payload) throws Exception {
         //TODO:implement the logic here
@@ -225,15 +288,66 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
          * ... es könnten ja gleich mehrere potenzielle Spieler den Gedanken haben beim gleichen
          * Raum beitreten bzw. einsteigen zu wollen...
          * */
+
+        //1 extract
+        JoinRoomMessage joinRoomMessage = gson.fromJson(payload, JoinRoomMessage.class);
+
+        //2 set local variables
+        String roomName = joinRoomMessage.getRoomName();
+        String playerName = joinRoomMessage.getPlayerName();
+
+        //3 check
+        if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty()) {
+            //fehlerhafte Werte
+            joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR);
+            String errorPayload = gson.toJson(joinRoomMessage);
+            session.sendMessage(new TextMessage(errorPayload));
+            return;
+        }
+
+        // this need to be syncronized
+
+        Room foundRoom = roomRepo.findRoomByName(roomName);
+        System.out.println("****");
+        System.out.println(foundRoom);
+        System.out.println("****");
+
+
+        // if room exists, add player to room
+        if (foundRoom == null) {
+            // raum existiert nicht
+            joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR);
+            String errorPayload = gson.toJson(joinRoomMessage);
+            session.sendMessage(new TextMessage(errorPayload));
+            System.out.println("toClient: " + errorPayload);
+            return;
+
+        }
+
+        //valid, now add player
+        Spieler playerToAdd = new Spieler(playerName);
+        foundRoom.addPlayer(playerToAdd);
+
+        //msg set
+        joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_OK);
+        joinRoomMessage.setRoomId(foundRoom.getRoomID());
+        joinRoomMessage.setPlayerId(playerToAdd.getSpielerID());
+        joinRoomMessage.setPlayerName(playerToAdd.getName());
+        //msg send
+        String positivePayload = gson.toJson(joinRoomMessage);
+        session.sendMessage(new TextMessage(positivePayload));
+        System.out.println("toClient: " + positivePayload);
+
+
     }
 
-    /*
-    private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception{
+
+    private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception {
         Logger logger = Logger.getLogger(getClass().getName());
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
         logger.info("ask for room list reached");
 
-        RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
+        RoomListMessage roomListMessage = gson.fromJson(payload, RoomListMessage.class);
 
         //get repo List
         ArrayList<Room> roomList = roomRepo.listAllRooms();
@@ -260,10 +374,9 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         logger.info("###");
 
         //msg
-        RoomSetupMessage response = new RoomSetupMessage();
-        response.setActionType(RoomSetupMessage.ActionType.ANSWER_ROOM_LIST);
-        response.setRoomInfoList(roomInfoList);
-        response.setMessageIdentifier(roomSetupMessage.getMessageIdentifier());
+        RoomListMessage response = new RoomListMessage();
+        response.setActionTypeRoomListMessage(RoomListMessage.ActionTypeRoomListMessage.ANSWER_ROOM_LIST_OK);
+        response.setRoomInfoArrayList(roomInfoList);
 
         //prepare and send
         String responsePayload = gson.toJson(response);
@@ -273,97 +386,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         logger.info(responsePayload);
         logger.info("###");
 
-    */
-    /*
-    private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
-        //1 nachricht, welche vom server reinkommt und durch den messageHandler durch ist verwenden...
-        // aus der json wieder das Objekt basteln --> also deserialisieren
-        Gson gson = new Gson();
-        RoomSetupMessage roomSetupMessage = gson.fromJson(payload, RoomSetupMessage.class);
-        System.out.println(payload);
-        System.out.println("open room message handler reached");
-
-        //2 daten extrahieren
-        String roomName = roomSetupMessage.getRoomName();
-        String playerName = roomSetupMessage.getPlayerName();
-        int maxPlayers = Integer.parseInt(roomSetupMessage.getNumPlayers());
-        String messageIdentifier = roomSetupMessage.getMessageIdentifier();
-
-        //3 checks
-        if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty() || maxPlayers < 2 || maxPlayers > 4 || messageIdentifier == null) {
-            //fehlerhafte Werte
-            roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
-            String errorPayload = gson.toJson(roomSetupMessage);
-            session.sendMessage(new TextMessage(errorPayload));
-            return;
-        }
-
-        Room foundRoom = roomRepo.findRoomByName(roomName);
-        System.out.println("****");
-        System.out.println(foundRoom);
-        System.out.println("****");
-
-
-
-        //4 checks --> wenn der raum schon existiert...
-        if (foundRoom != null) {
-            // Room already exists
-            // 4_1 senden...
-            if (foundRoom.getRoomName().equals(roomSetupMessage.getRoomName())) {
-                roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
-                String errorPayload = gson.toJson(roomSetupMessage);
-                session.sendMessage(new TextMessage(errorPayload));
-                System.out.println("toClient: " + errorPayload);
-                return;
-
-            }
-            //das wird wsl nicht mehr benötigt
-            /*roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_ERR);
-            String errorPayload = gson.toJson(roomSetupMessage);
-            session.sendMessage(new TextMessage(errorPayload));
-            return;
-        }
-
-
-        //5 positive case --> der raum wird hinzugefügt
-        //else
-        //room does not exist already
-        Room roomToAdd = new Room(maxPlayers, roomName);
-        //Spieler erschaffen
-        Spieler creator = new Spieler(playerName);
-        String creatorId = creator.getSpielerID();
-        roomToAdd.addPlayer(creator);
-        roomToAdd.setCreatorName(playerName);
-        System.out.println("after adding player " + roomToAdd.getAvailablePlayersSpace());
-
-        //5_1 raum auch zur repo --> also zur DB hinzufügen
-        //add room to repo
-        roomRepo.addRoom(roomToAdd);
-
-        //5_2 message vorbereiten und senden --> serialisieren
-        //now prepare message
-        roomSetupMessage.setActionType(RoomSetupMessage.ActionType.OPEN_ROOM_OK);
-        roomSetupMessage.setRoomID(roomToAdd.getRoomID());
-        roomSetupMessage.setRoomName(roomToAdd.getRoomName());
-        roomSetupMessage.setPlayerID(creatorId);
-        roomSetupMessage.setPlayerName(creator.getName());
-        roomSetupMessage.setNumPlayers(Integer.toString(maxPlayers));
-        roomSetupMessage.setMessageIdentifier(messageIdentifier);
-
-
-        //RoomSetupMessage roomSetupMessage = new RoomSetupMessage(roomName, "emptyRoomID", creatorName, "emptyPlayerID", finalNumPlayers, messageIdentifierOpenRoom, RoomSetupMessage.ActionType.OPEN_ROOM);
-
-        //5_3 hier wird schlussendlich die positive nachricht versendet...
-        //prepare positive payload
-        String positivePayload = gson.toJson(roomSetupMessage);
-        session.sendMessage(new TextMessage(positivePayload));
-        System.out.println("end of player hinzugefügt");
-        System.out.println("toClient: " + positivePayload);
-
-
     }
-    */
-
 
     private void handleTestMessage(WebSocketSession session, String payload) throws Exception {
         //1 user message aus der payload extrahieren
@@ -388,7 +411,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
 
-
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 
@@ -396,7 +418,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-
+        //sessions.remove(session);
     }
 
     @Override
