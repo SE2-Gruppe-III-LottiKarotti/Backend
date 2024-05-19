@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.msg.*;
@@ -127,11 +128,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         else {
             System.out.println("invalid message");
         }
-
-
-    }
-
-    private void handleDrawCard(WebSocketSession session, String payload) throws Exception {
 
 
     }
@@ -273,6 +269,66 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         System.out.println("end of player hinzugefügt");
         System.out.println("toClient: " + positivePayload);
 
+
+    }
+
+    private void handleDrawCard(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        DrawCardMessage drawCardMessage = gson.fromJson(payload, DrawCardMessage.class);
+
+        //error check1
+        if (drawCardMessage == null) {
+            System.out.println("error draw card");
+            DrawCardMessage errorMsg = new DrawCardMessage();
+            errorMsg.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_ERR);
+            errorMsg.setCard("error");
+            String export = gson.toJson(errorMsg);
+            broadcastMsg(export);
+            return;
+        }
+
+        String roomId = drawCardMessage.getRoomID();
+        String playerId = drawCardMessage.getPlayerID();
+        //DrawCardMessage.ActionTypeDrawCard actionTypeDrawCard = drawCardMessage.getActionTypeDrawCard();
+        String inputCard = drawCardMessage.getCard();
+
+        Room room = roomRepo.findRoomById(roomId);
+        if (room == null) {
+            System.out.println("room not found" + roomId);
+            return;
+        }
+
+        Spieler player = room.getPlayerById(playerId);
+        if (player == null) {
+            System.out.println("player not found" + playerId);
+            return;
+        }
+
+        //now handle the return of card
+
+        //first reset if player == cheater
+        //catching is only possible, if it not the players turn again
+        room.deletePlayerFromCheatList(playerId);
+
+        String cardReturned;
+
+        switch (inputCard) {
+            case "random" -> cardReturned = RandomCardGenerator.start();
+            case "1", "2", "3", "karotte" -> {
+                room.addPlayerToCheatList(playerId);
+                cardReturned = inputCard;
+            }
+            default -> {
+                System.out.println("invalid input: " + inputCard);
+                return;
+            }
+        }
+
+        //now send it... finally
+        drawCardMessage.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK);
+        drawCardMessage.setCard(cardReturned);
+        String exportPayload = gson.toJson(drawCardMessage);
+        broadcastMsg(exportPayload);
 
     }
 
