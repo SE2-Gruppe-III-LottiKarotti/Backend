@@ -402,7 +402,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         Logger logger = Logger.getLogger(getClass().getName());
         //Gson gson = new Gson();
         logger.info("ask for room list reached");
-
         RoomListMessage roomListMessage = gson.fromJson(payload, RoomListMessage.class);
 
         //get repo List
