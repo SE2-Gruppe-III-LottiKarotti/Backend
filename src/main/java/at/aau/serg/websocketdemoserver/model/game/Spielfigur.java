@@ -5,6 +5,9 @@ public class Spielfigur {
     private Spieler spieler;
     private int position;
 
+    public Spielfigur() {
+    }
+
     public Spielfigur(int spielfigur, Spieler spieler) {
         this.spielfigur = spielfigur;
         this.spieler = spieler;
