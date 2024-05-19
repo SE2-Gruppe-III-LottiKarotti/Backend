@@ -17,16 +17,29 @@ public class Room {
     private Gameboard gameboard;
     private Spieler currentPlayer; // oder spielerID ...
 
-
+    private ArrayList<String> cheaters;
     private String creatorName;
 
     //TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
     /***/
 
-    public Room(int i, String testRoom) {
+    public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
+        this.maxPlayers = maxPlayers;
+        this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
-        //TODO: vll auch das gameboard hier initialisieren...
+        this.cheaters = new ArrayList<>();
+//TODO: vll auch das gameboard hier initialisieren...
+    }
+
+
+    public Spieler getPlayerById(String spielerID) {
+        for (Spieler spieler : listOfPlayers) {
+            if (spieler.getSpielerID().equals(spielerID)) {
+                return spieler;
+            }
+        }
+        return null;
     }
 
     public void addPlayer(Spieler spieler) {
@@ -38,4 +51,18 @@ public class Room {
             //der punkt sollte eigentlich nie erreicht werden
         }
     }
+
+    public void addPlayerToCheatList(String playerId) {
+        if (!cheaters.contains(playerId)) {
+            cheaters.add(playerId);
+        }
+    }
+
+    public void deletePlayerFromCheatList(String playerId) {
+        if (cheaters.contains(playerId)) {
+            cheaters.remove(playerId);
+        }
+    }
+
+
 }
