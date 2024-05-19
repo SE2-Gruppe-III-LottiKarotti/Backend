@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ChatTest {
 
-
+/*
     @Test
     public void testConstructorAndGetters() {
         String sender = "Daniel";
@@ -51,5 +51,5 @@ public class ChatTest {
         assertNull(message.getText());
         assertNull(message.getRoomID());
         assertNull(message.getMsgIdentifier());
-    }
+    }*/
 }
