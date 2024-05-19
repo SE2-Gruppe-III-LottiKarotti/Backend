@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoserver.model.game;
 
 import java.security.SecureRandom;
 
-
 public class Gameboard {
     private Feld[] felder;
     private final SecureRandom random = new SecureRandom();
@@ -36,7 +35,6 @@ public class Gameboard {
         this.winner = winner;
     }
 
-    //initFields
     //korrigiert
     private void initFields() {
         for (int i = 0; i < 26; i++) {
@@ -62,7 +60,6 @@ public class Gameboard {
         specialFieldSwitch(holeCounter1); // Spezialfelder initial umschalten
     }
 
-
     public void twistTheCarrot() {
         // Die Löcher, die vormals geöffnet wurden, werden beim nächsten Drehen wieder verschlossen
         felder[oldPositionCounter1].setOpen(false);
@@ -74,7 +71,6 @@ public class Gameboard {
         } else {
             holeCounter1 = 0;
         }
-
         // Dekrementiere holeCounter2 von 25 bis 16
         if (holeCounter2 > 16) {
             holeCounter2--;
@@ -133,7 +129,6 @@ public class Gameboard {
         moveFigureForward(spieler, spielerId, card, beginningPosition);
 
     }
-
     //for lottiKarottiExtreme
     public void moveFigureForward(Spieler spieler, String spielerId, String card, int currentPosition) {
         int oldPosition = currentPosition;
