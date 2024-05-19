@@ -14,10 +14,8 @@ public class Room {
     private int availablePlayersSpace;
     private Gameboard gameboard;
     private String currentPlayerId; // Spieler der aktuell dran ist
-
     private ArrayList<String> cheaters;
     private String creatorName;
-
     private String winner;
 
 //TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
@@ -32,7 +30,6 @@ public class Room {
         //TODO: vll auch das gameboard hier initialisieren...
         this.gameboard = new Gameboard();
     }
-
 
     //method to check at the beginning or the end, if someone has one the game --> maybe at the end
     public void checkAndSetWinner() {
@@ -168,6 +165,4 @@ public class Room {
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
     }
-
-
 }
