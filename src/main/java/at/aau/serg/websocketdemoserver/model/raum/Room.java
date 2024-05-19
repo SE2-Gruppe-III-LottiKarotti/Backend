@@ -30,7 +30,7 @@ public class Room {
         this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
         this.cheaters = new ArrayList<>();
-//TODO: vll auch das gameboard hier initialisieren...
+        this.gameboard = new Gameboard();
     }
 
 
