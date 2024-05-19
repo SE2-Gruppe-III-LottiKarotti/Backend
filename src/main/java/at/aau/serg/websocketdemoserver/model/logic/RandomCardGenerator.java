@@ -1,4 +1,4 @@
-package at.aau.serg.websocketdemoserver.model.game;
+package at.aau.serg.websocketdemoserver.model.logic;
 
 import java.security.SecureRandom;
 
@@ -10,6 +10,11 @@ public class RandomCardGenerator {
 
         int numberToCalc = randomNumber % 46;
 
+        return calculate(numberToCalc);
+
+
+    }
+    private static String calculate(int numberToCalc) {
         if (numberToCalc <=3) { // keine grenze nach unten, weil modulo!
             return "3"; //3 felder weiter
         }
@@ -23,7 +28,5 @@ public class RandomCardGenerator {
             //für 22 bis 45
             return "1"; //1 feld weiter
         }
-
-
     }
 }

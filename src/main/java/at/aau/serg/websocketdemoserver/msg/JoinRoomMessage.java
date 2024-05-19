@@ -4,13 +4,15 @@ import lombok.Data;
 
 @Data
 public class JoinRoomMessage {
+    private final MessageType messageType = MessageType.JOIN_ROOM;
+
     String roomId;
     String roomName;
     String playerId;
     String playerName;
-    ActionTypeOpenOrJoinRoom actionTypeOpenOrJoinRoom;
+    ActionTypeJoinRoom actionTypeJoinRoom;
 
-    public enum ActionTypeOpenOrJoinRoom {
+    public enum ActionTypeJoinRoom {
         /**join room*/
         JOIN_ROOM_ASK,
         JOIN_ROOM_OK,

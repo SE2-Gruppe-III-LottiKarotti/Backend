@@ -13,8 +13,9 @@ public class DrawCardMessage {
     /*message maybe need to be broadcasted*/
 
 
-    enum ActionTypeDrawCard {
+    public enum ActionTypeDrawCard {
         ASK_FOR_CARD,
-        RETURN_CARD
+        RETURN_CARD_OK,
+        RETURN_CARD_ERR
     }
 }

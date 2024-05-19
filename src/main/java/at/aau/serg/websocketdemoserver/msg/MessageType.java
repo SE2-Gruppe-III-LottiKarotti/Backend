@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.msg;
 
 
 public enum MessageType {
-    SPIELER, TEST, GAMEBOARD, OPEN_ROOM, JOIN_ROOM, LIST_ROOMS, DRAW_CARD, CHAT, HEARTBEAT
+    SPIELER, TEST, GAMEBOARD, OPEN_ROOM, JOIN_ROOM, LIST_ROOMS, DRAW_CARD, CHAT, HEARTBEAT, MOVE, CHEAT
 
     /**folgende Nachrichten werden benötigt
      * -TEST (init message at start)

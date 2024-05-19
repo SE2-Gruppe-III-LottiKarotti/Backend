@@ -1,10 +1,14 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 public class ChatMessage {
+    private final MessageType messageType = MessageType.CHAT;
+
     String playerName;
     String playerId;
     String text;
     String roomID;
+
+    ActionTypeChat actionTypeChat;
 
     /*message need to be broadcasted*/
 
@@ -21,6 +25,24 @@ public class ChatMessage {
 
     public ChatMessage() {
         //default
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public enum ActionTypeChat {
+        CHAT_MSG_TO_SERVER,
+        CHAT_MSG_TO_CLIENTS_OK,
+        CHAT_MSG_TO_CLIENTS_ERR
+    }
+
+    public ActionTypeChat getActionTypeChat() {
+        return actionTypeChat;
+    }
+
+    public void setActionTypeChat(ActionTypeChat actionTypeChat) {
+        this.actionTypeChat = actionTypeChat;
     }
 
     public String getPlayerName() {

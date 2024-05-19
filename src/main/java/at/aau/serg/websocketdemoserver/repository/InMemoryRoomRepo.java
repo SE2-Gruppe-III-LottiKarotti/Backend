@@ -3,11 +3,9 @@ package at.aau.serg.websocketdemoserver.repository;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -56,6 +54,15 @@ public class InMemoryRoomRepo {
         return null;
         //nicht gefunden
     }*/
+    public Spieler getPlayerById(String spielerID) {
+        for (Room room : roomsRepo) {
+            Spieler player = room.getPlayerById(spielerID);
+            if (player != null) {
+                return player;
+            }
+        }
+        return null;
+    }
 
     public Set<Room> getAllRooms() {
         return roomsRepo;

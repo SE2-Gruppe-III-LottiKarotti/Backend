@@ -1,9 +1,9 @@
-package at.aau.serg.websocketdemoserver.msg;
+package at.aau.serg.websocketdemoserver.model.logic;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CensorMessage {
+public class CensorMessageFunction {
 
     public static String censorText(String text, String[] censoredWords) {
         for (String word : censoredWords) {
