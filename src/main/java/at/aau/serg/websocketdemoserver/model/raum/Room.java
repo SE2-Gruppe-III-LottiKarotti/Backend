@@ -18,8 +18,6 @@ public class Room {
     private String creatorName;
     private String winner;
 
-//TODO: vll hier drinnen auch eine ArrayList mit Farben ablegen...
-
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
         this.roomName = roomName;
