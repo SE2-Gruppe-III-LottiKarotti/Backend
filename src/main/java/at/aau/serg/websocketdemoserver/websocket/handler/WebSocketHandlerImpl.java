@@ -347,12 +347,13 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         //catching is only possible, if it not the players turn again
         room.deletePlayerFromCheatList(playerId);
 
+
         String cardReturned;
 
         switch (inputCard) {
             case "random" -> cardReturned = RandomCardGenerator.start();
             case "1", "2", "3", "karotte" -> {
-                room.addPlayerToCheatList(playerId);
+                //room.addPlayerToCheatList(playerId);
                 cardReturned = inputCard;
             }
             default -> {
