@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoserver.model.logic;
 
 import java.security.SecureRandom;
 
+// FIXME duplicate code of at.aau.serg.websocketdemoserver.logic.RandomCardGenerator, same issues
 public class RandomCardGenerator {
 
     public static String start() {

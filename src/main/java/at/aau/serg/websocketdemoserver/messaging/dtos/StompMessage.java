@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class StompMessage {
 
+        // FIXME variable naming, no idea what this does or is supposed to hold
         private String from;
         private String text;
 

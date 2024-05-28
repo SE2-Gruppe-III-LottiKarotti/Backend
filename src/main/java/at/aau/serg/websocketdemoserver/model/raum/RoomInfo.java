@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoserver.model.raum;
 
 import java.util.ArrayList;
 
+// FIXME Why is there RoomInfo and Room?
 public class RoomInfo {
     private String roomID;
     private String roomName;

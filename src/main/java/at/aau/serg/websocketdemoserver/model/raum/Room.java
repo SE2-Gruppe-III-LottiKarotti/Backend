@@ -6,6 +6,7 @@ import at.aau.serg.websocketdemoserver.model.game.Spieler;
 import java.util.ArrayList;
 import java.util.UUID;
 
+// FIXME way too many field, god class
 public class Room {
     private String roomID;
     private String roomName;
@@ -32,15 +33,18 @@ public class Room {
 
     //method to check at the beginning or the end, if someone has one the game --> maybe at the end
     public void checkAndSetWinner() {
+        // FIXME feature envy
         if (gameboard.hasWinner()) {
             this.winner = gameboard.getWinner();
         }
     }
 
+    // FIXME should not exist, winner should never be set if detemined by Gameboard
     public void setWinner(String winner) {
         this.winner = winner;
     }
 
+    // FIXME (optional) could be easily solved with a map.
     public Spieler getPlayerById(String spielerID) {
         for (Spieler spieler : listOfPlayers) {
             if (spieler.getSpielerID().equals(spielerID)) {
@@ -120,6 +124,7 @@ public class Room {
             listOfPlayers.add(spieler);
             availablePlayersSpace--;
         } else {
+            // FIXME throw here, do not use sout
             System.out.println("raum voll");
             //der punkt sollte eigentlich nie erreicht werden
         }
@@ -131,12 +136,14 @@ public class Room {
     }
 
     public void addPlayerToCheatList(String playerId) {
+        // FIXME (optional) could be a Set instead of a list based on your usage
         if (!cheaters.contains(playerId)) {
             cheaters.add(playerId);
         }
     }
 
     public void deletePlayerFromCheatList(String playerId) {
+        // FIXME (optional) could be a Set instead of a list based on your usage
         if (cheaters.contains(playerId)) {
             cheaters.remove(playerId);
         }
@@ -145,6 +152,7 @@ public class Room {
     public Spieler getNextPlayer(String currentPlayerId) {
         int index = -1;
 
+        // FIXME duplicate code getPlayerById, consider listOfPlayers.indexOf?
         for (int i = 0; i < listOfPlayers.size(); i++) {
             if (listOfPlayers.get(i).getSpielerID().equals(currentPlayerId)) {
                 index = i;
