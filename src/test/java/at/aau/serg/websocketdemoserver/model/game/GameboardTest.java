@@ -83,6 +83,7 @@ public class GameboardTest {
         assertNotNull(gameboard.getFelder()[2].getSpielfigur());
     }
 
+
     @Test
     public void testCheckWinCondition() {
         assertFalse(gameboard.checkWinCondition(spieler));
