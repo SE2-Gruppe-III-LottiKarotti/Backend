@@ -1,6 +1,6 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-
+// FIXME add tests!
 //import at.aau.serg.websocketdemoserver.msg.CensorMessage;
 import at.aau.serg.websocketdemoserver.msg.CensoredWordsDB;
 import org.junit.jupiter.api.Test;

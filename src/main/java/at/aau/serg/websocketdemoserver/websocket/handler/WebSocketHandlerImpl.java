@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
+// FIXME extract methods into own classes for each card!
+// FIXME use the logger instead of stdout for output!
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
 

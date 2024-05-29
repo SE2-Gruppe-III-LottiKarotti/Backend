@@ -5,7 +5,7 @@ import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import java.util.ArrayList;
 
 
-
+// FIXME add tests!
 public class RoomSetupMessageTest {
 
     /*

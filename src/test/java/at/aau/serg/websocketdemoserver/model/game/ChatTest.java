@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+// FIXME add tests!
 public class ChatTest {
 
 /*

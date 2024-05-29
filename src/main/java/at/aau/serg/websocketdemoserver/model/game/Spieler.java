@@ -7,6 +7,7 @@ public class Spieler {
     private String spielerID;
     private String name;
     private Farbe farbe;
+    // FIXME use interface instead of implementation
     private ArrayList<Spielfigur> unusedBunnies;
     private boolean isCheater;
 

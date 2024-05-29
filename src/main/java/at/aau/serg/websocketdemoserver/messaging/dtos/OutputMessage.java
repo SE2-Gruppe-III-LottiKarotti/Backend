@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoserver.messaging.dtos;
 
 
+// FIXME unused, remove?
 public class OutputMessage {
 
     private String from;
