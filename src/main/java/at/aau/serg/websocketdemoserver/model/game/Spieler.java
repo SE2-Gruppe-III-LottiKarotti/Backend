@@ -11,10 +11,6 @@ public class Spieler {
     private boolean isCheater;
     private boolean reachedCarrot;
 
-    public Spieler() {
-        //default
-    }
-
     public Spieler (String name) {
         this.spielerID = UUID.randomUUID().toString();
         this.name = name;
@@ -23,7 +19,6 @@ public class Spieler {
         this.reachedCarrot = false; // Zu Beginn hat kein Spieler das letzte Feld erreicht
     }
 
-
     public enum Farbe {
         ROT, GRUEN, BLAU, SCHWARZ, GELB
     }
@@ -31,13 +26,6 @@ public class Spieler {
     public String getSpielerID() {
         return spielerID;
     }
-
-    /*public void setSpielerID(String spielerID) {
-        this.spielerID = spielerID;
-    }*/
-    /*public void setSpielerID() {
-        this.spielerID = UUID.randomUUID().toString();
-    }*/
 
     public String getName() {
         return name;

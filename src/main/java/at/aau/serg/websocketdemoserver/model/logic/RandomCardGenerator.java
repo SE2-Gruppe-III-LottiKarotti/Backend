@@ -7,13 +7,11 @@ public class RandomCardGenerator {
     public static String start() {
         SecureRandom random = new SecureRandom();
         int randomNumber = random.nextInt(Integer.MAX_VALUE);
-
         int numberToCalc = randomNumber % 46;
 
         return calculate(numberToCalc);
-
-
     }
+
     private static String calculate(int numberToCalc) {
         if (numberToCalc <=3) { // keine grenze nach unten, weil modulo!
             return "3"; //3 felder weiter

@@ -2,9 +2,7 @@ package at.aau.serg.websocketdemoserver.model.game;
 
 public class Feld {
     private boolean istEsEinMaulwurfLoch;
-
     private boolean isOpen;
-
     private boolean specialField;
     private Spielfigur spielfigur;
 
@@ -18,15 +16,6 @@ public class Feld {
 
     public void setIstEsEinMaulwurfLoch(boolean istEsEinMaulwurfLoch) {
         this.istEsEinMaulwurfLoch = istEsEinMaulwurfLoch;
-    }
-
-
-    public boolean isSpecialField() {
-        return specialField;
-    }
-
-    public void setSpecialField(boolean specialField) {
-        this.specialField = specialField;
     }
 
     public void removeSpielFigurFromField() {
@@ -55,5 +44,5 @@ public class Feld {
 
     public boolean isOccupiedBySpielfigur() {
         return this.spielfigur != null;
-}
+    }
 }
