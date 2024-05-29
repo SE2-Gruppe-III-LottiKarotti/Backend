@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.logic.CensorMessageFunction;
 import at.aau.serg.websocketdemoserver.model.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
@@ -132,7 +133,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     }
 
-    private void handleChatMessage(WebSocketSession session, String payload) throws Exception {
+    public void handleChatMessage(WebSocketSession session, String payload) throws Exception {
         //TODO:
         /**
          * nachricht erreicht den handler
@@ -144,6 +145,42 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
          * zusätzlich wäre es auch möglich, dass man eigene nachrichten nicht sieht, wenn man zb
          * noch zusätzlich die playerID vom absender hinzufügt und der absender seine eigene
          * chat-nachricht ignoriert...*/
+
+        ChatMessage chatMessage = gson.fromJson(payload, ChatMessage.class);
+
+        if (chatMessage == null) {
+            ChatMessage errorMsg = new ChatMessage();
+            errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
+            String exportErrMsg = gson.toJson(errorMsg);
+            session.sendMessage(new TextMessage(exportErrMsg));
+
+        }
+
+        String playerNameSender;
+        String playerIdSender;
+        String inputText;
+        String roomId;
+
+        if (chatMessage.getPlayerId() == null || chatMessage.getPlayerName() == null || chatMessage.getText() == null || chatMessage.getRoomID() == null
+                || chatMessage.getPlayerId().isEmpty() || chatMessage.getPlayerName().isEmpty() || chatMessage.getText().isEmpty() || chatMessage.getRoomID().isEmpty()) {
+            System.out.println("invalid input");
+            ChatMessage errorMsg = new ChatMessage();
+            errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
+            String exportErrMsg = gson.toJson(errorMsg);
+            session.sendMessage(new TextMessage(exportErrMsg));
+            return;
+        }
+
+        //playerIdSender = chatMessage.getPlayerId();
+        //playerNameSender = chatMessage.getPlayerName();
+        inputText = chatMessage.getText();
+        //roomId = chatMessage.getRoomID();
+
+        String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.censoredWords);
+
+        chatMessage.setText(outputText);
+        String payloadExport = gson.toJson(chatMessage);
+        broadcastMsg(payloadExport);
 
     }
 
@@ -402,7 +439,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         Logger logger = Logger.getLogger(getClass().getName());
         //Gson gson = new Gson();
         logger.info("ask for room list reached");
-
         RoomListMessage roomListMessage = gson.fromJson(payload, RoomListMessage.class);
 
         //get repo List

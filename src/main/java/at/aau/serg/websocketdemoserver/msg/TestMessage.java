@@ -11,8 +11,6 @@ public class TestMessage {
 
     //private String text;
 
-    /*public TestMessage() {
-    }*/
 
     /*public TestMessage(String text) {
         this.text = text;
