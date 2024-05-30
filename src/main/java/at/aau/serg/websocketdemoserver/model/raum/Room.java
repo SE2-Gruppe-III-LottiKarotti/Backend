@@ -160,6 +160,14 @@ public class Room {
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
     }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
   
   
 }

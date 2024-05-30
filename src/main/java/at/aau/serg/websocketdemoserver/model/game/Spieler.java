@@ -10,6 +10,8 @@ public class Spieler {
     private ArrayList<Spielfigur> unusedBunnies;
     private boolean isCheater;
 
+    private boolean reachedCarrot;
+
     public Spieler() {
         //default
     }
@@ -19,6 +21,7 @@ public class Spieler {
         this.name = name;
         this.unusedBunnies = new ArrayList<>();
         this.isCheater = false; //default
+        this.reachedCarrot = false; // Zu Beginn hat kein Spieler das letzte Feld erreicht
     }
 
     public enum Farbe {
@@ -66,5 +69,13 @@ public class Spieler {
 
     public void setCheater(boolean cheater) {
         isCheater = cheater;
+    }
+
+    public boolean hasReachedCarrot() {
+        return reachedCarrot;
+    }
+
+    public void setReachedCarrot(boolean reachedCarrot) {
+        this.reachedCarrot = reachedCarrot;
     }
 }
