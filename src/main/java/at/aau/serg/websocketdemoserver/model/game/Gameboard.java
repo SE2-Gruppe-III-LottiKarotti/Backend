@@ -145,7 +145,6 @@ public class Gameboard {
 
 
     public boolean checkWinCondition(Spieler spieler) {
-        // Überprüfe, ob der Spieler genug Karotten gesammelt hat
         return spieler.hasReachedCarrot();
     }
 

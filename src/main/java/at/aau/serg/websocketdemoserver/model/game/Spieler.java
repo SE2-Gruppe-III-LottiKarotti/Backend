@@ -43,14 +43,6 @@ public class Spieler {
         this.farbe = farbe;
     }
 
-    public ArrayList<Spielfigur> getUnusedBunnies() {
-        return unusedBunnies;
-    }
-
-    public void setUnusedBunnies(ArrayList<Spielfigur> unusedBunnies) {
-        this.unusedBunnies = unusedBunnies;
-    }
-
     public boolean isCheater() {
         return isCheater;
     }

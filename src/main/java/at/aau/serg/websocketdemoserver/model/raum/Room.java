@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoserver.model.raum;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
-
 import java.util.ArrayList;
 import java.util.UUID;
 

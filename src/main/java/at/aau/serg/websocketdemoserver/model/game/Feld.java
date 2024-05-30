@@ -3,7 +3,6 @@ package at.aau.serg.websocketdemoserver.model.game;
 public class Feld {
     private boolean istEsEinMaulwurfLoch;
     private boolean isOpen;
-    private boolean specialField;
     private Spielfigur spielfigur;
 
     public Feld(boolean istEsEinMaulwurfLoch) {
