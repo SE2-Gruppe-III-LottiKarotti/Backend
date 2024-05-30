@@ -8,6 +8,9 @@ public class Spielfigur {
         this.spielfigur = spielfigur;
         this.spieler = spieler;
     }
+    public Spielfigur(){
+
+    }
 
     public int getSpielfigur() {
         return spielfigur;
