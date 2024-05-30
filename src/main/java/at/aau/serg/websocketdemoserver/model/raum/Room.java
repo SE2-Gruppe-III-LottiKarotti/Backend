@@ -114,6 +114,15 @@ public class Room {
         this.currentPlayerId = currentPlayerId;
     }
 
+
+    public void setCreatorName(String playerName) {
+        this.creatorName = playerName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
     public void addPlayer(Spieler spieler) {
         if (availablePlayersSpace > 0) {
             listOfPlayers.add(spieler);
@@ -158,14 +167,5 @@ public class Room {
 
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
-    }
-
-    public void setCreatorName(String playerName) {
-        this.creatorName = playerName;
-    }
-
-
-    public String getCreatorName() {
-        return creatorName;
     }
 }
