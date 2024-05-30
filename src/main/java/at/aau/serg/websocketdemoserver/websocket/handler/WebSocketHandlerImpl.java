@@ -67,12 +67,9 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         roomRepo.addRoom(testRoom3);
     }
 
-
-
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
-
     }
 
     @Override

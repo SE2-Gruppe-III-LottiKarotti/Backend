@@ -2,7 +2,6 @@ package at.aau.serg.websocketdemoserver.model.raum;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -11,7 +10,7 @@ public class Room {
     private String roomName;
     private ArrayList<Spieler> listOfPlayers;
     private int maxPlayers;
-  private int availablePlayersSpace;
+    private int availablePlayersSpace;
     private Gameboard gameboard;
     private String currentPlayerId; // Spieler der aktuell dran ist
     private ArrayList<String> cheaters;
@@ -22,9 +21,9 @@ public class Room {
 
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
-      this.roomName = roomName;
+        this.roomName = roomName;
         this.maxPlayers = maxPlayers;
-      this.availablePlayersSpace = maxPlayers;
+        this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
         this.cheaters = new ArrayList<>();
         this.gameboard = new Gameboard();
@@ -106,16 +105,25 @@ public class Room {
     public void setCurrentPlayer(Spieler currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
-  
-  public String getCurrentPlayerId() {
+
+    public String getCurrentPlayerId() {
         return currentPlayerId;
     }
 
     public void setCurrentPlayerId(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
     }
-  
-  public void addPlayer(Spieler spieler) {
+
+
+    public void setCreatorName(String playerName) {
+        this.creatorName = playerName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void addPlayer(Spieler spieler) {
         if (availablePlayersSpace > 0) {
             listOfPlayers.add(spieler);
             availablePlayersSpace--;
@@ -124,8 +132,8 @@ public class Room {
             //der punkt sollte eigentlich nie erreicht werden
         }
     }
-  
-  //cheating operations
+
+    //cheating operations
     public boolean searchPlayerIdInCheatList(String playerId) {
         return cheaters.contains(playerId);
     }
@@ -160,14 +168,4 @@ public class Room {
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
     }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
-  
-  
 }

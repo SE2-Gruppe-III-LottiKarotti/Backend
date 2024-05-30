@@ -1,226 +1,164 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import java.util.Random;
+import java.security.SecureRandom;
+import java.util.logging.Logger;
 
-
-public class Gameboard 
-{
-  
-    private Feld[] felder;
-    private final Random random = new Random();
-    private int holeCounter1;// = random.nextInt((26/2));
-    private int holeCounter2;// = (holeCounter1+(18%26)%26-4);
-
+public class Gameboard {
+    private static final Logger logger = Logger.getLogger(Gameboard.class.getName());
+    private static final String IS_OPEN_STATUS = " (isOpen: ";
+    private Feld[] fields;
+    private int[] holes;
+    private final SecureRandom random = new SecureRandom();
+    int holeCounter;
     private String winner;
-    int oldPositionCounter1;
-    int oldPositionCounter2;
-    //abstand ca 18 Felder, damit sich diese genau gegenüber liegen
-    private final int maxPosition; // Separate Variable für maximale Position des Spielbretts
-
+    int oldPositionCounter;
+    int oldHole;
 
     public Gameboard() {
-        this.felder = new Feld[26]; //26 felder inkl. karotte
-        this.maxPosition = felder.length - 1; // Maximale Position ist die Länge des Arrays-1
-        this.holeCounter1 = random.nextInt((14));
-        this.holeCounter2 = (holeCounter1 + (18 % 26) % 26 - 4);
+        this.fields = new Feld[26]; // 26 felder inkl. karotte
+        this.holes = new int[]{3, 6, 9, 15, 18, 20, 24};
+        this.holeCounter = holes[random.nextInt(holes.length - 1)];
         winner = null;
         initFields();
-        
     }
-  
-  public boolean hasWinner() { 
-    return winner != null;
-  }
-  
-  public String getWinner() {
-    return winner;
-  }
-    
-  public void setWinner(String winner) {
-    this.winner = winner;
-  }
-  
-  
-  public void twistTheCarrot() {
-    felder[oldPositionCounter1].setOpen(false);
-    felder[oldPositionCounter2].setOpen(false);
-    
-    if (holeCounter1 < 15) {
-      holeCounter1++;
-    } else {
-      holeCounter1 = 0;
-    }
-    if (holeCounter2 > 16) {
-      holeCounter2--;
-    } else {
-      holeCounter2 = 24;
-    }
-    
-    //maulwurfhügel öffnen
-    if (felder[holeCounter1].isIstEsEinMaulwurfLoch()) {
-      felder[holeCounter1].setOpen(true);
-      oldPositionCounter1 = holeCounter1;
-    }
-    if (felder[holeCounter2].isIstEsEinMaulwurfLoch()) {
-      felder[holeCounter2].setOpen(true);
-      oldPositionCounter2 = holeCounter2;
-    }
-    
-    specialFieldSwitch(holeCounter1);
-  }
-  
-  private void specialFieldSwitch(int holeCounter1) {
-    if(holeCounter1 % 3 == 0) {
-      felder[2].setSpecialField(true); // Maulwurfhöhle
-      felder[13].setSpecialField(false);
-      felder[22].setSpecialField(false);
-    }
-    if(holeCounter1 % 3 == 1) {
-      felder[2].setSpecialField(false);
-      felder[13].setSpecialField(true); // Brücke
-      felder[22].setSpecialField(false);
-    }
-    if(holeCounter1 % 3 == 2) {
-      felder[2].setSpecialField(false);
-      felder[13].setSpecialField(false);
-      felder[22].setSpecialField(true); // Gatter
-    }
-  }
-    
 
-    
+    public boolean hasWinner() {
+        return winner != null;
+    }
 
+    public String getWinner() {
+        return winner;
+    }
 
-    //korrigiert
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
     private void initFields() {
-        for (int i = 0; i < maxPosition; i++) {
+        for (int i = 0; i < fields.length; i++) {
             if (i == 3 || i == 6 || i == 9 || i == 15 || i == 18 || i == 20 || i == 24) {
-                felder[i] = new Feld(true); // Maulwurfhügel
-                felder[i].setOpen(false);
+                fields[i] = new Feld(true); // Maulwurfhügel
+                fields[i].setOpen(false);
             } else {
-              felder[i] = new Feld(false);
-              felder[i].setOpen(false);
-              // Normale Felder
+                fields[i] = new Feld(false); // Normale Felder
             }
         }
 
-
-        // Initiale Spezialfelder setzen
-        felder[2].setSpecialField(false); // Maulwurfhöhle
-        felder[13].setSpecialField(false); // Brücke
-        felder[22].setSpecialField(false); // Gatter
-
-        //bugfix
-        while (true) {
-            if (holeCounter1 <= 15 && holeCounter2 <=24) {
-                break;
-            }
-            holeCounter1 = random.nextInt((14));
-            holeCounter2 = (holeCounter1 + (18 % 26) % 26 - 4);
-        }
         // Initiale Maulwurflöcher öffnen
-        oldPositionCounter1 = holeCounter1;
-        oldPositionCounter2 = holeCounter2;
-        felder[oldPositionCounter1].setOpen(true);
-        felder[oldPositionCounter2].setOpen(true);
+        oldPositionCounter = holeCounter;
+        if (oldPositionCounter >= 0 && oldPositionCounter < fields.length) {
+            fields[oldPositionCounter].setOpen(true);
+        } else {
+            logger.warning("Initial hole position is out of bounds: " + oldPositionCounter);
+        }
+    }
 
-        specialFieldSwitch(holeCounter1); // Spezialfelder initial umschalten
+    public void twistTheCarrot() {
+        logger.info("twistTheCarrot called");
+
+        // Debug: Ausgabe der alten Positionen und Zustände
+        logger.info("Old Position Counter: " + oldPositionCounter + IS_OPEN_STATUS + fields[oldPositionCounter].isOpen() + ")");
+
+        oldHole = oldPositionCounter;
+
+        // Die Löcher, die vormals geöffnet wurden, werden beim nächsten Drehen wieder verschlossen
+        if (oldHole >= 0 && oldHole < fields.length) {
+            fields[oldHole].setOpen(false);
+            logger.info("Closed old hole at positions " + oldHole + IS_OPEN_STATUS + fields[oldHole].isOpen() + ")");
+        } else {
+            logger.warning("Old hole position is out of bounds: " + oldHole);
+        }
+
+        holeCounter = holes[random.nextInt(holes.length - 1)];
+
+        if (holeCounter == oldHole) {
+            holeCounter = holes[random.nextInt(holes.length - 1)];
+        }
+        logger.info("New holeCounter: " + holeCounter);
+
+        // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
+        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isIstEsEinMaulwurfLoch()) {
+            fields[holeCounter].setOpen(true);
+            oldPositionCounter = holeCounter;
+            logger.info("New Position Counter: " + holeCounter + IS_OPEN_STATUS + fields[holeCounter].isOpen() + ")");
+        } else {
+            logger.warning("New hole position is out of bounds or not a Maulwurfloch: " + holeCounter);
+        }
     }
 
     public int getSpielfigurPosition(Spielfigur spielfigur) {
-      for (int i = 0; i < felder.length; i++) {
-        if (felder[i].getSpielfigur() == spielfigur) {
-          return i;
+        for (int i = 0; i < fields.length; i++) {
+            if (fields[i].getSpielfigur() == spielfigur) {
+                return i;
+            }
         }
-      }
-      return -1;
+        return -1;
     }
 
-    //insert figure to gameboard
     public void insertFigureToGameboard(Spieler spieler, String spielerId, String card) {
-        Spielfigur addNewSpielfigur = new Spielfigur();
+        Spielfigur addNewSpielfigur = new Spielfigur(); // Korrekte KonstruktoraufrufSpielfigur addNewSpielfigur = new Spielfigur();
         int beginningPosition = 0;
-        felder[beginningPosition].addSpielfigurToField(addNewSpielfigur);
+        fields[beginningPosition].addSpielfigurToField(addNewSpielfigur);
 
-        moveFigureForward(spieler, spielerId, card, beginningPosition);
-
+        // Debugging-Ausgabe
+        if (fields[beginningPosition].getSpielfigur() == addNewSpielfigur) {
+            logger.info("Spielfigur wurde korrekt hinzugefügt.");
+        } else {
+            logger.severe("Spielfigur konnte nicht zum Spielfeld hinzugefügt werden.");
+        }
     }
-      
-    //for lottiKarottiExtreme
-    public void moveFigureForward(Spieler spieler, String spielerId, String card, int currentPosition) 
-    {
+
+
+    public void moveFigureForward(String spielerId, String card, int currentPosition) {
         int oldPosition = currentPosition;
         int cardValue = Integer.parseInt(card);
-        boolean moveBackward = false;
 
-        while (cardValue > 0) 
-        {
-            int newPosition = currentPosition +1;
-            if (newPosition < felder.length) {
-                //wenn die brücke oben ist...
-                if (newPosition == 13 && felder[13].isSpecialField() == true) {
-                  newPosition = 12;  
-                  while (cardValue > 0) {
-                        if (!felder[newPosition].isOccupiedBySpielfigur()) {
-                            //wenn das feld frei ist
-                            currentPosition--;
-                            cardValue --;
-                        }
-                        else {
-                            currentPosition--;
-                        }
-                    }
-                    moveBackward = true;
+        logger.info("Starting move from position: " + oldPosition + " with card value: " + cardValue);
+
+        while (cardValue > 0) {
+            int newPosition = currentPosition + 1;
+            logger.info("Trying to move to position: " + newPosition);
+
+            if (newPosition < fields.length) {
+                if (!fields[newPosition].isOccupiedBySpielfigur()) {
+                    // Wenn das Feld frei ist
+                    currentPosition = newPosition;
+                    cardValue--;
+                    logger.info("Moved to position: " + currentPosition + ", remaining card value: " + cardValue);
                 } else {
-                    //die brücke ist kein feld, sondern ein gegenstand... 
-                    //aber für eine leichtere implementierung... ein feld
-                    newPosition = 14;
-                }
-                if (!felder[newPosition].isOccupiedBySpielfigur() && moveBackward == false) {
-                    //wenn das feld frei ist
+                    // Wenn das Feld besetzt ist, nur die Position aktualisieren
                     currentPosition = newPosition;
-                    cardValue --;
+                    logger.info("Position " + newPosition + " is occupied. Current position remains: " + currentPosition);
                 }
-                else {
-                    currentPosition = newPosition;
-                }
-              
+            } else {
+                // Wenn die neue Position außerhalb des Spielfeldes liegt, beenden Sie die Schleife
+                logger.info("New position out of bounds, breaking loop.");
+                break;
+            }
+        }
 
+        fields[oldPosition].removeSpielFigurFromField();
+        fields[currentPosition].addSpielfigurToField(new Spielfigur());
+
+        logger.info("Moved figure from position " + oldPosition + " to " + currentPosition);
+
+        if (currentPosition == 25) {
+            // Spieler gewinnt...
+            winner = spielerId;
+            // Diese öffentliche Variable kann von außen zugegriffen werden
+            logger.info("Player " + spielerId + " wins!");
         }
     }
-      if (felder[currentPosition].isIstEsEinMaulwurfLoch() == true && felder[currentPosition].isOpen() == true) {
-        felder[oldPosition].removeSpielFigurFromField();
-      }
-      //moveBackward = false;
-      felder[oldPosition].removeSpielFigurFromField();
-      felder[currentPosition].addSpielfigurToField(new Spielfigur());
-      //maulwurf
-      if (currentPosition == 2 && felder[currentPosition].isSpecialField() == true) {
-        felder[currentPosition].removeSpielFigurFromField();
-      }
-        //gatter
-      if (currentPosition == 22 && felder[currentPosition].isSpecialField() == true) {
-        felder[oldPosition].removeSpielFigurFromField();
-        felder[8].addSpielfigurToField(new Spielfigur());
-      }
-      if (currentPosition == 25) {
-        //player wins...
-        winner = spielerId;
-        //this public variable can be accessed from outside
-      }
-      
-    }
-  
-  public boolean checkWinCondition(Spieler spieler) {
+
+    public boolean checkWinCondition(Spieler spieler) {
         return spieler.hasReachedCarrot();
     }
 
     public Feld[] getFelder() {
-        return felder;
+        return fields;
     }
 
-    public void setFelder(Feld[] felder) {
-        this.felder = felder;
+    public void setFields(Feld[] fields) {
+        this.fields = fields;
     }
-
 }

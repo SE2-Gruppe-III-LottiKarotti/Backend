@@ -6,8 +6,6 @@ public class Spielfigur {
 
 
     public Spielfigur() {
-        //this.spielfigur = spielfigur;
-        //this.spieler = spieler;
     }
 
     public int getSpielfigur() {
