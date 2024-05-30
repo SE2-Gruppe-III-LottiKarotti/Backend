@@ -48,7 +48,7 @@ public class GameboardTest {
 
         // Überprüfen, ob alte Löcher geschlossen und neue geöffnet sind
         assertFalse(gameboard.getFelder()[gameboard.oldHole].isOpen());
-        assertTrue(gameboard.getFelder()[gameboard.holeCounter].isOpen() == felder[gameboard.holeCounter].isIstEsEinMaulwurfLoch());
+        assertEquals(gameboard.getFelder()[gameboard.holeCounter].isOpen(),felder[gameboard.holeCounter].isIstEsEinMaulwurfLoch());
     }
 
     @Test

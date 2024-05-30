@@ -2,10 +2,10 @@ package at.aau.serg.websocketdemoserver.model.game;
 
 import java.security.SecureRandom;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class Gameboard {
     private static final Logger logger = Logger.getLogger(Gameboard.class.getName());
+    private static final String IS_OPEN_STATUS = " (isOpen: ";
     private Feld[] fields;
     private int[] holes;
     private final SecureRandom random = new SecureRandom();
@@ -46,22 +46,28 @@ public class Gameboard {
 
         // Initiale Maulwurflöcher öffnen
         oldPositionCounter = holeCounter;
-        fields[oldPositionCounter].setOpen(true);
+        if (oldPositionCounter >= 0 && oldPositionCounter < fields.length) {
+            fields[oldPositionCounter].setOpen(true);
+        } else {
+            logger.warning("Initial hole position is out of bounds: " + oldPositionCounter);
+        }
     }
 
     public void twistTheCarrot() {
         logger.info("twistTheCarrot called");
 
         // Debug: Ausgabe der alten Positionen und Zustände
-        logger.info("Old Position Counter: " + oldPositionCounter + " (isOpen: " + fields[oldPositionCounter].isOpen() + ")");
+        logger.info("Old Position Counter: " + oldPositionCounter + IS_OPEN_STATUS + fields[oldPositionCounter].isOpen() + ")");
 
         oldHole = oldPositionCounter;
 
         // Die Löcher, die vormals geöffnet wurden, werden beim nächsten Drehen wieder verschlossen
-        fields[oldHole].setOpen(false);
-
-        // Debug: Ausgabe der alten Positionen nach dem Schließen
-        logger.info("Closed old hole at positions " + oldHole + " (isOpen: " + fields[oldHole].isOpen() + ")");
+        if (oldHole >= 0 && oldHole < fields.length) {
+            fields[oldHole].setOpen(false);
+            logger.info("Closed old hole at positions " + oldHole + IS_OPEN_STATUS + fields[oldHole].isOpen() + ")");
+        } else {
+            logger.warning("Old hole position is out of bounds: " + oldHole);
+        }
 
         holeCounter = holes[random.nextInt(holes.length - 1)];
 
@@ -71,12 +77,12 @@ public class Gameboard {
         logger.info("New holeCounter: " + holeCounter);
 
         // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
-        if (fields[holeCounter].isIstEsEinMaulwurfLoch()) {
+        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isIstEsEinMaulwurfLoch()) {
             fields[holeCounter].setOpen(true);
             oldPositionCounter = holeCounter;
-            logger.info("New Position Counter: " + holeCounter + " (isOpen: " + fields[holeCounter].isOpen() + ")");
+            logger.info("New Position Counter: " + holeCounter + IS_OPEN_STATUS + fields[holeCounter].isOpen() + ")");
         } else {
-            logger.info("Position " + holeCounter + " is not a Maulwurfloch.");
+            logger.warning("New hole position is out of bounds or not a Maulwurfloch: " + holeCounter);
         }
     }
 
