@@ -1,8 +1,11 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
 import java.security.SecureRandom;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class Gameboard {
+    private static final Logger logger = Logger.getLogger(Gameboard.class.getName());
     private Feld[] fields;
     private int[] holes;
     private final SecureRandom random = new SecureRandom();
@@ -10,13 +13,11 @@ public class Gameboard {
     private String winner;
     int oldPositionCounter;
     int oldHole;
-    private final int maxPosition; // maximale Position des Spielbretts
 
     public Gameboard() {
-        this.fields = new Feld[26]; //26 felder inkl. karotte
+        this.fields = new Feld[26]; // 26 felder inkl. karotte
         this.holes = new int[]{3, 6, 9, 15, 18, 20, 24};
-        this.maxPosition = fields.length - 1; // Maximale Position ist die Länge des Arrays-1
-        this.holeCounter = holes[random.nextInt(holes.length-1)];
+        this.holeCounter = holes[random.nextInt(holes.length - 1)];
         winner = null;
         initFields();
     }
@@ -34,7 +35,6 @@ public class Gameboard {
     }
 
     private void initFields() {
-        int j = 0;
         for (int i = 0; i < fields.length; i++) {
             if (i == 3 || i == 6 || i == 9 || i == 15 || i == 18 || i == 20 || i == 24) {
                 fields[i] = new Feld(true); // Maulwurfhügel
@@ -50,10 +50,10 @@ public class Gameboard {
     }
 
     public void twistTheCarrot() {
-        System.out.println("twistTheCarrot called");
+        logger.info("twistTheCarrot called");
 
         // Debug: Ausgabe der alten Positionen und Zustände
-        System.out.println("Old Position Counter: " + oldPositionCounter + " (isOpen: " + fields[oldPositionCounter].isOpen() + ")");
+        logger.info("Old Position Counter: " + oldPositionCounter + " (isOpen: " + fields[oldPositionCounter].isOpen() + ")");
 
         oldHole = oldPositionCounter;
 
@@ -61,23 +61,23 @@ public class Gameboard {
         fields[oldHole].setOpen(false);
 
         // Debug: Ausgabe der alten Positionen nach dem Schließen
-        System.out.println("Closed old hole at positions " + oldHole + " (isOpen: " + fields[oldHole].isOpen() + ")");
+        logger.info("Closed old hole at positions " + oldHole + " (isOpen: " + fields[oldHole].isOpen() + ")");
 
-        holeCounter = holes[random.nextInt(holes.length-1)];
+        holeCounter = holes[random.nextInt(holes.length - 1)];
 
-        if(holeCounter == oldHole){
-            holeCounter = holes[random.nextInt(holes.length-1)];
+        if (holeCounter == oldHole) {
+            holeCounter = holes[random.nextInt(holes.length - 1)];
         }
-        System.out.println("New holeCounter: " + holeCounter);
+        logger.info("New holeCounter: " + holeCounter);
 
-            // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
-            if (fields[holeCounter].isIstEsEinMaulwurfLoch()) {
-                fields[holeCounter].setOpen(true);
-                oldPositionCounter = holeCounter;
-                System.out.println("New Position Counter: " + holeCounter + " (isOpen: " + fields[holeCounter].isOpen() + ")");
-            } else {
-                System.out.println("Position " + holeCounter + " is not a Maulwurfloch.");
-            }
+        // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
+        if (fields[holeCounter].isIstEsEinMaulwurfLoch()) {
+            fields[holeCounter].setOpen(true);
+            oldPositionCounter = holeCounter;
+            logger.info("New Position Counter: " + holeCounter + " (isOpen: " + fields[holeCounter].isOpen() + ")");
+        } else {
+            logger.info("Position " + holeCounter + " is not a Maulwurfloch.");
+        }
     }
 
     public int getSpielfigurPosition(Spielfigur spielfigur) {
@@ -96,36 +96,36 @@ public class Gameboard {
 
         // Debugging-Ausgabe
         if (fields[beginningPosition].getSpielfigur() == addNewSpielfigur) {
-            System.out.println("Spielfigur wurde korrekt hinzugefügt.");
+            logger.info("Spielfigur wurde korrekt hinzugefügt.");
         } else {
-            System.err.println("Spielfigur konnte nicht zum Spielfeld hinzugefügt werden.");
+            logger.severe("Spielfigur konnte nicht zum Spielfeld hinzugefügt werden.");
         }
     }
 
-    public void moveFigureForward(Spieler spieler, String spielerId, String card, int currentPosition) {
+    public void moveFigureForward(String spielerId, String card, int currentPosition) {
         int oldPosition = currentPosition;
         int cardValue = Integer.parseInt(card);
 
-        System.out.println("Starting move from position: " + oldPosition + " with card value: " + cardValue);
+        logger.info("Starting move from position: " + oldPosition + " with card value: " + cardValue);
 
         while (cardValue > 0) {
             int newPosition = currentPosition + 1;
-            System.out.println("Trying to move to position: " + newPosition);
+            logger.info("Trying to move to position: " + newPosition);
 
             if (newPosition < fields.length) {
                 if (!fields[newPosition].isOccupiedBySpielfigur()) {
                     // Wenn das Feld frei ist
                     currentPosition = newPosition;
                     cardValue--;
-                    System.out.println("Moved to position: " + currentPosition + ", remaining card value: " + cardValue);
+                    logger.info("Moved to position: " + currentPosition + ", remaining card value: " + cardValue);
                 } else {
                     // Wenn das Feld besetzt ist, nur die Position aktualisieren
                     currentPosition = newPosition;
-                    System.out.println("Position " + newPosition + " is occupied. Current position remains: " + currentPosition);
+                    logger.info("Position " + newPosition + " is occupied. Current position remains: " + currentPosition);
                 }
             } else {
                 // Wenn die neue Position außerhalb des Spielfeldes liegt, beenden Sie die Schleife
-                System.out.println("New position out of bounds, breaking loop.");
+                logger.info("New position out of bounds, breaking loop.");
                 break;
             }
         }
@@ -133,16 +133,15 @@ public class Gameboard {
         fields[oldPosition].removeSpielFigurFromField();
         fields[currentPosition].addSpielfigurToField(new Spielfigur());
 
-        System.out.println("Moved figure from position " + oldPosition + " to " + currentPosition);
+        logger.info("Moved figure from position " + oldPosition + " to " + currentPosition);
 
         if (currentPosition == 25) {
             // Spieler gewinnt...
             winner = spielerId;
             // Diese öffentliche Variable kann von außen zugegriffen werden
-            System.out.println("Player " + spielerId + " wins!");
+            logger.info("Player " + spielerId + " wins!");
         }
     }
-
 
     public boolean checkWinCondition(Spieler spieler) {
         return spieler.hasReachedCarrot();
@@ -153,5 +152,6 @@ public class Gameboard {
     }
 
     public void setFields(Feld[] fields) {
-        this.fields = fields;}
+        this.fields = fields;
+    }
 }

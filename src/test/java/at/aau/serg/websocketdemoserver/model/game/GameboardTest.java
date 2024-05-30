@@ -76,7 +76,7 @@ public class GameboardTest {
         Spielfigur spielfigur = new Spielfigur();
         gameboard.getFelder()[0].addSpielfigurToField(spielfigur);
 
-        gameboard.moveFigureForward(spieler, spieler.getSpielerID(), "2", 0);
+        gameboard.moveFigureForward(spieler.getSpielerID(), "2", 0);
         // Überprüfen, dass die Spielfigur vom Startfeld entfernt wurde
         assertNull(gameboard.getFelder()[0].getSpielfigur());
         // Überprüfen, dass die Spielfigur auf das neue Feld gesetzt wurde
