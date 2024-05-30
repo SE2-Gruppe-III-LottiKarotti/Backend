@@ -10,18 +10,20 @@ public class Room {
     private String roomName;
     private ArrayList<Spieler> listOfPlayers;
     private int maxPlayers;
-    private int availablePlayersSpace;
+  private int availablePlayersSpace;
     private Gameboard gameboard;
     private String currentPlayerId; // Spieler der aktuell dran ist
     private ArrayList<String> cheaters;
     private String creatorName;
     private String winner;
+    private Spieler currentPlayer; // oder spielerID ...
+
 
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
-        this.roomName = roomName;
+      this.roomName = roomName;
         this.maxPlayers = maxPlayers;
-        this.availablePlayersSpace = maxPlayers;
+      this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
         this.cheaters = new ArrayList<>();
         this.gameboard = new Gameboard();
@@ -53,6 +55,7 @@ public class Room {
 
     public void setAvailabePlayersSpace(int availabePlayersSpace) {
         this.availablePlayersSpace = availabePlayersSpace;
+
     }
 
     public String getRoomID() {
@@ -71,26 +74,6 @@ public class Room {
         this.roomName = roomName;
     }
 
-    public int getMaxPlayers() {
-        return maxPlayers;
-    }
-
-    public void setMaxPlayers(int maxPlayers) {
-        this.maxPlayers = maxPlayers;
-    }
-
-    public void setAvailablePlayersSpace(int availablePlayersSpace) {
-        this.availablePlayersSpace = availablePlayersSpace;
-    }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
-
     public ArrayList<Spieler> getListOfPlayers() {
         return listOfPlayers;
     }
@@ -99,6 +82,13 @@ public class Room {
         this.listOfPlayers = listOfPlayers;
     }
 
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public void setMaxPlayers(int maxPlayers) {
+        this.maxPlayers = maxPlayers;
+    }
 
     public Gameboard getGameboard() {
         return gameboard;
@@ -108,15 +98,23 @@ public class Room {
         this.gameboard = gameboard;
     }
 
-    public String getCurrentPlayerId() {
+    public Spieler getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Spieler currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+  
+  public String getCurrentPlayerId() {
         return currentPlayerId;
     }
 
     public void setCurrentPlayerId(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
     }
-
-    public void addPlayer(Spieler spieler) {
+  
+  public void addPlayer(Spieler spieler) {
         if (availablePlayersSpace > 0) {
             listOfPlayers.add(spieler);
             availablePlayersSpace--;
@@ -125,8 +123,8 @@ public class Room {
             //der punkt sollte eigentlich nie erreicht werden
         }
     }
-
-    //cheating operations
+  
+  //cheating operations
     public boolean searchPlayerIdInCheatList(String playerId) {
         return cheaters.contains(playerId);
     }
@@ -161,4 +159,6 @@ public class Room {
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
     }
+  
+  
 }
