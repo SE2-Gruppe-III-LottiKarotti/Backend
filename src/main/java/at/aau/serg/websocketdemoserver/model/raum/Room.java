@@ -118,6 +118,7 @@ public class Room {
         this.creatorName = playerName;
     }
 
+
     public String getCreatorName() {
         return creatorName;
     }
