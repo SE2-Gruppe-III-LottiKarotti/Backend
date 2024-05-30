@@ -11,6 +11,10 @@ public class Spieler {
     private boolean isCheater;
     private boolean reachedCarrot;
 
+    public Spieler() {
+        //default
+    }
+
     public Spieler (String name) {
         this.spielerID = UUID.randomUUID().toString();
         this.name = name;

@@ -4,9 +4,10 @@ public class Spielfigur {
     private int spielfigur;
     private Spieler spieler;
 
-    public Spielfigur(int spielfigur, Spieler spieler) {
-        this.spielfigur = spielfigur;
-        this.spieler = spieler;
+
+    public Spielfigur() {
+        //this.spielfigur = spielfigur;
+        //this.spieler = spieler;
     }
     public Spielfigur(){
 
