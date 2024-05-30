@@ -9,7 +9,12 @@ public class Spieler {
     private Farbe farbe;
     private ArrayList<Spielfigur> unusedBunnies;
     private boolean isCheater;
+
     private boolean reachedCarrot;
+
+    public Spieler() {
+        //default
+    }
 
     public Spieler (String name) {
         this.spielerID = UUID.randomUUID().toString();
@@ -27,6 +32,13 @@ public class Spieler {
         return spielerID;
     }
 
+    /*public void setSpielerID(String spielerID) {
+        this.spielerID = spielerID;
+    }*/
+    /*public void setSpielerID() {
+        this.spielerID = UUID.randomUUID().toString();
+    }*/
+
     public String getName() {
         return name;
     }
@@ -41,6 +53,14 @@ public class Spieler {
 
     public void setFarbe(Farbe farbe) {
         this.farbe = farbe;
+    }
+
+    public ArrayList<Spielfigur> getUnusedBunnies() {
+        return unusedBunnies;
+    }
+
+    public void setUnusedBunnies(ArrayList<Spielfigur> unusedBunnies) {
+        this.unusedBunnies = unusedBunnies;
     }
 
     public boolean isCheater() {

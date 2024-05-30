@@ -2,6 +2,7 @@ package at.aau.serg.websocketdemoserver.model.raum;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Spieler;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -113,15 +114,6 @@ public class Room {
     public void setCurrentPlayerId(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
     }
-
-    public void setCreatorName(String playerName) {
-        this.creatorName = playerName;
-    }
-
-
-    public String getCreatorName() {
-        return creatorName;
-    }
   
   public void addPlayer(Spieler spieler) {
         if (availablePlayersSpace > 0) {
@@ -168,4 +160,14 @@ public class Room {
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
     }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+  
+  
 }
