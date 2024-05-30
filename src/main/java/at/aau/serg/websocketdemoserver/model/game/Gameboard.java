@@ -96,7 +96,7 @@ public class Gameboard {
     }
 
     public void insertFigureToGameboard(Spieler spieler, String spielerId, String card) {
-        Spielfigur addNewSpielfigur = new Spielfigur();
+        Spielfigur addNewSpielfigur = new Spielfigur(); // Korrekte KonstruktoraufrufSpielfigur addNewSpielfigur = new Spielfigur();
         int beginningPosition = 0;
         fields[beginningPosition].addSpielfigurToField(addNewSpielfigur);
 
@@ -107,6 +107,7 @@ public class Gameboard {
             logger.severe("Spielfigur konnte nicht zum Spielfeld hinzugefügt werden.");
         }
     }
+
 
     public void moveFigureForward(String spielerId, String card, int currentPosition) {
         int oldPosition = currentPosition;
