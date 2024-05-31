@@ -1,6 +1,10 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 public class ChatMessage {
+    public enum MessageType {
+        CHAT
+    }
+
     private final MessageType messageType = MessageType.CHAT;
 
     String playerName;
@@ -10,21 +14,19 @@ public class ChatMessage {
 
     ActionTypeChat actionTypeChat;
 
-    /*message need to be broadcasted*/
+    /* message need to be broadcasted */
 
-
-    //String msgIdentifier; //da der socket eh bekannt ist
+    // String msgIdentifier; // da der socket eh bekannt ist
 
     public ChatMessage(String playerName, String playerId, String text, String roomID) {
         this.playerName = playerName;
         this.playerId = playerId;
         this.text = text;
         this.roomID = roomID;
-
     }
 
     public ChatMessage() {
-        //default
+        // default
     }
 
     public MessageType getMessageType() {
@@ -76,6 +78,4 @@ public class ChatMessage {
     public void setRoomID(String roomID) {
         this.roomID = roomID;
     }
-
-
 }
