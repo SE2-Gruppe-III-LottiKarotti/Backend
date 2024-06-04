@@ -362,7 +362,9 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         drawCardMessage.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK);
         drawCardMessage.setCard(cardReturned);
         String exportPayload = gson.toJson(drawCardMessage);
-        broadcastMsg(exportPayload);
+        session.sendMessage(new TextMessage(exportPayload));
+
+        System.out.println("toClient: " + exportPayload);
 
     }
 
