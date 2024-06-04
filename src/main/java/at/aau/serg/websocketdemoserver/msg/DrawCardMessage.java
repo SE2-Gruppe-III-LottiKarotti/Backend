@@ -7,7 +7,7 @@ public class DrawCardMessage {
     MessageType messageType;
     String roomID;
     String playerID;
-    String card;
+    String card = "random";
     ActionTypeDrawCard actionTypeDrawCard;
 
     /*message maybe need to be broadcasted*/
