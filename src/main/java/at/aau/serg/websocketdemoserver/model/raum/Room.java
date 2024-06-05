@@ -18,7 +18,6 @@ public class Room {
     private String winner;
     private Spieler currentPlayer; // oder spielerID ...
 
-
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
         this.roomName = roomName;
@@ -40,6 +39,10 @@ public class Room {
         this.winner = winner;
     }
 
+    public String getWinner() {
+        return this.winner;
+    }
+
     public Spieler getPlayerById(String spielerID) {
         for (Spieler spieler : listOfPlayers) {
             if (spieler.getSpielerID().equals(spielerID)) {
@@ -55,7 +58,6 @@ public class Room {
 
     public void setAvailabePlayersSpace(int availabePlayersSpace) {
         this.availablePlayersSpace = availabePlayersSpace;
-
     }
 
     public String getRoomID() {
@@ -114,7 +116,6 @@ public class Room {
         this.currentPlayerId = currentPlayerId;
     }
 
-
     public void setCreatorName(String playerName) {
         this.creatorName = playerName;
     }
@@ -134,6 +135,10 @@ public class Room {
     }
 
     //cheating operations
+    public ArrayList<String> getCheaters() {
+        return this.cheaters;
+    }
+
     public boolean searchPlayerIdInCheatList(String playerId) {
         return cheaters.contains(playerId);
     }
