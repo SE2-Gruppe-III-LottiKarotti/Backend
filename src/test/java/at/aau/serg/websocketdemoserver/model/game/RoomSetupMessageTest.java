@@ -1,45 +1,38 @@
-package at.aau.serg.websocketdemoserver.model.game;
+package at.aau.serg.websocketdemoserver.model.raum;
 
-import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-
-
 public class RoomSetupMessageTest {
 
-    /*
     @Test
-    public void testParameterizedConstructorAndGetters() {
-        String roomName = "Test Room";
+    public void testGettersAndSetters() {
         String roomID = "123";
-        String playerName = "Daniel";
-        String playerID = "456";
-        String numPlayers = "4";
-        String messageIdentifier = "789";
-        RoomSetupMessage.ActionType actionType = RoomSetupMessage.ActionType.OPEN_ROOM;
+        String roomName = "Test Room";
+        String creator = "Daniel";
+        int availablePlayersSpace = 4;
 
-        //RoomSetupMessage message = new RoomSetupMessage(roomName, roomID, playerName, playerID, numPlayers, messageIdentifier, actionType);
+        RoomInfo roomInfo = new RoomInfo();
+        roomInfo.setRoomID(roomID);
+        roomInfo.setRoomName(roomName);
+        roomInfo.setCreator(creator);
+        roomInfo.setAvailablePlayersSpace(availablePlayersSpace);
 
-        assertEquals(actionType, message.getActionType());
-        assertEquals(messageIdentifier, message.getMessageIdentifier());
-        assertEquals(roomID, message.getRoomID());
-        assertEquals(roomName, message.getRoomName());
-        assertEquals(playerID, message.getPlayerID());
-        assertEquals(playerName, message.getPlayerName());
-        assertEquals(numPlayers, message.getNumPlayers());
-        assertNull(message.getRoomInfoList());
+        assertEquals(roomID, roomInfo.getRoomID());
+        assertEquals(roomName, roomInfo.getRoomName());
+        assertEquals(creator, roomInfo.getCreator());
+        assertEquals(availablePlayersSpace, roomInfo.getAvailablePlayersSpace());
+
+        // Testing availableRooms
+        ArrayList<Room> availableRooms = new ArrayList<>();
+        Room room1 = new Room(1, "Room 1");
+        Room room2 = new Room(2, "Room 2");
+        availableRooms.add(room1);
+        availableRooms.add(room2);
+
+        roomInfo.setAvailableRooms(availableRooms);
+        assertEquals(availableRooms, roomInfo.getAvailableRooms());
     }
-    */
-
-    /*
-    @Test
-    public void testSettersAndGettersForRoomInfoList() {
-        RoomSetupMessage message = new RoomSetupMessage();
-        ArrayList<RoomInfo> roomInfoList = new ArrayList<>();
-
-        message.setRoomInfoList(roomInfoList);
-
-        assertEquals(roomInfoList, message.getRoomInfoList());
-    }*/
 }
