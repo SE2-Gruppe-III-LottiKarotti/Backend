@@ -1,5 +1,7 @@
-package at.aau.serg.websocketdemoserver.model.raum;
+package at.aau.serg.websocketdemoserver.model.game;
 
+import at.aau.serg.websocketdemoserver.model.raum.Room;
+import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
