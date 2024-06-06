@@ -1,6 +1,5 @@
 package at.aau.serg.websocketdemoserver.model.logic;
 
-import java.security.SecureRandom;
 import java.util.Random;
 
 public class RandomCardGenerator {
