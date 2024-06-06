@@ -39,7 +39,7 @@ public class Player {
         return colour;
     }
 
-    public void setFarbe(Colour colour) {
+    public void setColour(Colour colour) {
         this.colour = colour;
     }
 

@@ -36,31 +36,31 @@ public class PlayerTest {
 
     @Test
     public void testSetColourBLUE() {
-        player.setFarbe(Player.Colour.BLUE);
+        player.setColour(Player.Colour.BLUE);
         assertEquals(Player.Colour.BLUE, player.getColour());
     }
 
     @Test
     public void testSetColourYELLOW() {
-        player.setFarbe(Player.Colour.YELLOW);
+        player.setColour(Player.Colour.YELLOW);
         assertEquals(Player.Colour.YELLOW, player.getColour());
     }
 
     @Test
     public void testSetColourBLACK() {
-        player.setFarbe(Player.Colour.BLACK);
+        player.setColour(Player.Colour.BLACK);
         assertEquals(Player.Colour.BLACK, player.getColour());
     }
 
     @Test
     public void testSetColourRED() {
-        player.setFarbe(Player.Colour.RED);
+        player.setColour(Player.Colour.RED);
         assertEquals(Player.Colour.RED, player.getColour());
     }
 
     @Test
     public void testSetColourGREEN() {
-        player.setFarbe(Player.Colour.GREEN);
+        player.setColour(Player.Colour.GREEN);
         assertEquals(Player.Colour.GREEN, player.getColour());
     }
 
