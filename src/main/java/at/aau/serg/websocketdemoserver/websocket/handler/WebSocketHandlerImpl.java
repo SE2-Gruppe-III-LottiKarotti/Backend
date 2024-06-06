@@ -347,8 +347,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         String cardReturned;
 
         switch (inputCard) {
-            case "random" -> cardReturned = RandomCardGenerator.start();
-            case "1", "2", "3", "karotte" -> {
+            case "random" -> cardReturned = RandomCardGenerator.startCardGenerator();
+            case "ONE", "TWO", "THREE", "CARROT" -> {
                 room.addPlayerToCheatList(playerId);
                 cardReturned = inputCard;
             }
