@@ -6,12 +6,12 @@ import static org.junit.Assert.*;
 
 public class GameboardTest {
     private Gameboard gameboard;
-    private Spieler spieler;
+    private Player player;
 
     @Before
     public void setup() {
         gameboard = new Gameboard();
-        spieler = new Spieler("TestSpieler");
+        player = new Player("TestSpieler");
     }
 
     @Test
@@ -22,7 +22,7 @@ public class GameboardTest {
 
     @Test
     public void testInitFields() {
-        Feld[] felder = gameboard.getFelder();
+        Field[] felder = gameboard.getFelder();
 
         // Überprüfen, ob die Maulwurfhügel korrekt gesetzt wurden
         int[] maulwurfHuegelIndizes = {3, 6, 9, 15, 18, 20, 24};
@@ -43,7 +43,7 @@ public class GameboardTest {
 
     @Test
     public void testTwistTheCarrot() {
-        Feld[] felder = gameboard.getFelder();
+        Field[] felder = gameboard.getFelder();
         gameboard.twistTheCarrot();
 
         // Überprüfen, ob alte Löcher geschlossen und neue geöffnet sind
@@ -52,43 +52,43 @@ public class GameboardTest {
     }
 
     @Test
-    public void testGetSpielfigurPosition() {
-        Spielfigur spielfigur = new Spielfigur();
-        gameboard.getFelder()[0].addSpielfigurToField(spielfigur);
-        int position = gameboard.getSpielfigurPosition(spielfigur);
+    public void testGetPlayingPiecePosition() {
+        PlayingPiece playingPiece = new PlayingPiece();
+        gameboard.getFelder()[0].addPlayingPieceToField(playingPiece);
+        int position = gameboard.getPlayingPiecePosition(playingPiece);
         assertEquals(0, position);
     }
 
     @Test
     public void testInsertFigureToGameboard() {
-        gameboard.insertFigureToGameboard(spieler, spieler.getSpielerID(), "2");
+        gameboard.insertFigureToGameboard(player, player.getPlayerID(), "2");
 
         // Überprüfen, ob eine Spielfigur zum ersten Feld hinzugefügt wurde
-        assertNotNull(gameboard.getFelder()[0].getSpielfigur());
+        assertNotNull(gameboard.getFelder()[0].getPlayingPiece());
 
         // Optional: Überprüfen, ob es sich um die korrekte Spielfigur handelt
-        Spielfigur addedFigure = gameboard.getFelder()[0].getSpielfigur();
+        PlayingPiece addedFigure = gameboard.getFelder()[0].getPlayingPiece();
         assertNotNull(addedFigure);
     }
 
     @Test
     public void testMoveFigureForward() {
-        Spielfigur spielfigur = new Spielfigur();
-        gameboard.getFelder()[0].addSpielfigurToField(spielfigur);
+        PlayingPiece playingPiece = new PlayingPiece();
+        gameboard.getFelder()[0].addPlayingPieceToField(playingPiece);
 
-        gameboard.moveFigureForward(spieler.getSpielerID(), "2", 0);
+        gameboard.moveFigureForward(player.getPlayerID(), "2", 0);
         // Überprüfen, dass die Spielfigur vom Startfeld entfernt wurde
-        assertNull(gameboard.getFelder()[0].getSpielfigur());
+        assertNull(gameboard.getFelder()[0].getPlayingPiece());
         // Überprüfen, dass die Spielfigur auf das neue Feld gesetzt wurde
-        assertNotNull(gameboard.getFelder()[2].getSpielfigur());
+        assertNotNull(gameboard.getFelder()[2].getPlayingPiece());
     }
 
 
     @Test
     public void testCheckWinCondition() {
-        assertFalse(gameboard.checkWinCondition(spieler));
-        spieler.setReachedCarrot(true);
-        assertTrue(gameboard.checkWinCondition(spieler));
+        assertFalse(gameboard.checkWinCondition(player));
+        player.setReachedCarrot(true);
+        assertTrue(gameboard.checkWinCondition(player));
     }
 }
 

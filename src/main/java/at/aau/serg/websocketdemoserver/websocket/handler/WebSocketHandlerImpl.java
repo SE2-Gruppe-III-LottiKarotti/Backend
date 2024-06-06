@@ -1,6 +1,6 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
-import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.logic.CensorMessageFunction;
 import at.aau.serg.websocketdemoserver.model.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
@@ -46,17 +46,17 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     private void initTestRooms() {
         String playerName = "FranzSissi";
         String player2 = "Daniel";
-        Spieler spieler1 = new Spieler(playerName);
-        Spieler spieler2 = new Spieler(player2);
+        Player player1 = new Player(playerName);
+        Player spieler2 = new Player(player2);
         Room testRoom1 = new Room(2, "TestRoom");
         testRoom1.setCreatorName(playerName);
-        testRoom1.addPlayer(spieler1);
+        testRoom1.addPlayer(player1);
         Room testRoom2 = new Room(3, "TestRo2");
         testRoom2.setCreatorName(playerName);
-        testRoom2.addPlayer(spieler1);
+        testRoom2.addPlayer(player1);
         Room testRoom3 = new Room(2, "TestRo3");
         testRoom3.setCreatorName(playerName);
-        testRoom3.addPlayer(spieler1);
+        testRoom3.addPlayer(player1);
         testRoom3.addPlayer(spieler2);
         //testRoom3 dient dem Test, ob ein voller Raum übermittelt wird oder nicht...
 
@@ -207,7 +207,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     private void handleNextPlayer(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
-        ArrayList<Spieler> PlayerList;
+        ArrayList<Player> PlayerList;
         PlayerList = roomMessage.getListOfPlayers();
         int playerIndex = roomMessage.getPlayerIndex();
         roomMessage.setNextPlayer(PlayerList.get((playerIndex + 1) % PlayerList.size()));
@@ -274,8 +274,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         //room does not exist already
         Room roomToAdd = new Room(maxPlayers, roomName);
         //Spieler erschaffen
-        Spieler creator = new Spieler(playerName);
-        String creatorId = creator.getSpielerID();
+        Player creator = new Player(playerName);
+        String creatorId = creator.getPlayerID();
         roomToAdd.addPlayer(creator);
         roomToAdd.setCreatorName(playerName);
         System.out.println("after adding player " + roomToAdd.getAvailablePlayersSpace());
@@ -332,7 +332,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             return;
         }
 
-        Spieler player = room.getPlayerById(playerId);
+        Player player = room.getPlayerById(playerId);
         if (player == null) {
             System.out.println("player not found" + playerId);
             return;
@@ -415,13 +415,13 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         }
 
         //valid, now add player
-        Spieler playerToAdd = new Spieler(playerName);
+        Player playerToAdd = new Player(playerName);
         foundRoom.addPlayer(playerToAdd);
 
         //msg set
         joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_OK);
         joinRoomMessage.setRoomId(foundRoom.getRoomID());
-        joinRoomMessage.setPlayerId(playerToAdd.getSpielerID());
+        joinRoomMessage.setPlayerId(playerToAdd.getPlayerID());
         joinRoomMessage.setPlayerName(playerToAdd.getName());
         //msg send
         String positivePayload = gson.toJson(joinRoomMessage);

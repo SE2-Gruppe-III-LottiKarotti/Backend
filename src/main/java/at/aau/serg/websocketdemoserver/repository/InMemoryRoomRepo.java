@@ -1,6 +1,6 @@
 package at.aau.serg.websocketdemoserver.repository;
 
-import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import org.springframework.stereotype.Component;
 
@@ -54,9 +54,9 @@ public class InMemoryRoomRepo {
         return null;
         //nicht gefunden
     }*/
-    public Spieler getPlayerById(String spielerID) {
+    public Player getPlayerById(String spielerID) {
         for (Room room : roomsRepo) {
-            Spieler player = room.getPlayerById(spielerID);
+            Player player = room.getPlayerById(spielerID);
             if (player != null) {
                 return player;
             }
@@ -92,10 +92,10 @@ public class InMemoryRoomRepo {
         return new ArrayList<>(roomsRepo);
     }
 
-    public void addPlayerToRoom(String roomID, Spieler spieler) {
+    public void addPlayerToRoom(String roomID, Player player) {
         Room room = findRoomById(roomID);
         if (room != null) {
-            room.addPlayer(spieler);
+            room.addPlayer(player);
         } else {
             System.out.println("Raum nicht gefunden.");
         }
