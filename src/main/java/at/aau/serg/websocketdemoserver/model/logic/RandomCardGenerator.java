@@ -1,11 +1,11 @@
 package at.aau.serg.websocketdemoserver.model.logic;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class RandomCardGenerator {
 
     public static String startCardGenerator() {
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         int randomNumber = random.nextInt(Integer.MAX_VALUE);
         int numberToCalc = randomNumber % 46;
 
