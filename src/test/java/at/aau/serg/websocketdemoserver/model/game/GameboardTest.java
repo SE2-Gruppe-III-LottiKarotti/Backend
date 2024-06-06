@@ -11,7 +11,7 @@ public class GameboardTest {
     @Before
     public void setup() {
         gameboard = new Gameboard();
-        player = new Player("TestSpieler");
+        player = new Player("TestPlayer");
     }
 
     @Test
@@ -27,7 +27,7 @@ public class GameboardTest {
         // Überprüfen, ob die Maulwurfhügel korrekt gesetzt wurden
         int[] maulwurfHuegelIndizes = {3, 6, 9, 15, 18, 20, 24};
         for (int index : maulwurfHuegelIndizes) {
-            assertTrue(felder[index].isIstEsEinMaulwurfLoch());
+            assertTrue(felder[index].isMoleHole());
         }
 
         // Initiale Maulwurflöcher überprüfen
@@ -35,7 +35,7 @@ public class GameboardTest {
 
         // Andere Maulwurflöcher geschlossen
         for (int i = 0; i < 26; i++) {
-            if (i != gameboard.oldPositionCounter && felder[i].isIstEsEinMaulwurfLoch()) {
+            if (i != gameboard.oldPositionCounter && felder[i].isMoleHole()) {
                 assertFalse(felder[i].isOpen());
             }
         }
@@ -48,7 +48,7 @@ public class GameboardTest {
 
         // Überprüfen, ob alte Löcher geschlossen und neue geöffnet sind
         assertFalse(gameboard.getFelder()[gameboard.oldHole].isOpen());
-        assertEquals(gameboard.getFelder()[gameboard.holeCounter].isOpen(),felder[gameboard.holeCounter].isIstEsEinMaulwurfLoch());
+        assertEquals(gameboard.getFelder()[gameboard.holeCounter].isOpen(),felder[gameboard.holeCounter].isMoleHole());
     }
 
     @Test

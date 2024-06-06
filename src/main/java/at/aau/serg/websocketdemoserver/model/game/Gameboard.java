@@ -77,7 +77,7 @@ public class Gameboard {
         logger.info("New holeCounter: " + holeCounter);
 
         // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
-        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isIstEsEinMaulwurfLoch()) {
+        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isMoleHole()) {
             fields[holeCounter].setOpen(true);
             oldPositionCounter = holeCounter;
             logger.info("New Position Counter: " + holeCounter + IS_OPEN_STATUS + fields[holeCounter].isOpen() + ")");

@@ -9,11 +9,11 @@ public class Field {
         this.isMoleHole = isMoleHole;
     }
 
-    public boolean isIstEsEinMaulwurfLoch() {
+    public boolean isMoleHole() {
         return isMoleHole;
     }
 
-    public void setIstEsEinMaulwurfLoch(boolean isMoleHole) {
+    public void setIsMoleHole(boolean isMoleHole) {
         this.isMoleHole = isMoleHole;
     }
 

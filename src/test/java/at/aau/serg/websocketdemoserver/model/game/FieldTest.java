@@ -16,14 +16,14 @@ public class FieldTest {
     }
 
     @Test
-    public void testInitialMaulwurfLochStatus() {
-        assertTrue(field.isIstEsEinMaulwurfLoch());
+    public void testInitialMoleHoleStatus() {
+        assertTrue(field.isMoleHole());
     }
 
     @Test
-    public void testSetIstEsEinMaulwurfLoch() {
-        field.setIstEsEinMaulwurfLoch(false);
-        assertFalse(field.isIstEsEinMaulwurfLoch());
+    public void testSetIsMoleHole() {
+        field.setIsMoleHole(false);
+        assertFalse(field.isMoleHole());
     }
 
     @Test
