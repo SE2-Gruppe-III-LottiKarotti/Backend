@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 public class Gameboard {
     private static final Logger logger = Logger.getLogger(Gameboard.class.getName());
     private static final String IS_OPEN_STATUS = " (isOpen: ";
-    private Feld[] fields;
+    private Field[] fields;
     private int[] holes;
     private final SecureRandom random = new SecureRandom();
     int holeCounter;
@@ -15,7 +15,7 @@ public class Gameboard {
     int oldHole;
 
     public Gameboard() {
-        this.fields = new Feld[26]; // 26 felder inkl. karotte
+        this.fields = new Field[26]; // 26 felder inkl. karotte
         this.holes = new int[]{3, 6, 9, 15, 18, 20, 24};
         this.holeCounter = holes[random.nextInt(holes.length - 1)];
         winner = null;
@@ -37,14 +37,14 @@ public class Gameboard {
     private void initFields() {
         for (int i = 0; i < fields.length; i++) {
             if (i == 3 || i == 6 || i == 9 || i == 15 || i == 18 || i == 20 || i == 24) {
-                fields[i] = new Feld(true); // Maulwurfhügel
+                fields[i] = new Field(true); // Maulwurfhügel
                 fields[i].setOpen(false);
             } else {
-                fields[i] = new Feld(false); // Normale Felder
+                fields[i] = new Field(false); // Normale Felder
             }
         }
 
-        // Initiale Maulwurflöcher öffnen
+        // init moleholes open
         oldPositionCounter = holeCounter;
         if (oldPositionCounter >= 0 && oldPositionCounter < fields.length) {
             fields[oldPositionCounter].setOpen(true);
@@ -77,7 +77,7 @@ public class Gameboard {
         logger.info("New holeCounter: " + holeCounter);
 
         // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
-        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isIstEsEinMaulwurfLoch()) {
+        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isMoleHole()) {
             fields[holeCounter].setOpen(true);
             oldPositionCounter = holeCounter;
             logger.info("New Position Counter: " + holeCounter + IS_OPEN_STATUS + fields[holeCounter].isOpen() + ")");
@@ -86,22 +86,22 @@ public class Gameboard {
         }
     }
 
-    public int getSpielfigurPosition(Spielfigur spielfigur) {
+    public int getPlayingPiecePosition(PlayingPiece playingPiece) {
         for (int i = 0; i < fields.length; i++) {
-            if (fields[i].getSpielfigur() == spielfigur) {
+            if (fields[i].getPlayingPiece() == playingPiece) {
                 return i;
             }
         }
         return -1;
     }
 
-    public void insertFigureToGameboard(Spieler spieler, String spielerId, String card) {
-        Spielfigur addNewSpielfigur = new Spielfigur(); // Korrekte KonstruktoraufrufSpielfigur addNewSpielfigur = new Spielfigur();
+    public void insertFigureToGameboard(Player player, String playerID, String card) {
+        PlayingPiece addNewPlayingPiece = new PlayingPiece(); // Korrekte KonstruktoraufrufSpielfigur addNewSpielfigur = new Spielfigur();
         int beginningPosition = 0;
-        fields[beginningPosition].addSpielfigurToField(addNewSpielfigur);
+        fields[beginningPosition].addPlayingPieceToField(addNewPlayingPiece);
 
         // Debugging-Ausgabe
-        if (fields[beginningPosition].getSpielfigur() == addNewSpielfigur) {
+        if (fields[beginningPosition].getPlayingPiece() == addNewPlayingPiece) {
             logger.info("Spielfigur wurde korrekt hinzugefügt.");
         } else {
             logger.severe("Spielfigur konnte nicht zum Spielfeld hinzugefügt werden.");
@@ -109,7 +109,7 @@ public class Gameboard {
     }
 
 
-    public void moveFigureForward(String spielerId, String card, int currentPosition) {
+    public void moveFigureForward(String playerID, String card, int currentPosition) {
         int oldPosition = currentPosition;
         int cardValue = Integer.parseInt(card);
 
@@ -120,7 +120,7 @@ public class Gameboard {
             logger.info("Trying to move to position: " + newPosition);
 
             if (newPosition < fields.length) {
-                if (!fields[newPosition].isOccupiedBySpielfigur()) {
+                if (!fields[newPosition].isOccupiedByPlayingPiece()) {
                     // Wenn das Feld frei ist
                     currentPosition = newPosition;
                     cardValue--;
@@ -137,28 +137,28 @@ public class Gameboard {
             }
         }
 
-        fields[oldPosition].removeSpielFigurFromField();
-        fields[currentPosition].addSpielfigurToField(new Spielfigur());
+        fields[oldPosition].removePlayingPieceFromField();
+        fields[currentPosition].addPlayingPieceToField(new PlayingPiece());
 
         logger.info("Moved figure from position " + oldPosition + " to " + currentPosition);
 
         if (currentPosition == 25) {
             // Spieler gewinnt...
-            winner = spielerId;
+            winner = playerID;
             // Diese öffentliche Variable kann von außen zugegriffen werden
-            logger.info("Player " + spielerId + " wins!");
+            logger.info("Player " + playerID + " wins!");
         }
     }
 
-    public boolean checkWinCondition(Spieler spieler) {
-        return spieler.hasReachedCarrot();
+    public boolean checkWinCondition(Player player) {
+        return player.hasReachedCarrot();
     }
 
-    public Feld[] getFelder() {
+    public Field[] getFelder() {
         return fields;
     }
 
-    public void setFields(Feld[] fields) {
+    public void setFields(Field[] fields) {
         this.fields = fields;
     }
 }

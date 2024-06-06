@@ -1,8 +1,7 @@
 package at.aau.serg.websocketdemoserver.repository;
 
-import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,12 +19,12 @@ class InMemoryRoomRepoTest {
     private InMemoryRoomRepo roomRepo;
 
     private Room testRoom;
-    private Spieler testPlayer;
+    private Player testPlayer;
 
     @BeforeEach
     void setUp() {
         testRoom = new Room(4, "testRoom");
-        testPlayer = new Spieler("testPlayer");
+        testPlayer = new Player("testPlayer");
         roomRepo.addRoom(testRoom);
         roomRepo.addPlayerToRoom(testRoom.getRoomID(), testPlayer);
     }
@@ -57,7 +56,7 @@ class InMemoryRoomRepoTest {
 
     @Test
     void testGetPlayerById() {
-        Spieler foundPlayer = roomRepo.getPlayerById(testPlayer.getSpielerID());
+        Player foundPlayer = roomRepo.getPlayerById(testPlayer.getPlayerID());
         assertEquals(testPlayer, foundPlayer);
     }
 
@@ -94,9 +93,9 @@ class InMemoryRoomRepoTest {
 
     @Test
     void testAddPlayerToRoom() {
-        Spieler newPlayer = new Spieler("newPlayer");
+        Player newPlayer = new Player("newPlayer");
         roomRepo.addPlayerToRoom(testRoom.getRoomID(), newPlayer);
-        assertEquals(testRoom.getPlayerById(newPlayer.getSpielerID()), newPlayer);
+        assertEquals(testRoom.getPlayerById(newPlayer.getPlayerID()), newPlayer);
     }
 
     @AfterEach
