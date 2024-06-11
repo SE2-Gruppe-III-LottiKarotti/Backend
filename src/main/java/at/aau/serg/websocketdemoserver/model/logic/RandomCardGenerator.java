@@ -30,7 +30,7 @@ public class RandomCardGenerator {
     }
     */
 
-    private static String calculate(int numberToCalc) {
+    public static String calculate(int numberToCalc) {
         int randomIndex = numberToCalc % 4;
         return switch (randomIndex) {
             case 0 -> "1";
