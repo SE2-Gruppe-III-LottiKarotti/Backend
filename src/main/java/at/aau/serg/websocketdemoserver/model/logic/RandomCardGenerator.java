@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 
 public class RandomCardGenerator {
 
-    public static String start() {
+    public static String startCardGenerator() {
         SecureRandom random = new SecureRandom();
         int randomNumber = random.nextInt(Integer.MAX_VALUE);
         int numberToCalc = randomNumber % 46;
@@ -12,31 +12,30 @@ public class RandomCardGenerator {
         return calculate(numberToCalc);
     }
 
-    public static String calculate(int numberToCalc) {
+    protected static String calculate(int numberToCalc) {
+        if (numberToCalc < 0 || numberToCalc > 45) {
+            throw new IllegalArgumentException("error - number has to be between 0 and 45");
+        }
         if (numberToCalc <=3) { // keine grenze nach unten, weil modulo!
-            return "3"; //3 felder weiter
+            return returningCard.THREE.toString(); //3 felder weiter
         }
         else if (numberToCalc >= 4 && numberToCalc <=10) {
-            return "2"; //2 felder weiter
+            return returningCard.TWO.toString(); //2 felder weiter
         }
         else if (numberToCalc >=11 && numberToCalc <=21) {
-            return "Karotte"; //karotte drehen
+            return returningCard.CARROT.toString(); //karotte drehen
         }
         else {
             //für 22 bis 45
-            return "1"; //1 feld weiter
+            return returningCard.ONE.toString(); //1 feld weiter
         }
     }
 
-    /*
-    public static String calculate(int numberToCalc) {
-        int randomIndex = numberToCalc % 4;
-        return switch (randomIndex) {
-            case 0 -> "1";
-            case 1 -> "2";
-            case 2 -> "3";
-            case 3 -> "Karotte";
-            default -> throw new RuntimeException("Unreachable code");
-        };
-    }*/
+
+    public enum returningCard {
+        ONE,
+        TWO,
+        THREE,
+        CARROT
+    }
 }
