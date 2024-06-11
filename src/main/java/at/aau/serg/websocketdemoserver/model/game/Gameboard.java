@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.util.logging.Logger;
 
 public class Gameboard {
-    private static final Logger logger = Logger.getLogger(Gameboard.class.getName());
+    public static final Logger logger = Logger.getLogger(Gameboard.class.getName());
     private static final String IS_OPEN_STATUS = " (isOpen: ";
     private Feld[] fields;
     private int[] holes;

@@ -13,14 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
+
+import static at.aau.serg.websocketdemoserver.model.game.Gameboard.logger;
 
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
 
+    private static final Logger logger = Logger.getLogger(String.valueOf(WebSocketHandlerImpl.class));
     @Autowired
     private final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
 
@@ -30,18 +37,46 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
 
     //broadcasting
-    private void broadcastMsg(String message) throws Exception{
+
+    private void broadcastMsg(String message, WebSocketSession sender) throws Exception {
         if (message == null) {
             System.out.println("error: message to broadcast was null");
             //assert (false);
             //sollte mit logger ausgetauscht werden
             return;
         }
-        for (WebSocketSession client: sessions) {
-            client.sendMessage(new TextMessage(message));
+
+        Set<WebSocketSession> sessionsToBroadcast = new HashSet<>(sessions);
+        sessionsToBroadcast.remove(sender);
+
+        for (WebSocketSession client : sessionsToBroadcast) {
+            if (client.isOpen()) {
+                client.sendMessage(new TextMessage(message));
+            } else {
+                System.out.println("Session {} is closed, skipping message send");
+            }
+        }
+    }
+
+    /*
+    private void broadcastMsg(String message, WebSocketSession sender) throws Exception {
+        if (message == null) {
+            System.out.println("error: message to broadcast was null");
+            return;
         }
 
+        Set<WebSocketSession> sessionsToBroadcast = new HashSet<>(sessions);
+        sessionsToBroadcast.remove(sender);
+
+        for (WebSocketSession client : sessionsToBroadcast) {
+            if (client.isOpen()) {
+                client.sendMessage(new TextMessage(message));
+            } else {
+                System.out.println("Session " + client.getId() + " is closed, skipping message send");
+            }
+        }
     }
+     */
 
     private void initTestRooms() {
         String playerName = "FranzSissi";
@@ -119,70 +154,68 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         if (heartbeatMessage != null && heartbeatMessage.getText().equals("ping")) {
             /*heartbeatMessage.setText("pong");
             String response = gson.toJson(heartbeatMessage);
-            session.sendMessage(new TextMessage(response));*/
+            session.sendMessage(new TextMessage(response));
             System.out.println("valid message");
 
         }
         else {
-            System.out.println("invalid message");
+            System.out.println("invalid message");*/
         }
-
-
     }
 
     public void handleChatMessage(WebSocketSession session, String payload) throws Exception {
-        //TODO:
-        /**
-         * nachricht erreicht den handler
-         * die nachricht hat einen sender, eine raumID und eine text(nachricht)
-         * ein client "sendet" eine nachricht an den server
-         * danach wird die nachricht wieder vom server als json verpackt und an alle clients versendet
-         * ob eine nachricht dann vom client angenommen wird, hängt von der raumID ab
-         * wenn raumID des clients == raumID in der message --> dann wird die Nachricht angenommen
-         * zusätzlich wäre es auch möglich, dass man eigene nachrichten nicht sieht, wenn man zb
-         * noch zusätzlich die playerID vom absender hinzufügt und der absender seine eigene
-         * chat-nachricht ignoriert...*/
+                //TODO:
+                /**
+                 * nachricht erreicht den handler
+                 * die nachricht hat einen sender, eine raumID und eine text(nachricht)
+                 * ein client "sendet" eine nachricht an den server
+                 * danach wird die nachricht wieder vom server als json verpackt und an alle clients versendet
+                 * ob eine nachricht dann vom client angenommen wird, hängt von der raumID ab
+                 * wenn raumID des clients == raumID in der message --> dann wird die Nachricht angenommen
+                 * zusätzlich wäre es auch möglich, dass man eigene nachrichten nicht sieht, wenn man zb
+                 * noch zusätzlich die playerID vom absender hinzufügt und der absender seine eigene
+                 * chat-nachricht ignoriert...*/
 
-        ChatMessage chatMessage = gson.fromJson(payload, ChatMessage.class);
+                ChatMessage chatMessage = gson.fromJson(payload, ChatMessage.class);
 
-        if (chatMessage == null) {
-            ChatMessage errorMsg = new ChatMessage();
-            errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
-            String exportErrMsg = gson.toJson(errorMsg);
-            session.sendMessage(new TextMessage(exportErrMsg));
+                if (chatMessage == null) {
+                    ChatMessage errorMsg = new ChatMessage();
+                    errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
+                    String exportErrMsg = gson.toJson(errorMsg);
+                    session.sendMessage(new TextMessage(exportErrMsg));
 
-        }
+                }
 
-        String playerNameSender;
-        String playerIdSender;
-        String inputText;
-        String roomId;
+                String playerNameSender;
+                String playerIdSender;
+                String inputText;
+                String roomId;
 
-        if (chatMessage.getPlayerId() == null || chatMessage.getPlayerName() == null || chatMessage.getText() == null || chatMessage.getRoomID() == null
-                || chatMessage.getPlayerId().isEmpty() || chatMessage.getPlayerName().isEmpty() || chatMessage.getText().isEmpty() || chatMessage.getRoomID().isEmpty()) {
-            System.out.println("invalid input");
-            ChatMessage errorMsg = new ChatMessage();
-            errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
-            String exportErrMsg = gson.toJson(errorMsg);
-            session.sendMessage(new TextMessage(exportErrMsg));
-            return;
-        }
+                if (chatMessage.getPlayerId() == null || chatMessage.getPlayerName() == null || chatMessage.getText() == null || chatMessage.getRoomID() == null
+                        || chatMessage.getPlayerId().isEmpty() || chatMessage.getPlayerName().isEmpty() || chatMessage.getText().isEmpty() || chatMessage.getRoomID().isEmpty()) {
+                    System.out.println("invalid input");
+                    ChatMessage errorMsg = new ChatMessage();
+                    errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
+                    String exportErrMsg = gson.toJson(errorMsg);
+                    session.sendMessage(new TextMessage(exportErrMsg));
+                    return;
+                }
 
-        //playerIdSender = chatMessage.getPlayerId();
-        //playerNameSender = chatMessage.getPlayerName();
-        inputText = chatMessage.getText();
-        //roomId = chatMessage.getRoomID();
+                //playerIdSender = chatMessage.getPlayerId();
+                //playerNameSender = chatMessage.getPlayerName();
+                inputText = chatMessage.getText();
+                //roomId = chatMessage.getRoomID();
 
-        String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.censoredWords);
+                String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.censoredWords);
 
-        chatMessage.setText(outputText);
-        String payloadExport = gson.toJson(chatMessage);
-        broadcastMsg(payloadExport);
+                chatMessage.setText(outputText);
+                String payloadExport = gson.toJson(chatMessage);
+                broadcastMsg(payloadExport, session);
+            }
 
-    }
-
+           /*
     private void handleSetupField(WebSocketSession session, String payload) throws Exception {
-        /*Gson gson = new Gson();
+        Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
         Room room = roomRepo.findRoomById(roomMessage.getRoomID());
 
@@ -196,8 +229,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         roomMessage.setGameboard(gameboard);
 
         String positivePayload = gson.toJson(roomMessage);
-        session.sendMessage(new TextMessage(positivePayload));*/
-    }
+        session.sendMessage(new TextMessage(positivePayload));
+    }*/
 
     private void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
@@ -224,7 +257,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         switch (roomMessage.getActionType()) {
             case DRAWCARD -> handleDrawCard(session, payload);
             case CHAT -> handleChatMessage(session, payload);
-            case SETUPFIELD -> handleSetupField(session, payload);
+            //case SETUPFIELD -> handleSetupField(session, payload);
             case GUESSCHEATER -> handleGuessCheater(session, payload);
             case NEXTPlAYER -> handleNextPlayer(session, payload);
         }
@@ -292,7 +325,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         openRoomMessage.setPlayerId(creatorId);
         openRoomMessage.setPlayerName(creator.getName());
         openRoomMessage.setNumPlayers(Integer.toString(maxPlayers));
-        //openRoomMessage.setMessageIdentifier(messageIdentifier);
+
+    //openRoomMessage.setMessageIdentifier(messageIdentifier);
 
 
 
@@ -317,7 +351,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             errorMsg.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_ERR);
             errorMsg.setCard("error");
             String export = gson.toJson(errorMsg);
-            broadcastMsg(export);
+            broadcastMsg(export, session);
             return;
         }
 
@@ -344,6 +378,14 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         //catching is only possible, if it not the players turn again
         room.deletePlayerFromCheatList(playerId);
 
+        /*
+        ArrayList<Spieler> listOfPlayers = room.getListOfPlayers();
+        Spieler currentPlayer = room.getPlayerById(drawCardMessage.getPlayerID());
+        int currentPlayerIndex = listOfPlayers.indexOf(currentPlayer);
+        String nextPlayerId = listOfPlayers.get((currentPlayerIndex + 1) % listOfPlayers.size()).getSpielerID();
+        */
+
+        String nextPlayerId = room.getNextPlayer(playerId).getSpielerID();
         String cardReturned;
 
         switch (inputCard) {
@@ -361,10 +403,18 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         //now send it... finally
         drawCardMessage.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK);
         drawCardMessage.setCard(cardReturned);
+        drawCardMessage.setNextPlayerId(nextPlayerId);
         String exportPayload = gson.toJson(drawCardMessage);
-        session.sendMessage(new TextMessage(exportPayload));
+        broadcastMsg(exportPayload, session);
 
         System.out.println("toClient: " + exportPayload);
+
+    }
+
+    private void handleMoveMessage(WebSocketSession session, String payload) throws Exception {
+        Gson gson = new Gson();
+        MoveMessage moveMessage = gson.fromJson(payload, MoveMessage.class);
+
 
     }
 
@@ -501,7 +551,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         session.sendMessage(new TextMessage(payloadExport));
     }
 
-
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 
@@ -517,3 +566,4 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         return false;
     }
 }
+
