@@ -53,26 +53,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         }
     }
 
-    /*
-    private void broadcastMsg(String message, WebSocketSession sender) throws Exception {
-        if (message == null) {
-            System.out.println("error: message to broadcast was null");
-            return;
-        }
-
-        Set<WebSocketSession> sessionsToBroadcast = new HashSet<>(sessions);
-        sessionsToBroadcast.remove(sender);
-
-        for (WebSocketSession client : sessionsToBroadcast) {
-            if (client.isOpen()) {
-                client.sendMessage(new TextMessage(message));
-            } else {
-                System.out.println("Session " + client.getId() + " is closed, skipping message send");
-            }
-        }
-    }
-     */
-
     private void initTestRooms() {
         String playerName = "FranzSissi";
         String player2 = "Daniel";
@@ -252,7 +232,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         switch (roomMessage.getActionType()) {
             case DRAWCARD -> handleDrawCard(session, payload);
             case CHAT -> handleChatMessage(session, payload);
-            //case SETUPFIELD -> handleSetupField(session, payload);
             case GUESSCHEATER -> handleGuessCheater(session, payload);
             case NEXTPlAYER -> handleNextPlayer(session, payload);
         }
@@ -373,13 +352,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         //catching is only possible, if it not the players turn again
         room.deletePlayerFromCheatList(playerId);
 
-        /*
-        ArrayList<Spieler> listOfPlayers = room.getListOfPlayers();
-        Spieler currentPlayer = room.getPlayerById(drawCardMessage.getPlayerID());
-        int currentPlayerIndex = listOfPlayers.indexOf(currentPlayer);
-        String nextPlayerId = listOfPlayers.get((currentPlayerIndex + 1) % listOfPlayers.size()).getSpielerID();
-        */
-
         String nextPlayerId = room.getNextPlayer(playerId).getPlayerID();
         String cardReturned;
 
@@ -403,13 +375,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         broadcastMsg(exportPayload, session);
 
         System.out.println("toClient: " + exportPayload);
-
-    }
-
-    private void handleMoveMessage(WebSocketSession session, String payload) throws Exception {
-        Gson gson = new Gson();
-        MoveMessage moveMessage = gson.fromJson(payload, MoveMessage.class);
-
 
     }
 
