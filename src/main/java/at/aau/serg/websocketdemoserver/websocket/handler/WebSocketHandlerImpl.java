@@ -380,7 +380,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         String nextPlayerId = listOfPlayers.get((currentPlayerIndex + 1) % listOfPlayers.size()).getSpielerID();
         */
 
-        String nextPlayerId = room.getNextPlayer(playerId).getSpielerID();
+        String nextPlayerId = room.getNextPlayer(playerId).getPlayerID();
         String cardReturned;
 
         switch (inputCard) {
