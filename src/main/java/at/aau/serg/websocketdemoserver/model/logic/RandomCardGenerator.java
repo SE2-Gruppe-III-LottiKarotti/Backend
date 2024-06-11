@@ -27,21 +27,17 @@ public class RandomCardGenerator {
             //für 22 bis 45
             return "1"; //1 feld weiter
         }
-    }*/
+    }
+    */
 
     private static String calculate(int numberToCalc) {
         int randomIndex = numberToCalc % 4;
-        switch (randomIndex) {
-            case 0:
-                return "1";
-            case 1:
-                return "2";
-            case 2:
-                return "3";
-            case 3:
-                return "Karotte";
-            default:
-                throw new RuntimeException("Unreachable code");
-        }
+        return switch (randomIndex) {
+            case 0 -> "1";
+            case 1 -> "2";
+            case 2 -> "3";
+            case 3 -> "Karotte";
+            default -> throw new RuntimeException("Unreachable code");
+        };
     }
 }
