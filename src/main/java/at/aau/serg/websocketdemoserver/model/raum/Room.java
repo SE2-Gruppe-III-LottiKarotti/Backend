@@ -1,14 +1,14 @@
 package at.aau.serg.websocketdemoserver.model.raum;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
-import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.game.Player;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class Room {
     private String roomID;
     private String roomName;
-    private ArrayList<Spieler> listOfPlayers;
+    private ArrayList<Player> listOfPlayers;
     private int maxPlayers;
     private int availablePlayersSpace;
     private Gameboard gameboard;
@@ -16,8 +16,7 @@ public class Room {
     private ArrayList<String> cheaters;
     private String creatorName;
     private String winner;
-    private Spieler currentPlayer; // oder spielerID ...
-
+    private Player currentPlayer; // oder spielerID ...
 
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
@@ -40,10 +39,14 @@ public class Room {
         this.winner = winner;
     }
 
-    public Spieler getPlayerById(String spielerID) {
-        for (Spieler spieler : listOfPlayers) {
-            if (spieler.getSpielerID().equals(spielerID)) {
-                return spieler;
+    public String getWinner() {
+        return this.winner;
+    }
+
+    public Player getPlayerById(String playerID) {
+        for (Player player : listOfPlayers) {
+            if (player.getPlayerID().equals(playerID)) {
+                return player;
             }
         }
         return null;
@@ -55,7 +58,6 @@ public class Room {
 
     public void setAvailabePlayersSpace(int availabePlayersSpace) {
         this.availablePlayersSpace = availabePlayersSpace;
-
     }
 
     public String getRoomID() {
@@ -74,11 +76,11 @@ public class Room {
         this.roomName = roomName;
     }
 
-    public ArrayList<Spieler> getListOfPlayers() {
+    public ArrayList<Player> getListOfPlayers() {
         return listOfPlayers;
     }
 
-    public void setListOfPlayers(ArrayList<Spieler> listOfPlayers) {
+    public void setListOfPlayers(ArrayList<Player> listOfPlayers) {
         this.listOfPlayers = listOfPlayers;
     }
 
@@ -98,11 +100,11 @@ public class Room {
         this.gameboard = gameboard;
     }
 
-    public Spieler getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Spieler currentPlayer) {
+    public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
 
@@ -114,7 +116,6 @@ public class Room {
         this.currentPlayerId = currentPlayerId;
     }
 
-
     public void setCreatorName(String playerName) {
         this.creatorName = playerName;
     }
@@ -123,9 +124,9 @@ public class Room {
         return creatorName;
     }
 
-    public void addPlayer(Spieler spieler) {
+    public void addPlayer(Player player) {
         if (availablePlayersSpace > 0) {
-            listOfPlayers.add(spieler);
+            listOfPlayers.add(player);
             availablePlayersSpace--;
         } else {
             System.out.println("raum voll");
@@ -134,13 +135,17 @@ public class Room {
     }
 
     //cheating operations
-    public boolean searchPlayerIdInCheatList(String playerId) {
-        return cheaters.contains(playerId);
+    public ArrayList<String> getCheaters() {
+        return this.cheaters;
     }
 
-    public void addPlayerToCheatList(String playerId) {
-        if (!cheaters.contains(playerId)) {
-            cheaters.add(playerId);
+    public boolean searchPlayerIdInCheatList(String playerID) {
+        return cheaters.contains(playerID);
+    }
+
+    public void addPlayerToCheatList(String playerID) {
+        if (!cheaters.contains(playerID)) {
+            cheaters.add(playerID);
         }
     }
 
@@ -150,11 +155,11 @@ public class Room {
         }
     }
 
-    public Spieler getNextPlayer(String currentPlayerId) {
+    public Player getNextPlayer(String currentPlayerId) {
         int index = -1;
 
         for (int i = 0; i < listOfPlayers.size(); i++) {
-            if (listOfPlayers.get(i).getSpielerID().equals(currentPlayerId)) {
+            if (listOfPlayers.get(i).getPlayerID().equals(currentPlayerId)) {
                 index = i;
                 break;
             }
