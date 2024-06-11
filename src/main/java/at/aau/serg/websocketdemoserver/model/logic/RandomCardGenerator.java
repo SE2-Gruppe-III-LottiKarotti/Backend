@@ -12,8 +12,7 @@ public class RandomCardGenerator {
         return calculate(numberToCalc);
     }
 
-    /*
-    private static String calculate(int numberToCalc) {
+    public static String calculate(int numberToCalc) {
         if (numberToCalc <=3) { // keine grenze nach unten, weil modulo!
             return "3"; //3 felder weiter
         }
@@ -28,8 +27,8 @@ public class RandomCardGenerator {
             return "1"; //1 feld weiter
         }
     }
-    */
 
+    /*
     public static String calculate(int numberToCalc) {
         int randomIndex = numberToCalc % 4;
         return switch (randomIndex) {
@@ -39,5 +38,5 @@ public class RandomCardGenerator {
             case 3 -> "Karotte";
             default -> throw new RuntimeException("Unreachable code");
         };
-    }
+    }*/
 }
