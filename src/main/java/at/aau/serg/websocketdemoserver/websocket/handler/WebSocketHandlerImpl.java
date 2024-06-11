@@ -28,6 +28,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     private final Gson gson = new Gson();
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    Logger logger = Logger.getLogger(getClass().getName());
 
     static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
 
@@ -35,7 +36,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     private void broadcastMsg(String message, WebSocketSession sender) throws Exception {
         if (message == null) {
-            System.out.println("error: message to broadcast was null");
+            logger.warning("error: message to broadcast was null");
             //assert (false);
             //sollte mit logger ausgetauscht werden
             return;
@@ -48,7 +49,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             if (client.isOpen()) {
                 client.sendMessage(new TextMessage(message));
             } else {
-                System.out.println("Session {} is closed, skipping message send");
+                logger.info("Session {} is closed, skipping message send");
             }
         }
     }
@@ -374,7 +375,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         String exportPayload = gson.toJson(drawCardMessage);
         broadcastMsg(exportPayload, session);
 
-        System.out.println("toClient: " + exportPayload);
+        logger.info("toClient: " + exportPayload);
 
     }
 
