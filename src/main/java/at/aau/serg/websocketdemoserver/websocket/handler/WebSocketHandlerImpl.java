@@ -13,21 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
-
-import static at.aau.serg.websocketdemoserver.model.game.Gameboard.logger;
 
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
 
-    private static final Logger logger = Logger.getLogger(String.valueOf(WebSocketHandlerImpl.class));
     @Autowired
     private final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
 
