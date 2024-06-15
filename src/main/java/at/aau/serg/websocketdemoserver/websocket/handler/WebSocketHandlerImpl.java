@@ -10,6 +10,7 @@ import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
+import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,11 +27,15 @@ import java.util.logging.Logger;
 public class WebSocketHandlerImpl implements WebSocketHandler {
 
     @Autowired
-    private final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
+    private static final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
+
+    public static InMemoryRoomRepo getRoomRepo () {
+        return roomRepo;
+    }
 
     private final Gson gson = new Gson();
-    public final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-    Logger logger = Logger.getLogger(getClass().getName());
+    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
 
@@ -113,7 +118,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 //msg for constant load on network (ping - pong - ping - ...)
                 case HEARTBEAT -> HandlerHeartbeat.handleHeartbeat(session, payload);
                 //messages for opening, joining and listing rooms
-                case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
+                //case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
+                case OPEN_ROOM -> HandlerOpenRoom.handleOpenRoomMessage(session, payload);
                 case JOIN_ROOM -> handleAskForJoinRoom(session, payload);
                 case LIST_ROOMS -> handleAskForRoomList(session, payload);
                 //messages for gameboard logic
@@ -245,7 +251,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         }
     }
 
-    private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
+    /*private void handleOpenRoomMessage(WebSocketSession session, String payload) throws Exception {
         //1 extract
         OpenRoomMessage openRoomMessage = gson.fromJson(payload, OpenRoomMessage.class);
 
@@ -320,7 +326,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         System.out.println("toClient: " + positivePayload);
 
 
-    }
+    }*/
 
     private void handleDrawCard(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
