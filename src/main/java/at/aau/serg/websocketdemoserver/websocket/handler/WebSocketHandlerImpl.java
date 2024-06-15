@@ -8,6 +8,7 @@ import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
+import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -109,7 +110,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 //testMsg at startup
                 case TEST -> handleTestMessage(session, payload);
                 //msg for constant load on network (ping - pong - ping - ...)
-                case HEARTBEAT -> handleHeartbeat(session, payload);
+                case HEARTBEAT -> HandlerHeartbeat.handleHeartbeat(session, payload);
                 //messages for opening, joining and listing rooms
                 case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
                 case JOIN_ROOM -> handleAskForJoinRoom(session, payload);
@@ -124,20 +125,21 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         }
     }
 
+    /*
     private void handleHeartbeat(WebSocketSession session, String payload) throws Exception {
         HeartbeatMessage heartbeatMessage = gson.fromJson(payload, HeartbeatMessage.class);
 
         if (heartbeatMessage != null && heartbeatMessage.getText().equals("ping")) {
-            /*heartbeatMessage.setText("pong");
+            heartbeatMessage.setText("pong");
             String response = gson.toJson(heartbeatMessage);
             session.sendMessage(new TextMessage(response));
             System.out.println("valid message");
 
         }
         else {
-            System.out.println("invalid message");*/
+            System.out.println("invalid message");
         }
-    }
+    }*/
 
     public void handleChatMessage(WebSocketSession session, String payload) throws Exception {
                 //TODO:
@@ -189,6 +191,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 broadcastMsg(payloadExport, session);
             }
 
+    //TODO: delete
            /*
     private void handleSetupField(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
@@ -213,6 +216,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
     }
 
+
+    //TODO: delete
     private void handleNextPlayer(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
@@ -226,6 +231,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         session.sendMessage(new TextMessage(positivePayload));
     }
 
+    //TODO: delete
     private void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
         RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
