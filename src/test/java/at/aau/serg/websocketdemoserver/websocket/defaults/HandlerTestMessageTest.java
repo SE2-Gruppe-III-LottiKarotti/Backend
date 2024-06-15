@@ -1,10 +1,11 @@
 package at.aau.serg.websocketdemoserver.websocket.defaults;
 
-
-import at.aau.serg.websocketdemoserver.msg.HeartbeatMessage;
+import at.aau.serg.websocketdemoserver.logic.TransportUtils;
+import at.aau.serg.websocketdemoserver.msg.MessageType;
+import at.aau.serg.websocketdemoserver.msg.TestMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
+import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
 import com.google.gson.Gson;
-
 import com.google.gson.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,44 +17,49 @@ import org.springframework.web.socket.WebSocketSession;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class HandlerHeartbeatTest {
-    private static final Gson gson = new Gson();
+public class HandlerTestMessageTest {
+
     private WebSocketSession session;
-    private HeartbeatMessage heartbeatMessage;
+    private TestMessage testMessage;
+    private static final Gson gson = new Gson();
+
 
     @BeforeEach
     public void setup() {
         session = mock(WebSocketSession.class);
-        heartbeatMessage = new HeartbeatMessage();
+        testMessage = new TestMessage();
+
     }
 
     @Test
-    public void testValid () throws Exception {
-        heartbeatMessage.setText("ping");
-        String payload = gson.toJson(heartbeatMessage);
+    public void testValidMsg () throws Exception {
+        testMessage.setText("test message");
+        testMessage.setMessageIdentifier("validIdentifier");
+        String payload = TransportUtils.helpToJson(testMessage);
+
         ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
 
-        HandlerHeartbeat.handleHeartbeat(session, payload);
+        HandlerTestMessage.handleTestMessage(session, payload);
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        HeartbeatMessage responseHeartbeatMessage = gson.fromJson(responseMessage.getPayload(), HeartbeatMessage.class);
+        TestMessage responseTestMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), TestMessage.class);
 
-        assertNotNull(responseHeartbeatMessage);
-        assertEquals("pong", responseHeartbeatMessage.getText());
-
+        assertNotNull(responseTestMessage);
+        assertEquals("juhu", responseTestMessage.getText());
+        assertEquals(MessageType.TEST, responseTestMessage.getMessageType());
+        assertEquals("validIdentifier", responseTestMessage.getMessageIdentifier());
     }
 
     @Test
-    public void testNotValidPayload () {
-        heartbeatMessage.setText("notPing");
-        String notValidPayload = gson.toJson(heartbeatMessage);
-        assertThrows(IllegalArgumentException.class, () -> HandlerHeartbeat.handleHeartbeat(session, notValidPayload));
+    public void testInvalidMsg () {
+        String payload = "{error}";
+        assertThrows(JsonParseException.class, () -> HandlerTestMessage.handleTestMessage(session, payload));
     }
 
     @Test
     public void sessionIsNULL () {
-        String payload = gson.toJson(heartbeatMessage);
+        String payload = gson.toJson(testMessage);
         assertThrows(NullPointerException.class, () -> HandlerHeartbeat.handleHeartbeat(null, payload));
     }
 
@@ -71,10 +77,9 @@ public class HandlerHeartbeatTest {
     @AfterEach
     public void tearDown () {
         session = null;
-        heartbeatMessage = null;
+        testMessage = null;
 
     }
-
 
 
 

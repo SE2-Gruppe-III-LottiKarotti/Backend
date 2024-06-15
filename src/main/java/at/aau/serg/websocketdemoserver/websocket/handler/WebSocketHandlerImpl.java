@@ -9,6 +9,7 @@ import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
+import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,14 +29,14 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     private final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
 
     private final Gson gson = new Gson();
-    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    public final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     Logger logger = Logger.getLogger(getClass().getName());
 
     static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
 
     //broadcasting
 
-    private void broadcastMsg(String message, WebSocketSession sender) throws Exception {
+    public void broadcastMsg(String message, WebSocketSession sender) throws Exception {
         if (message == null) {
             logger.warning("error: message to broadcast was null");
             //assert (false);
@@ -108,7 +109,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             MessageType messageType = baseMessage.getMessageType();
             switch (messageType) {
                 //testMsg at startup
-                case TEST -> handleTestMessage(session, payload);
+                case TEST -> HandlerTestMessage.handleTestMessage(session, payload);
                 //msg for constant load on network (ping - pong - ping - ...)
                 case HEARTBEAT -> HandlerHeartbeat.handleHeartbeat(session, payload);
                 //messages for opening, joining and listing rooms
