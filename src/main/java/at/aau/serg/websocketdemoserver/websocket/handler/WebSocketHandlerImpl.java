@@ -1,8 +1,8 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
-import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
+import at.aau.serg.websocketdemoserver.model.raum.TestRoomInit;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
@@ -18,9 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
@@ -42,7 +40,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     //broadcasting
 
-    public void broadcastMsg(String message, WebSocketSession sender) throws Exception {
+    /*public void broadcastMsg(String message, WebSocketSession sender) throws Exception {
         if (message == null) {
             logger.warning("error: message to broadcast was null");
             //assert (false);
@@ -60,31 +58,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 logger.info("Session {} is closed, skipping message send");
             }
         }
-    }
+    }*/
 
-    private void initTestRooms() {
-        String playerName = "FranzSissi";
-        String player2 = "Daniel";
-        Player player1 = new Player(playerName);
-        Player spieler2 = new Player(player2);
-        Room testRoom1 = new Room(2, "TestRoom");
-        testRoom1.setCreatorName(playerName);
-        testRoom1.addPlayer(player1);
-        Room testRoom2 = new Room(3, "TestRo2");
-        testRoom2.setCreatorName(playerName);
-        testRoom2.addPlayer(player1);
-        Room testRoom3 = new Room(2, "TestRo3");
-        testRoom3.setCreatorName(playerName);
-        testRoom3.addPlayer(player1);
-        testRoom3.addPlayer(spieler2);
-        //testRoom3 dient dem Test, ob ein voller Raum übermittelt wird oder nicht...
-
-
-        //add
-        roomRepo.addRoom(testRoom1);
-        roomRepo.addRoom(testRoom2);
-        roomRepo.addRoom(testRoom3);
-    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -100,15 +75,16 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (counter == 0) {
-            initTestRooms(); //for checking if list is working and default room till that time
+            //initTestRooms(); //for checking if list is working and default room till that time
+            TestRoomInit.initTestRooms(roomRepo);
             counter++;
         }
-        System.out.println("reached point handleMessage");
+        logger.info("reached point handleMessage");
         // TODO handle the messages here
         //session.sendMessage(new TextMessage("echo from handler: " + message.getPayload()));
 
         String payload = (String) message.getPayload();
-        System.out.println("from client" + payload);
+        logger.info("from client" + payload);
 
         handleMessageByType(session, payload);
     }
@@ -136,7 +112,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 //case DRAW_CARD -> handleDrawCard(session, payload);
                 case DRAW_CARD -> HandlerDrawCard.handleDrawCard(session, payload, sessions, roomRepo);
                 //def.
-                default -> System.out.println("unknown message type received");
+                default -> logger.info("unknown message type received");
             }
         }
     }
@@ -148,7 +124,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
 
     private void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
         //RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
     }
 
@@ -157,7 +133,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         Logger logger = Logger.getLogger(getClass().getName());
         //Gson gson = new Gson();
         logger.info("ask for room list reached");
-        RoomListMessage roomListMessage = gson.fromJson(payload, RoomListMessage.class);
+        //RoomListMessage roomListMessage = gson.fromJson(payload, RoomListMessage.class);
 
         //get repo List
         ArrayList<Room> roomList = roomRepo.listAllRooms();
