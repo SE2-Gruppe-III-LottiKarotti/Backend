@@ -1,7 +1,5 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
-import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.model.raum.TestRoomInit;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
@@ -12,12 +10,12 @@ import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerC
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerDrawCard;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
+import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerRoomList;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
@@ -104,7 +102,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 //case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
                 case OPEN_ROOM -> HandlerOpenRoom.handleOpenRoomMessage(session, payload);
                 case JOIN_ROOM -> HandlerJoinRoom.handleAskForJoinRoom(session, payload, roomRepo);
-                case LIST_ROOMS -> handleAskForRoomList(session, payload);
+                //case LIST_ROOMS -> handleAskForRoomList(session, payload);
+                case LIST_ROOMS -> HandlerRoomList.handleAskForRoomList(session, payload, roomRepo);
                 //messages for gameboard logic
                 case GAMEBOARD -> handleGameBoardMessage(session, payload);
                 //case CHAT -> handleChatMessage(session, payload);
@@ -127,53 +126,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         //Gson gson = new Gson();
         //RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
     }
-
-
-    private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception {
-        Logger logger = Logger.getLogger(getClass().getName());
-        //Gson gson = new Gson();
-        logger.info("ask for room list reached");
-        //RoomListMessage roomListMessage = gson.fromJson(payload, RoomListMessage.class);
-
-        //get repo List
-        ArrayList<Room> roomList = roomRepo.listAllRooms();
-
-        //arrayList for request
-        ArrayList<RoomInfo> roomInfoList = new ArrayList<>();
-
-        for (Room room : roomList) {
-            //nur räume, welche mehr oder gleich einen platz haben, welcher noch unbesetzt ist...
-            //es macht keinen sinn volle räume zu übermitteln...
-            if (room.getAvailablePlayersSpace() >= 1) {
-                RoomInfo roomInfo = new RoomInfo();
-                roomInfo.setRoomID(room.getRoomID());
-                roomInfo.setRoomName(room.getRoomName());
-                roomInfo.setCreator(room.getCreatorName());
-                roomInfo.setAvailablePlayersSpace(room.getAvailablePlayersSpace());
-                roomInfoList.add(roomInfo);
-                logger.info(roomInfo + " " + roomInfo.getRoomName() + " " + roomInfo.getCreator() + " " + roomInfo.getAvailablePlayersSpace());
-            }
-
-        }
-        logger.info("###");
-        logger.info(String.valueOf(roomInfoList));
-        logger.info("###");
-
-        //msg
-        RoomListMessage response = new RoomListMessage();
-        response.setActionTypeRoomListMessage(RoomListMessage.ActionTypeRoomListMessage.ANSWER_ROOM_LIST_OK);
-        response.setRoomInfoArrayList(roomInfoList);
-
-        //prepare and send
-        String responsePayload = gson.toJson(response);
-        session.sendMessage(new TextMessage(responsePayload));
-
-        logger.info("###");
-        logger.info(responsePayload);
-        logger.info("###");
-
-    }
-
 
 
     @Override

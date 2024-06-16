@@ -14,7 +14,7 @@ public class RoomListMessage {
     public enum ActionTypeRoomListMessage {
         ASK_FOR_ROOM_LIST,
         ANSWER_ROOM_LIST_OK,
-        ANSWER_ROOM_LISR_ERR
+        ANSWER_ROOM_LIST_ERR
     }
 }
 
