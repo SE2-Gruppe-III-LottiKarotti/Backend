@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler.defaults;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.msg.MessageType;
-import at.aau.serg.websocketdemoserver.msg.TestMessage;
+import at.aau.serg.websocketdemoserver.msg.TestMessageImpl;
 import org.springframework.web.socket.WebSocketSession;
 import java.util.logging.Logger;
 
@@ -15,7 +15,7 @@ public class HandlerTestMessage {
         TransportUtils.validateSessionAndPayload(session, payload);
 
         //1 user message aus der payload extrahieren
-        TestMessage testMessage = TransportUtils.helpFromJson(payload, TestMessage.class);
+        TestMessageImpl testMessage = TransportUtils.helpFromJson(payload, TestMessageImpl.class);
 
         TransportUtils.nullCheck(testMessage);
 

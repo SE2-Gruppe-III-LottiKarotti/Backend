@@ -1,26 +1,17 @@
 package at.aau.serg.websocketdemoserver.websocket.roomTopic;
 
-import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
-import at.aau.serg.websocketdemoserver.msg.ChatMessage;
-import at.aau.serg.websocketdemoserver.msg.JoinRoomMessage;
-import at.aau.serg.websocketdemoserver.msg.RoomListMessage;
+import at.aau.serg.websocketdemoserver.msg.RoomListMessageImpl;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
-import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerRoomList;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,7 +31,7 @@ public class HandlerRoomListTest {
 
 
     private static final Gson gson = new Gson();
-    private RoomListMessage roomListMessage;
+    private RoomListMessageImpl roomListMessage;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
     private String playerId1;
@@ -76,7 +67,7 @@ public class HandlerRoomListTest {
     @BeforeEach
     public void setup() {
         session1 = mock(WebSocketSession.class);
-        roomListMessage = new RoomListMessage();
+        roomListMessage = new RoomListMessageImpl();
         //initialize the default rooms
         initTestRooms();
     }

@@ -4,7 +4,7 @@ import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.DrawCardMessage;
+import at.aau.serg.websocketdemoserver.msg.DrawCardMessageImpl;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -20,13 +20,13 @@ public class HandlerDrawCard {
     public static void handleDrawCard(WebSocketSession session, String payload, List<WebSocketSession> sessions, InMemoryRoomRepo roomRepo)  {
 
         TransportUtils.validateSessionAndPayload(session, payload);
-        DrawCardMessage drawCardMessage = TransportUtils.helpFromJson(payload, DrawCardMessage.class);//gson.fromJson(payload, DrawCardMessage.class);
+        DrawCardMessageImpl drawCardMessage = TransportUtils.helpFromJson(payload, DrawCardMessageImpl.class);//gson.fromJson(payload, DrawCardMessage.class);
 
         //error check1
         if (drawCardMessage == null) {
             logger.info("error draw card");
-            DrawCardMessage errorMsg = new DrawCardMessage();
-            errorMsg.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_ERR);
+            DrawCardMessageImpl errorMsg = new DrawCardMessageImpl();
+            errorMsg.setActionTypeDrawCard(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_ERR);
             errorMsg.setCard("error");
             String export = TransportUtils.helpToJson(errorMsg);//gson.toJson(errorMsg);
             TransportUtils.broadcastMsg(export, session, sessions);
@@ -75,7 +75,7 @@ public class HandlerDrawCard {
         }
 
         //now send it... finally
-        drawCardMessage.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK);
+        drawCardMessage.setActionTypeDrawCard(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK);
         drawCardMessage.setCard(cardReturned);
         drawCardMessage.setNextPlayerId(nextPlayerId);
         String exportPayload = TransportUtils.helpToJson(drawCardMessage);//gson.toJson(drawCardMessage);

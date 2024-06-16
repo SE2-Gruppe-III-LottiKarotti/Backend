@@ -7,27 +7,36 @@ import lombok.Data;
 import java.util.ArrayList;
 
 @Data
-public class RoomMessage {
+public class RoomMessage implements BaseMessageImpl {
 
    // private final MessageType messageType = MessageType.GAMEBOARD;
-    private RoomMessage.ActionType actionType;
+ MessageType messageType;
 
-    private String roomID;
-    private String roomName;
-    private ArrayList<Player> listOfPlayers;
-    private int maxPlayers;
-    private Gameboard gameboard;
-    private Player currentPlayer; // oder spielerID ...
-    private Player nextPlayer;
-    private Player addPlayer;
-    private String randomCart;
-    private int playerIndex;
+ private RoomMessage.ActionType actionType;
 
-    public RoomMessage() {
-        //default
-    }
 
-    public enum ActionType {
-        OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER, NEXTPlAYER,
-    }
+ private String roomID;
+ private String roomName;
+ private ArrayList<Player> listOfPlayers;
+ private int maxPlayers;
+ private Gameboard gameboard;
+ private Player currentPlayer; // oder spielerID ...
+ private Player nextPlayer;
+ private Player addPlayer;
+ private String randomCart;
+ private int playerIndex;
+
+ public RoomMessage() {
+  //default
+ }
+
+ public enum ActionType {
+  OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER, NEXTPlAYER,
+ }
+
+ @Override
+ public MessageType getMessageType() {
+  return messageType = MessageType.GAMEBOARD;
+ }
+
 }

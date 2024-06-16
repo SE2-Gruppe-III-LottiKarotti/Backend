@@ -1,14 +1,15 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class SpielerMessage {
+public class SpielerMessageImpl implements BaseMessageImpl {
 
-    private final MessageType messageType = MessageType.SPIELER;
+    //private final MessageType messageType = MessageType.SPIELER;
+    MessageType messageType;
     private ActionType actionType;
     private String spielerID;
     private String name;
 
     //constructor or default constructor???
-    public SpielerMessage () {
+    public SpielerMessageImpl() {
 
     }
 
@@ -38,5 +39,10 @@ public class SpielerMessage {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public MessageType getMessageType() {
+        return messageType = MessageType.DRAW_CARD;
     }
 }

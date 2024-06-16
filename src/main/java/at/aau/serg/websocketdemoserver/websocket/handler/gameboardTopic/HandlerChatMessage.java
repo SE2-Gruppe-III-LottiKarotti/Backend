@@ -3,7 +3,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic;
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.logic.CensorMessageFunction;
 import at.aau.serg.websocketdemoserver.logic.CensoredWordsDB;
-import at.aau.serg.websocketdemoserver.msg.ChatMessage;
+import at.aau.serg.websocketdemoserver.msg.ChatMessageImpl;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
@@ -13,12 +13,12 @@ public class HandlerChatMessage {
 
         TransportUtils.validateSessionAndPayload(session, payload);
 
-        ChatMessage chatMessage = TransportUtils.helpFromJson(payload, ChatMessage.class);
+        ChatMessageImpl chatMessage = TransportUtils.helpFromJson(payload, ChatMessageImpl.class);
 
 
         if (chatMessage == null) {
-            ChatMessage errorMsg = new ChatMessage();
-            errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
+            ChatMessageImpl errorMsg = new ChatMessageImpl();
+            errorMsg.setActionTypeChat(ChatMessageImpl.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
             String exportErrMsg = TransportUtils.helpToJson(errorMsg);//gson.toJson(errorMsg);
             TransportUtils.sendMsg(session, exportErrMsg);
             return;
@@ -31,8 +31,8 @@ public class HandlerChatMessage {
         if (chatMessage.getPlayerId() == null || chatMessage.getPlayerName() == null || chatMessage.getText() == null || chatMessage.getRoomID() == null
                 || chatMessage.getPlayerId().isEmpty() || chatMessage.getPlayerName().isEmpty() || chatMessage.getText().isEmpty() || chatMessage.getRoomID().isEmpty()) {
             System.out.println("invalid input");
-            ChatMessage errorMsg = new ChatMessage();
-            errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
+            ChatMessageImpl errorMsg = new ChatMessageImpl();
+            errorMsg.setActionTypeChat(ChatMessageImpl.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
             String exportErrMsg = TransportUtils.helpToJson(errorMsg);//gson.toJson(errorMsg);
             TransportUtils.sendMsg(session, exportErrMsg);
             return;
@@ -44,7 +44,7 @@ public class HandlerChatMessage {
         String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.censoredWords);
 
         chatMessage.setText(outputText);
-        chatMessage.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK);
+        chatMessage.setActionTypeChat(ChatMessageImpl.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK);
 
         String payloadExport = TransportUtils.helpToJson(chatMessage); //gson.toJson(chatMessage);
         //broadcastMsg(payloadExport, session);

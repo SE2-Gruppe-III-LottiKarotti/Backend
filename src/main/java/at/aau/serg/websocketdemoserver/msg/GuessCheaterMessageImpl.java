@@ -3,9 +3,10 @@ package at.aau.serg.websocketdemoserver.msg;
 import lombok.Data;
 
 @Data
-public class GuessCheaterMessage {
+public class GuessCheaterMessageImpl implements BaseMessageImpl {
 
-    private final MessageType messageType = MessageType.CHEAT;
+    //private final MessageType messageType = MessageType.CHEAT;
+    MessageType messageType;
     //der spieler, welcher beschuldigt
     String accusingPlayerId;
     String accusingPlayerName;
@@ -15,4 +16,8 @@ public class GuessCheaterMessage {
     String roomId;
 
     /*message need to be broadcasted*/
+    @Override
+    public MessageType getMessageType() {
+        return messageType = MessageType.CHEAT;
+    }
 }

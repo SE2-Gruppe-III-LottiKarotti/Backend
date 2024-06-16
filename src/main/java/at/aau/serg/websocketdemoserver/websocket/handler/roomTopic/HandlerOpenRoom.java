@@ -3,7 +3,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler.roomTopic;
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.OpenRoomMessage;
+import at.aau.serg.websocketdemoserver.msg.OpenRoomMessageImpl;
 import at.aau.serg.websocketdemoserver.websocket.handler.WebSocketHandlerImpl;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -16,7 +16,7 @@ public class HandlerOpenRoom {
     public static void handleOpenRoomMessage(WebSocketSession session, String payload)  {
         //1 extract
         TransportUtils.validateSessionAndPayload(session, payload);
-        OpenRoomMessage openRoomMessage = TransportUtils.helpFromJson(payload, OpenRoomMessage.class);
+        OpenRoomMessageImpl openRoomMessage = TransportUtils.helpFromJson(payload, OpenRoomMessageImpl.class);
 
         //2 set local variables
         String roomName = openRoomMessage.getRoomName();
@@ -26,7 +26,7 @@ public class HandlerOpenRoom {
         //3_1 checks1
         if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty() || maxPlayers < 2 || maxPlayers > 4) {
             //fehlerhafte Werte
-            openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR);
+            openRoomMessage.setOpenRoomActionType(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_ERR);
             String errorPayload = TransportUtils.helpToJson(openRoomMessage);
             TransportUtils.sendMsg(session, errorPayload);
             return;
@@ -41,7 +41,7 @@ public class HandlerOpenRoom {
             // Room already exists
             // 4_1 senden...
             if (foundRoom.getRoomName().equals(openRoomMessage.getRoomName())) {
-                openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR);
+                openRoomMessage.setOpenRoomActionType(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_ERR);
                 String errorPayload = TransportUtils.helpToJson(openRoomMessage);
                 TransportUtils.sendMsg(session, errorPayload);
                 logger.info("toClient: " + errorPayload);
@@ -69,7 +69,7 @@ public class HandlerOpenRoom {
 
         //5_2 message vorbereiten und senden --> serialisieren
         //now prepare message
-        openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK);
+        openRoomMessage.setOpenRoomActionType(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_OK);
         openRoomMessage.setRoomId(roomToAdd.getRoomID());
         openRoomMessage.setRoomName(roomToAdd.getRoomName());
         openRoomMessage.setPlayerId(creatorId);

@@ -1,5 +1,6 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
+import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.raum.TestRoomInit;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
@@ -11,7 +12,6 @@ import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerD
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerRoomList;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
@@ -30,7 +30,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         return roomRepo;
     }
 
-    private final Gson gson = new Gson();
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -88,11 +87,10 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
     private void handleMessageByType(WebSocketSession session, String payload) throws Exception {
-        Gson gson = new Gson();
-        BaseMessage baseMessage = gson.fromJson(payload, BaseMessage.class);
+        BaseMessageClass baseMessageClass = TransportUtils.helpFromJson(payload, BaseMessageClass.class);
 
-        if (baseMessage != null) {
-            MessageType messageType = baseMessage.getMessageType();
+        if (baseMessageClass != null) {
+            MessageType messageType = baseMessageClass.getMessageType();
             switch (messageType) {
                 //testMsg at startup
                 case TEST -> HandlerTestMessage.handleTestMessage(session, payload);

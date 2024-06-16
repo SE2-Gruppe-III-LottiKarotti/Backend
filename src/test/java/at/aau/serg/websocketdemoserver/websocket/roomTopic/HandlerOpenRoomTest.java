@@ -1,7 +1,7 @@
 package at.aau.serg.websocketdemoserver.websocket.roomTopic;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
-import at.aau.serg.websocketdemoserver.msg.OpenRoomMessage;
+import at.aau.serg.websocketdemoserver.msg.OpenRoomMessageImpl;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -21,17 +21,17 @@ public class HandlerOpenRoomTest {
 
     private WebSocketSession session;
 
-    private OpenRoomMessage openRoomMessage;
+    private OpenRoomMessageImpl openRoomMessage;
 
     @BeforeEach
     public void setup() {
         session = mock(WebSocketSession.class);
-        openRoomMessage = new OpenRoomMessage();
+        openRoomMessage = new OpenRoomMessageImpl();
     }
 
     @Test
     public void testValidOpenRoom() throws Exception {
-        OpenRoomMessage openRoomMessage = new OpenRoomMessage();
+        OpenRoomMessageImpl openRoomMessage = new OpenRoomMessageImpl();
         openRoomMessage.setRoomName("roomDani");
         openRoomMessage.setPlayerName("Daniel");
         openRoomMessage.setNumPlayers("2");
@@ -43,10 +43,10 @@ public class HandlerOpenRoomTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        OpenRoomMessage responseOpenRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), OpenRoomMessage.class);
+        OpenRoomMessageImpl responseOpenRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), OpenRoomMessageImpl.class);
 
         assertNotNull(responseOpenRoomMessage);
-        assertEquals(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK, responseOpenRoomMessage.getOpenRoomActionType());
+        assertEquals(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_OK, responseOpenRoomMessage.getOpenRoomActionType());
         assertNotNull(responseOpenRoomMessage.getRoomId());
         assertEquals("roomDani", responseOpenRoomMessage.getRoomName());
         assertEquals("Daniel", responseOpenRoomMessage.getPlayerName());
