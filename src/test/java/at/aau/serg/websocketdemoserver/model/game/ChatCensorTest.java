@@ -1,7 +1,7 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import at.aau.serg.websocketdemoserver.model.logic.CensorMessageFunction;
-import at.aau.serg.websocketdemoserver.msg.CensoredWordsDB;
+import at.aau.serg.websocketdemoserver.logic.CensorMessageFunction;
+import at.aau.serg.websocketdemoserver.logic.CensoredWordsDB;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

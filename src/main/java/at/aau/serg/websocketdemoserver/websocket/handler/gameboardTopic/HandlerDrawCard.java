@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
-import at.aau.serg.websocketdemoserver.model.logic.RandomCardGenerator;
+import at.aau.serg.websocketdemoserver.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.msg.DrawCardMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;

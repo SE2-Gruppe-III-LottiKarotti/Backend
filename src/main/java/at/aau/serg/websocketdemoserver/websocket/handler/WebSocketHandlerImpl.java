@@ -1,8 +1,6 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
 import at.aau.serg.websocketdemoserver.model.game.Player;
-import at.aau.serg.websocketdemoserver.model.logic.CensorMessageFunction;
-import at.aau.serg.websocketdemoserver.model.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.model.raum.RoomInfo;
 import at.aau.serg.websocketdemoserver.msg.*;
@@ -10,6 +8,7 @@ import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
+import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerChatMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerDrawCard;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
@@ -132,7 +131,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 case LIST_ROOMS -> handleAskForRoomList(session, payload);
                 //messages for gameboard logic
                 case GAMEBOARD -> handleGameBoardMessage(session, payload);
-                case CHAT -> handleChatMessage(session, payload);
+                //case CHAT -> handleChatMessage(session, payload);
+                case CHAT -> HandlerChatMessage.handleChatMessage(session, payload, sessions);
                 //case DRAW_CARD -> handleDrawCard(session, payload);
                 case DRAW_CARD -> HandlerDrawCard.handleDrawCard(session, payload, sessions, roomRepo);
                 //def.
@@ -147,136 +147,10 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
 
-
-    public void handleChatMessage(WebSocketSession session, String payload) throws Exception {
-                //TODO:
-                /**
-                 * nachricht erreicht den handler
-                 * die nachricht hat einen sender, eine raumID und eine text(nachricht)
-                 * ein client "sendet" eine nachricht an den server
-                 * danach wird die nachricht wieder vom server als json verpackt und an alle clients versendet
-                 * ob eine nachricht dann vom client angenommen wird, hängt von der raumID ab
-                 * wenn raumID des clients == raumID in der message --> dann wird die Nachricht angenommen
-                 * zusätzlich wäre es auch möglich, dass man eigene nachrichten nicht sieht, wenn man zb
-                 * noch zusätzlich die playerID vom absender hinzufügt und der absender seine eigene
-                 * chat-nachricht ignoriert...*/
-
-                ChatMessage chatMessage = gson.fromJson(payload, ChatMessage.class);
-
-                if (chatMessage == null) {
-                    ChatMessage errorMsg = new ChatMessage();
-                    errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
-                    String exportErrMsg = gson.toJson(errorMsg);
-                    session.sendMessage(new TextMessage(exportErrMsg));
-
-                }
-
-                String playerNameSender;
-                String playerIdSender;
-                String inputText;
-                String roomId;
-
-                if (chatMessage.getPlayerId() == null || chatMessage.getPlayerName() == null || chatMessage.getText() == null || chatMessage.getRoomID() == null
-                        || chatMessage.getPlayerId().isEmpty() || chatMessage.getPlayerName().isEmpty() || chatMessage.getText().isEmpty() || chatMessage.getRoomID().isEmpty()) {
-                    System.out.println("invalid input");
-                    ChatMessage errorMsg = new ChatMessage();
-                    errorMsg.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR);
-                    String exportErrMsg = gson.toJson(errorMsg);
-                    session.sendMessage(new TextMessage(exportErrMsg));
-                    return;
-                }
-
-                //playerIdSender = chatMessage.getPlayerId();
-                //playerNameSender = chatMessage.getPlayerName();
-                inputText = chatMessage.getText();
-                //roomId = chatMessage.getRoomID();
-
-                String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.censoredWords);
-
-                chatMessage.setText(outputText);
-                String payloadExport = gson.toJson(chatMessage);
-                broadcastMsg(payloadExport, session);
-            }
-
-
-
     private void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
         Gson gson = new Gson();
-        RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
+        //RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
     }
-
-
-
-
-
-
-
-    private void handleDrawCard(WebSocketSession session, String payload) throws Exception {
-        Gson gson = new Gson();
-        DrawCardMessage drawCardMessage = gson.fromJson(payload, DrawCardMessage.class);
-
-        //error check1
-        if (drawCardMessage == null) {
-            System.out.println("error draw card");
-            DrawCardMessage errorMsg = new DrawCardMessage();
-            errorMsg.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_ERR);
-            errorMsg.setCard("error");
-            String export = gson.toJson(errorMsg);
-            broadcastMsg(export, session);
-            return;
-        }
-
-        String roomId = drawCardMessage.getRoomID();
-        String playerId = drawCardMessage.getPlayerID();
-        //DrawCardMessage.ActionTypeDrawCard actionTypeDrawCard = drawCardMessage.getActionTypeDrawCard();
-        String inputCard = drawCardMessage.getCard();
-
-        Room room = roomRepo.findRoomById(roomId);
-        if (room == null) {
-            System.out.println("room not found" + roomId);
-            return;
-        }
-
-        Player player = room.getPlayerById(playerId);
-        if (player == null) {
-            System.out.println("player not found" + playerId);
-            return;
-        }
-
-        //now handle the return of card
-
-        //first reset if player == cheater
-        //catching is only possible, if it not the players turn again
-        room.deletePlayerFromCheatList(playerId);
-
-        String nextPlayerId = room.getNextPlayer(playerId).getPlayerID();
-        String cardReturned;
-
-        switch (inputCard) {
-            case "random" -> cardReturned = RandomCardGenerator.startCardGenerator();
-            case "1", "2", "3", "carrot" -> {
-                room.addPlayerToCheatList(playerId);
-                cardReturned = inputCard;
-            }
-            default -> {
-                System.out.println("invalid input: " + inputCard);
-                return;
-            }
-        }
-
-        //now send it... finally
-        drawCardMessage.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK);
-        drawCardMessage.setCard(cardReturned);
-        drawCardMessage.setNextPlayerId(nextPlayerId);
-        String exportPayload = gson.toJson(drawCardMessage);
-        broadcastMsg(exportPayload, session);
-
-        logger.info("toClient: " + exportPayload);
-
-    }
-
-
-
 
 
     private void handleAskForRoomList(WebSocketSession session, String payload) throws Exception {
