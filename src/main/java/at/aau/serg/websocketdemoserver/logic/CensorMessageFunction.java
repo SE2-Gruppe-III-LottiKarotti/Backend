@@ -1,4 +1,4 @@
-package at.aau.serg.websocketdemoserver.model.logic;
+package at.aau.serg.websocketdemoserver.logic;
 
 
 

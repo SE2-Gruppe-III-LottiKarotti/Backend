@@ -1,12 +1,8 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class ChatMessage {
-    public enum MessageType {
-        CHAT
-    }
+public class ChatMessageImpl implements BaseMessageImpl {
 
-    private final MessageType messageType = MessageType.CHAT;
-
+    MessageType messageType;
     String playerName;
     String playerId;
     String text;
@@ -16,21 +12,22 @@ public class ChatMessage {
 
     /* message need to be broadcasted */
 
-    // String msgIdentifier; // da der socket eh bekannt ist
 
-    public ChatMessage(String playerName, String playerId, String text, String roomID) {
+    public ChatMessageImpl(String playerName, String playerId, String text, String roomID) {
         this.playerName = playerName;
         this.playerId = playerId;
         this.text = text;
         this.roomID = roomID;
     }
 
-    public ChatMessage() {
-        // default
+    public ChatMessageImpl() {
+        //default
     }
 
+
+    @Override
     public MessageType getMessageType() {
-        return messageType;
+        return messageType = MessageType.CHAT;
     }
 
     public enum ActionTypeChat {

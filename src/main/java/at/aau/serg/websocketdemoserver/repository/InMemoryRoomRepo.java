@@ -7,10 +7,13 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 @Component
 //@Repository
 public class InMemoryRoomRepo {
+
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     //private static final InMemoryRoomRepo instance = new InMemoryRoomRepo();
     private final Set<Room> roomsRepo = new HashSet();
@@ -73,12 +76,13 @@ public class InMemoryRoomRepo {
         if (roomName == null) {
             return null;
         }
-        System.out.println("Searching for room with name: " + roomName);
+        logger.info("Searching for room with name: " + roomName);
+
         for (Room room : roomsRepo) {
             //assert (room != null && room.getRoomName() != null);
             if (room.getRoomName().equals(roomName)) {
                 //room != null && room.getRoomName() != null &&
-                System.out.println("Room found: " + room);
+                logger.info("Room found: " + room);
                 return room;
             }
         }
@@ -97,7 +101,7 @@ public class InMemoryRoomRepo {
         if (room != null) {
             room.addPlayer(player);
         } else {
-            System.out.println("Raum nicht gefunden.");
+            logger.info("Raum nicht gefunden.");
         }
     }
 

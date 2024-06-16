@@ -1,8 +1,11 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-import lombok.Data;
-
-@Data
+/*@Data
 public class BaseMessage {
     private MessageType messageType;
+}*/
+
+public interface BaseMessageImpl {
+    MessageType getMessageType();
+
 }

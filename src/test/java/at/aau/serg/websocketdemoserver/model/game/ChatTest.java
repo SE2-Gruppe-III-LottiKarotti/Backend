@@ -1,18 +1,19 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import at.aau.serg.websocketdemoserver.msg.ChatMessage;
-import at.aau.serg.websocketdemoserver.msg.ChatMessage.ActionTypeChat;
+import at.aau.serg.websocketdemoserver.msg.ChatMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.ChatMessageImpl.ActionTypeChat;
+import at.aau.serg.websocketdemoserver.msg.MessageType;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class ChatTest {
-    private ChatMessage message;
+    private ChatMessageImpl message;
 
     @Before
     public void setup() {
-        message = new ChatMessage();
+        message = new ChatMessageImpl();
     }
 
     @Test
@@ -22,13 +23,13 @@ public class ChatTest {
         String text = "Hello, Daniel!";
         String roomID = "room123";
 
-        ChatMessage message = new ChatMessage(playerName, playerId, text, roomID);
+        ChatMessageImpl message = new ChatMessageImpl(playerName, playerId, text, roomID);
 
         assertEquals(playerName, message.getPlayerName());
         assertEquals(playerId, message.getPlayerId());
         assertEquals(text, message.getText());
         assertEquals(roomID, message.getRoomID());
-        assertEquals(ChatMessage.MessageType.CHAT, message.getMessageType());
+        assertEquals(MessageType.CHAT, message.getMessageType());
     }
 
     @Test
