@@ -10,6 +10,7 @@ import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
+import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerDrawCard;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import com.google.gson.Gson;
@@ -88,7 +89,13 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        sessions.add(session);
+        try {
+            sessions.add(session);
+        }
+        catch (Exception e) {
+            throw new Exception (e);
+        }
+
     }
 
     @Override
@@ -126,7 +133,8 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 //messages for gameboard logic
                 case GAMEBOARD -> handleGameBoardMessage(session, payload);
                 case CHAT -> handleChatMessage(session, payload);
-                case DRAW_CARD -> handleDrawCard(session, payload);
+                //case DRAW_CARD -> handleDrawCard(session, payload);
+                case DRAW_CARD -> HandlerDrawCard.handleDrawCard(session, payload, sessions, roomRepo);
                 //def.
                 default -> System.out.println("unknown message type received");
             }
