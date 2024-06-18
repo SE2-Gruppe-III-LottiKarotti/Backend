@@ -11,5 +11,9 @@ public class PlayingPiece {
         this.playingPiece = playingPiece;
         this.playerId = playerId;
     }
+
+    public PlayingPiece() {
+
+    }
 }
 
