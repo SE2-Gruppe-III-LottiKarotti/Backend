@@ -1,6 +1,7 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
+import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.raum.TestRoomInit;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
@@ -9,6 +10,8 @@ import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbe
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerChatMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerDrawCard;
+import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage;
+import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerMoveMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerRoomList;
@@ -16,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
@@ -30,33 +35,10 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
         return roomRepo;
     }
 
-    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    private static final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
-
-    //broadcasting
-
-    /*public void broadcastMsg(String message, WebSocketSession sender) throws Exception {
-        if (message == null) {
-            logger.warning("error: message to broadcast was null");
-            //assert (false);
-            //sollte mit logger ausgetauscht werden
-            return;
-        }
-
-        Set<WebSocketSession> sessionsToBroadcast = new HashSet<>(sessions);
-        sessionsToBroadcast.remove(sender);
-
-        for (WebSocketSession client : sessionsToBroadcast) {
-            if (client.isOpen()) {
-                client.sendMessage(new TextMessage(message));
-            } else {
-                logger.info("Session {} is closed, skipping message send");
-            }
-        }
-    }*/
-
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -102,21 +84,15 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 case JOIN_ROOM -> HandlerJoinRoom.handleAskForJoinRoom(session, payload, roomRepo);
                 //case LIST_ROOMS -> handleAskForRoomList(session, payload);
                 case LIST_ROOMS -> HandlerRoomList.handleAskForRoomList(session, payload, roomRepo);
-                //messages for gameboard logic
-                case GAMEBOARD -> handleGameBoardMessage(session, payload);
                 //case CHAT -> handleChatMessage(session, payload);
                 case CHAT -> HandlerChatMessage.handleChatMessage(session, payload, sessions);
                 //case DRAW_CARD -> handleDrawCard(session, payload);
                 case DRAW_CARD -> HandlerDrawCard.handleDrawCard(session, payload, sessions, roomRepo);
-                //def.
+                case GAME -> HandlerGameMessage.handleGameMessage(session, payload, sessions, roomRepo);
+                case MOVE -> HandlerMoveMessage.handleMoveMessage(session, payload, sessions, roomRepo);
                 default -> logger.info("unknown message type received");
             }
         }
-    }
-
-    public void handleGameBoardMessage(WebSocketSession session, String payload) throws Exception {
-        //TODO: Task Flo...
-        //TODO: at the moment empty class, that no error occur
     }
 
 
