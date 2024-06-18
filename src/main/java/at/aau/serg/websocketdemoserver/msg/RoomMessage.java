@@ -9,7 +9,6 @@ import java.util.ArrayList;
 @Data
 public class RoomMessage implements BaseMessageImpl {
 
-   // private final MessageType messageType = MessageType.GAMEBOARD;
  MessageType messageType;
 
  private RoomMessage.ActionType actionType;
@@ -33,10 +32,4 @@ public class RoomMessage implements BaseMessageImpl {
  public enum ActionType {
   OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER, NEXTPlAYER,
  }
-
- @Override
- public MessageType getMessageType() {
-  return messageType = MessageType.GAMEBOARD;
- }
-
 }
