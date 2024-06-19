@@ -15,7 +15,7 @@ public class Gameboard {
     int oldHole;
 
     public Gameboard() {
-        this.fields = new Field[27]; // 26 felder inkl. karotte
+        this.fields = new Field[27]; // 27 fields incl. the carrot
         this.holes = new int[]{3, 6, 9, 15, 18, 20, 24};
         this.holeCounter = holes[random.nextInt(holes.length - 1)];
         winner = null;
@@ -37,14 +37,16 @@ public class Gameboard {
     private void initFields() {
         for (int i = 0; i < fields.length; i++) {
             if (i == 3 || i == 6 || i == 9 || i == 15 || i == 18 || i == 20 || i == 24) {
-                fields[i] = new Field(true); // Maulwurfhügel
+                //mole hole
+                fields[i] = new Field(true);
                 fields[i].setOpen(false);
             } else {
-                fields[i] = new Field(false); // Normale Felder
+                //normal field
+                fields[i] = new Field(false);
             }
         }
 
-        // init moleholes open
+        // init mole holes open
         oldPositionCounter = holeCounter;
         if (oldPositionCounter >= 0 && oldPositionCounter < fields.length) {
             fields[oldPositionCounter].setOpen(true);
@@ -56,12 +58,12 @@ public class Gameboard {
     public void twistTheCarrot() {
         logger.info("twistTheCarrot called");
 
-        // Debug: Ausgabe der alten Positionen und Zustände
+        // Debug: output of the old positions and state
         logger.info("Old Position Counter: " + oldPositionCounter + IS_OPEN_STATUS + fields[oldPositionCounter].isOpen() + ")");
 
         oldHole = oldPositionCounter;
 
-        // Die Löcher, die vormals geöffnet wurden, werden beim nächsten Drehen wieder verschlossen
+        // the holes that were previous opened, and that will closed on the next twist of the carrot
         if (oldHole >= 0 && oldHole < fields.length) {
             fields[oldHole].setOpen(false);
             logger.info("Closed old hole at positions " + oldHole + IS_OPEN_STATUS + fields[oldHole].isOpen() + ")");

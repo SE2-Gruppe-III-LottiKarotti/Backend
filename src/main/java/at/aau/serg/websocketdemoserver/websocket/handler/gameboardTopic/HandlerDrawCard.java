@@ -4,16 +4,14 @@ import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.DrawCardMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.DrawCardMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
-import at.aau.serg.websocketdemoserver.websocket.handler.WebSocketHandlerImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
 import java.util.logging.Logger;
-
-import static at.aau.serg.websocketdemoserver.model.game.Gameboard.logger;
 
 
 public class HandlerDrawCard {
@@ -24,27 +22,24 @@ public class HandlerDrawCard {
     public static void handleDrawCard(WebSocketSession session, String payload, List<WebSocketSession> sessions, InMemoryRoomRepo roomRepo) throws Exception {
 
         TransportUtils.validateSessionAndPayload(session, payload);
-        DrawCardMessageImpl drawCardMessage = TransportUtils.helpFromJson(payload, DrawCardMessageImpl.class);//gson.fromJson(payload, DrawCardMessage.class);
+        DrawCardMessage drawCardMessage = TransportUtils.helpFromJson(payload, DrawCardMessage.class);
 
         ObjectMapper mapper = new ObjectMapper();
 
         //error check1
         if (drawCardMessage == null) {
             logger.info("error draw card");
-            DrawCardMessageImpl errorMsg = new DrawCardMessageImpl();
-            errorMsg.setActionTypeDrawCard(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_ERR);
+            DrawCardMessage errorMsg = new DrawCardMessage();
+            errorMsg.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_ERR);
             errorMsg.setCard("error");
-            String export = TransportUtils.helpToJson(errorMsg);//gson.toJson(errorMsg);
+            String export = TransportUtils.helpToJson(errorMsg);
             TransportUtils.broadcastMsg(export, session, sessions);
-            //TransportUtils.sendMsg(session, export);
 
-            //broadcastMsg(export, session);
             return;
         }
 
         String roomId = drawCardMessage.getRoomID();
         String playerId = drawCardMessage.getPlayerID();
-        //DrawCardMessage.ActionTypeDrawCard actionTypeDrawCard = drawCardMessage.getActionTypeDrawCard();
         String inputCard = drawCardMessage.getCard();
 
         Room room = roomRepo.findRoomById(roomId);
@@ -81,10 +76,15 @@ public class HandlerDrawCard {
         }
 
         //now send it... finally
-        drawCardMessage.setActionTypeDrawCard(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK);
+        drawCardMessage.setActionTypeDrawCard(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK);
         drawCardMessage.setCard(cardReturned);
         drawCardMessage.setNextPlayerId(nextPlayerId);
-        String payloadExport = mapper.writeValueAsString(drawCardMessage); //gson.toJson(chatMessage);
+        String payloadExport;
+        try {
+            payloadExport = mapper.writeValueAsString(drawCardMessage);
+        }catch (JsonProcessingException e) {
+            throw new Exception("Json processing exception", e);
+        }
         TransportUtils.broadcastMsg(payloadExport, session, sessions);
 
         logger.info("toClient: " + payloadExport);

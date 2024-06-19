@@ -28,7 +28,7 @@ public class InMemoryPlayerRepo {
             }
         }
         return null;
-        //spieler nicht gefunden
+        //player not found by id
     }
 
     public Player findPlayerByName (String name) {
@@ -38,7 +38,7 @@ public class InMemoryPlayerRepo {
             }
         }
         return null;
-        //nicht gefunden
+        //player not found by name
 
     }
 

@@ -16,7 +16,7 @@ public class Player {
         this.name = name;
         this.unusedBunnies = new ArrayList<>();
         this.isCheater = false; //default
-        this.reachedCarrot = false; // Zu Beginn hat kein Spieler das letzte Feld erreicht
+        this.reachedCarrot = false; // at the beginning no-one reached the winning field at the end
     }
 
     public enum Colour {

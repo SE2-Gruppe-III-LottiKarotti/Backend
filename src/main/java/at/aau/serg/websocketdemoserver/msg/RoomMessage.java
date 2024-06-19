@@ -19,7 +19,7 @@ public class RoomMessage implements BaseMessageImpl {
  private ArrayList<Player> listOfPlayers;
  private int maxPlayers;
  private Gameboard gameboard;
- private Player currentPlayer; // oder spielerID ...
+ private Player currentPlayer; //or player id both can be used
  private Player nextPlayer;
  private Player addPlayer;
  private String randomCart;

@@ -16,18 +16,18 @@ public class RandomCardGenerator {
         if (numberToCalc < 0 || numberToCalc > 45) {
             throw new IllegalArgumentException("error - number has to be between 0 and 45");
         }
-        if (numberToCalc <=3) { // keine grenze nach unten, weil modulo!
-            return returningCard.THREE.toString(); //3 felder weiter
+        if (numberToCalc <=3) { // no barrier below, because result of modulo can't be negative
+            return returningCard.THREE.toString();
         }
         else if (numberToCalc >= 4 && numberToCalc <=10) {
-            return returningCard.TWO.toString(); //2 felder weiter
+            return returningCard.TWO.toString();
         }
         else if (numberToCalc >=11 && numberToCalc <=21) {
-            return returningCard.CARROT.toString(); //karotte drehen
+            return returningCard.CARROT.toString();
         }
         else {
-            //für 22 bis 45
-            return returningCard.ONE.toString(); //1 feld weiter
+            //from 22 to 45
+            return returningCard.ONE.toString();
         }
     }
 

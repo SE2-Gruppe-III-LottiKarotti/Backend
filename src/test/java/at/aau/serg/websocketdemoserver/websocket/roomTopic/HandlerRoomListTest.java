@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.roomTopic;
 
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.RoomListMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.RoomListMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import com.google.gson.Gson;
@@ -31,7 +31,7 @@ public class HandlerRoomListTest {
 
 
     private static final Gson gson = new Gson();
-    private RoomListMessageImpl roomListMessage;
+    private RoomListMessage roomListMessage;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
     private String playerId1;
@@ -67,7 +67,7 @@ public class HandlerRoomListTest {
     @BeforeEach
     public void setup() {
         session1 = mock(WebSocketSession.class);
-        roomListMessage = new RoomListMessageImpl();
+        roomListMessage = new RoomListMessage();
         //initialize the default rooms
         initTestRooms();
     }

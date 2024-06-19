@@ -3,7 +3,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler.roomTopic;
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.JoinRoomMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.JoinRoomMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -19,7 +19,7 @@ public class HandlerJoinRoom {
         TransportUtils.validateSessionAndPayload(session, payload);
 
 
-        JoinRoomMessageImpl joinRoomMessage = TransportUtils.helpFromJson(payload, JoinRoomMessageImpl.class); //gson.fromJson(payload, JoinRoomMessage.class);
+        JoinRoomMessage joinRoomMessage = TransportUtils.helpFromJson(payload, JoinRoomMessage.class); //gson.fromJson(payload, JoinRoomMessage.class);
 
         //2 set local variables
         String roomName = joinRoomMessage.getRoomName();
@@ -28,7 +28,7 @@ public class HandlerJoinRoom {
         //3 check
         if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty()) {
             //fehlerhafte Werte
-            joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_ERR);
+            joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR);
             String errorPayload = TransportUtils.helpToJson(joinRoomMessage);
             TransportUtils.sendMsg(session, errorPayload);
             return;
@@ -45,7 +45,7 @@ public class HandlerJoinRoom {
         if (foundRoom == null) {
             logger.info("foundRoom == null");
             // raum existiert nicht
-            joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_ERR);
+            joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR);
             String errorPayload = TransportUtils.helpToJson(joinRoomMessage);
             TransportUtils.sendMsg(session, errorPayload);
             logger.info("toClient: " + errorPayload);
@@ -60,7 +60,7 @@ public class HandlerJoinRoom {
         foundRoom.addPlayer(playerToAdd);
 
         //msg set
-        joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_OK);
+        joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_OK);
         joinRoomMessage.setRoomId(foundRoom.getRoomID());
         joinRoomMessage.setPlayerId(playerToAdd.getPlayerID());
         joinRoomMessage.setPlayerName(playerToAdd.getName());

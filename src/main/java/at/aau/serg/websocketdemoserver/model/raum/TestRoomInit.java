@@ -11,8 +11,6 @@ public class TestRoomInit {
         String playerName2 = "Daniel";
         Player player1 = new Player(playerName);
         Player player2 = new Player(playerName2);
-        //String playerId1 = player1.getPlayerID();
-        //String playerId2 = player2.getPlayerID();
         Room testRoom1 = new Room(2, "TestRoom");
         testRoom1.setCreatorName(playerName);
         testRoom1.addPlayer(player1);

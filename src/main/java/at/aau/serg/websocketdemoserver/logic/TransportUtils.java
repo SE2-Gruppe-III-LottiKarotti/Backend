@@ -5,9 +5,7 @@ import com.google.gson.JsonParseException;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-//import java.util.HashSet;
 import java.util.List;
-//import java.util.Set;
 import java.util.logging.Logger;
 
 public class TransportUtils {
@@ -55,9 +53,6 @@ public class TransportUtils {
             return;
         }
         validateSessionAndPayload(sender, responsePayload);
-
-        //Set<WebSocketSession> sessionsToBroadcast = new HashSet<>(sessions);
-        //sessionsToBroadcast.remove(sender);
 
         for (WebSocketSession client : sessions) {
             //sessionsToBroadcast

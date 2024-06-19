@@ -3,7 +3,7 @@ package at.aau.serg.websocketdemoserver.websocket.roomTopic;
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.JoinRoomMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.JoinRoomMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import com.google.gson.Gson;
@@ -24,7 +24,7 @@ public class HandlerJoinRoomTest {
     private static final Gson gson = new Gson ();
     private WebSocketSession session;
 
-    private JoinRoomMessageImpl joinRoomMessage;
+    private JoinRoomMessage joinRoomMessage;
 
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
@@ -55,7 +55,7 @@ public class HandlerJoinRoomTest {
     @BeforeEach
     public void setup() {
         session = mock(WebSocketSession.class);
-        joinRoomMessage = new JoinRoomMessageImpl();
+        joinRoomMessage = new JoinRoomMessage();
         //initialize the default rooms
         initTestRooms();
     }
@@ -63,7 +63,7 @@ public class HandlerJoinRoomTest {
     @Test
     public void testValidJoinRoom() throws Exception {
 
-        JoinRoomMessageImpl joinRoomMessage = new JoinRoomMessageImpl();
+        JoinRoomMessage joinRoomMessage = new JoinRoomMessage();
         joinRoomMessage.setRoomName("TestRoom");
         joinRoomMessage.setPlayerName("Julie");
         String payload = TransportUtils.helpToJson(joinRoomMessage);
@@ -74,10 +74,10 @@ public class HandlerJoinRoomTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        JoinRoomMessageImpl responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessageImpl.class);
+        JoinRoomMessage responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessage.class);
 
         assertNotNull(responseJoinRoomMessage);
-        assertEquals(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_OK, responseJoinRoomMessage.getActionTypeJoinRoom());
+        assertEquals(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_OK, responseJoinRoomMessage.getActionTypeJoinRoom());
         assertNotNull(responseJoinRoomMessage.getRoomId());
         assertEquals("TestRoom", responseJoinRoomMessage.getRoomName());
         assertEquals("Julie", responseJoinRoomMessage.getPlayerName());
@@ -88,7 +88,7 @@ public class HandlerJoinRoomTest {
     @Test
     public void testInvalidJoinRoom_RoomNameDoesntExist() throws Exception {
 
-        JoinRoomMessageImpl joinRoomMessage = new JoinRoomMessageImpl();
+        JoinRoomMessage joinRoomMessage = new JoinRoomMessage();
         joinRoomMessage.setRoomName("TestRoo");
         joinRoomMessage.setPlayerName("Julie");
         String payload = TransportUtils.helpToJson(joinRoomMessage);
@@ -99,10 +99,10 @@ public class HandlerJoinRoomTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        JoinRoomMessageImpl responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessageImpl.class);
+        JoinRoomMessage responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessage.class);
 
         assertNotNull(responseJoinRoomMessage);
-        assertEquals(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_ERR, responseJoinRoomMessage.getActionTypeJoinRoom());
+        assertEquals(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR, responseJoinRoomMessage.getActionTypeJoinRoom());
         assertEquals("TestRoo", responseJoinRoomMessage.getRoomName());
         assertEquals("Julie", responseJoinRoomMessage.getPlayerName());
 
@@ -111,7 +111,7 @@ public class HandlerJoinRoomTest {
     @Test
     public void testInvalidJoinRoom_RoomNameNULL() throws Exception {
 
-        JoinRoomMessageImpl joinRoomMessage = new JoinRoomMessageImpl();
+        JoinRoomMessage joinRoomMessage = new JoinRoomMessage();
         joinRoomMessage.setRoomName(null);
         joinRoomMessage.setPlayerName("Julie");
         String payload = TransportUtils.helpToJson(joinRoomMessage);
@@ -122,10 +122,10 @@ public class HandlerJoinRoomTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        JoinRoomMessageImpl responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessageImpl.class);
+        JoinRoomMessage responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessage.class);
 
         assertNotNull(responseJoinRoomMessage);
-        assertEquals(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_ERR, responseJoinRoomMessage.getActionTypeJoinRoom());
+        assertEquals(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR, responseJoinRoomMessage.getActionTypeJoinRoom());
         assertNull(responseJoinRoomMessage.getRoomName());
         assertEquals("Julie", responseJoinRoomMessage.getPlayerName());
 
@@ -134,7 +134,7 @@ public class HandlerJoinRoomTest {
     @Test
     public void testInvalidJoinRoom_PlayerNameNULL() throws Exception {
 
-        JoinRoomMessageImpl joinRoomMessage = new JoinRoomMessageImpl();
+        JoinRoomMessage joinRoomMessage = new JoinRoomMessage();
         joinRoomMessage.setRoomName("TestRoom");
         joinRoomMessage.setPlayerName(null);
         String payload = TransportUtils.helpToJson(joinRoomMessage);
@@ -145,10 +145,10 @@ public class HandlerJoinRoomTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        JoinRoomMessageImpl responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessageImpl.class);
+        JoinRoomMessage responseJoinRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), JoinRoomMessage.class);
 
         assertNotNull(responseJoinRoomMessage);
-        assertEquals(JoinRoomMessageImpl.ActionTypeJoinRoom.JOIN_ROOM_ERR, responseJoinRoomMessage.getActionTypeJoinRoom());
+        assertEquals(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR, responseJoinRoomMessage.getActionTypeJoinRoom());
         assertNull(responseJoinRoomMessage.getPlayerName());
         assertEquals("TestRoom", responseJoinRoomMessage.getRoomName());
 

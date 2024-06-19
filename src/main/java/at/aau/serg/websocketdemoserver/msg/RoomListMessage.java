@@ -6,8 +6,7 @@ import lombok.Data;
 import java.util.ArrayList;
 
 @Data
-public class RoomListMessageImpl implements BaseMessageImpl {
-    //private final MessageType messageType = MessageType.LIST_ROOMS;
+public class RoomListMessage implements BaseMessageImpl {
     MessageType messageType;
 
     ArrayList<RoomInfo> roomInfoArrayList;

@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.defaults;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.msg.MessageType;
-import at.aau.serg.websocketdemoserver.msg.TestMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.TestMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
 import com.google.gson.Gson;
@@ -20,14 +20,14 @@ import static org.mockito.Mockito.*;
 public class HandlerTestMessageTest {
 
     private WebSocketSession session;
-    private TestMessageImpl testMessage;
+    private TestMessage testMessage;
     private static final Gson gson = new Gson();
 
 
     @BeforeEach
     public void setup() {
         session = mock(WebSocketSession.class);
-        testMessage = new TestMessageImpl();
+        testMessage = new TestMessage();
 
     }
 
@@ -43,7 +43,7 @@ public class HandlerTestMessageTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        TestMessageImpl responseTestMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), TestMessageImpl.class);
+        TestMessage responseTestMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), TestMessage.class);
 
         assertNotNull(responseTestMessage);
         assertEquals("juhu", responseTestMessage.getText());

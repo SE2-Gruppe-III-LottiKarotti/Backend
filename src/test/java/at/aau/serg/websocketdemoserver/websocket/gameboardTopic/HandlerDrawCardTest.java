@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.gameboardTopic;
 
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.DrawCardMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.DrawCardMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerDrawCard;
 import com.google.gson.Gson;
@@ -36,7 +36,7 @@ public class HandlerDrawCardTest {
 
     private static final Gson gson = new Gson();
     private List<WebSocketSession> sessions;
-    private DrawCardMessageImpl drawCardMessage;
+    private DrawCardMessage drawCardMessage;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
     private String playerId1;
@@ -73,7 +73,7 @@ public class HandlerDrawCardTest {
     public void setup () {
         MockitoAnnotations.openMocks(this);
 
-        drawCardMessage = new DrawCardMessageImpl();
+        drawCardMessage = new DrawCardMessage();
         initTestRooms();
         sessions = new ArrayList<>();
         sessions.add(session1);
@@ -105,10 +105,10 @@ public class HandlerDrawCardTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            DrawCardMessageImpl responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessageImpl.class);
+            DrawCardMessage responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessage.class);
 
             assertNotNull(responseDrawCardMessage);
-            assertEquals(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
+            assertEquals(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
             assertNotNull(responseDrawCardMessage.getCard());
             assertNotNull(responseDrawCardMessage.getNextPlayerId());
             assertEquals(playerId1, responseDrawCardMessage.getPlayerID());
@@ -140,10 +140,10 @@ public class HandlerDrawCardTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            DrawCardMessageImpl responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessageImpl.class);
+            DrawCardMessage responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessage.class);
 
             assertNotNull(responseDrawCardMessage);
-            assertEquals(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
+            assertEquals(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
             assertNotNull(responseDrawCardMessage.getCard());
             assertNotNull(responseDrawCardMessage.getNextPlayerId());
             assertEquals(playerId1, responseDrawCardMessage.getPlayerID());
@@ -175,10 +175,10 @@ public class HandlerDrawCardTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            DrawCardMessageImpl responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessageImpl.class);
+            DrawCardMessage responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessage.class);
 
             assertNotNull(responseDrawCardMessage);
-            assertEquals(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
+            assertEquals(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
             assertNotNull(responseDrawCardMessage.getCard());
             assertNotNull(responseDrawCardMessage.getNextPlayerId());
             assertEquals(playerId1, responseDrawCardMessage.getPlayerID());
@@ -210,10 +210,10 @@ public class HandlerDrawCardTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            DrawCardMessageImpl responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessageImpl.class);
+            DrawCardMessage responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessage.class);
 
             assertNotNull(responseDrawCardMessage);
-            assertEquals(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
+            assertEquals(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
             assertNotNull(responseDrawCardMessage.getCard());
             assertNotNull(responseDrawCardMessage.getNextPlayerId());
             assertEquals(playerId1, responseDrawCardMessage.getPlayerID());
@@ -245,10 +245,10 @@ public class HandlerDrawCardTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            DrawCardMessageImpl responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessageImpl.class);
+            DrawCardMessage responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessage.class);
 
             assertNotNull(responseDrawCardMessage);
-            assertEquals(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
+            assertEquals(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_OK, responseDrawCardMessage.getActionTypeDrawCard());
             assertNotNull(responseDrawCardMessage.getCard());
             assertNotNull(responseDrawCardMessage.getNextPlayerId());
             assertEquals(playerId1, responseDrawCardMessage.getPlayerID());
@@ -275,10 +275,10 @@ public class HandlerDrawCardTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            DrawCardMessageImpl responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessageImpl.class);
+            DrawCardMessage responseDrawCardMessage = gson.fromJson(message.getPayload(), DrawCardMessage.class);
 
             assertNotNull(responseDrawCardMessage);
-            assertEquals(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_ERR, responseDrawCardMessage.getActionTypeDrawCard());
+            assertEquals(DrawCardMessage.ActionTypeDrawCard.RETURN_CARD_ERR, responseDrawCardMessage.getActionTypeDrawCard());
             assertNotNull(responseDrawCardMessage.getCard());
 
         }
