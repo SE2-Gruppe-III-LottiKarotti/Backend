@@ -3,7 +3,8 @@ package at.aau.serg.websocketdemoserver.websocket.handler.roomTopic;
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.OpenRoomMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.OpenRoomMessage;
+import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.WebSocketHandlerImpl;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -13,10 +14,10 @@ public class HandlerOpenRoom {
 
     private static final Logger logger = Logger.getLogger(HandlerOpenRoom.class.getName());
 
-    public static void handleOpenRoomMessage(WebSocketSession session, String payload)  {
+    public static void handleOpenRoomMessage(WebSocketSession session, String payload, InMemoryRoomRepo roomRepo)  {
         //1 extract
         TransportUtils.validateSessionAndPayload(session, payload);
-        OpenRoomMessageImpl openRoomMessage = TransportUtils.helpFromJson(payload, OpenRoomMessageImpl.class);
+        OpenRoomMessage openRoomMessage = TransportUtils.helpFromJson(payload, OpenRoomMessage.class);
 
         //2 set local variables
         String roomName = openRoomMessage.getRoomName();
@@ -25,8 +26,8 @@ public class HandlerOpenRoom {
 
         //3_1 checks1
         if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty() || maxPlayers < 2 || maxPlayers > 4) {
-            //fehlerhafte Werte
-            openRoomMessage.setOpenRoomActionType(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_ERR);
+            //error values
+            openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR);
             String errorPayload = TransportUtils.helpToJson(openRoomMessage);
             TransportUtils.sendMsg(session, errorPayload);
             return;
@@ -35,13 +36,13 @@ public class HandlerOpenRoom {
         //3_2 check2
         Room foundRoom = WebSocketHandlerImpl.getRoomRepo().findRoomByName(roomName);
 
-        //4 checks → wenn der raum schon existiert...
+        //4 checks → if the room already exists...
         if (foundRoom != null) {
             logger.info(foundRoom.toString());
-            // Room already exists
-            // 4_1 senden...
+            // room already exists
+            // 4_1 send...
             if (foundRoom.getRoomName().equals(openRoomMessage.getRoomName())) {
-                openRoomMessage.setOpenRoomActionType(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_ERR);
+                openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_ERR);
                 String errorPayload = TransportUtils.helpToJson(openRoomMessage);
                 TransportUtils.sendMsg(session, errorPayload);
                 logger.info("toClient: " + errorPayload);
@@ -52,24 +53,22 @@ public class HandlerOpenRoom {
         }
         logger.info("found room == null");
 
-        //5 positive case --> der raum wird hinzugefügt
-        //else
-        //room does not exist already
+        //5 positive case --> the room will be created
         Room roomToAdd = new Room(maxPlayers, roomName);
-        //Spieler erschaffen
+        //create player
         Player creator = new Player(playerName);
         String creatorId = creator.getPlayerID();
         roomToAdd.addPlayer(creator);
         roomToAdd.setCreatorName(playerName);
         logger.info("after adding player " + roomToAdd.getAvailablePlayersSpace());
 
-        //5_1 raum auch zur repo --> also zur DB hinzufügen
-        //add room to repo
-        WebSocketHandlerImpl.getRoomRepo().addRoom(roomToAdd);
+        //5_1 add the created room to the repo
+        //WebSocketHandlerImpl.getRoomRepo().addRoom(roomToAdd);
+        roomRepo.addRoom(roomToAdd);
 
         //5_2 message vorbereiten und senden --> serialisieren
         //now prepare message
-        openRoomMessage.setOpenRoomActionType(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_OK);
+        openRoomMessage.setOpenRoomActionType(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK);
         openRoomMessage.setRoomId(roomToAdd.getRoomID());
         openRoomMessage.setRoomName(roomToAdd.getRoomName());
         openRoomMessage.setPlayerId(creatorId);

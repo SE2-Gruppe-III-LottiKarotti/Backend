@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.gameboardTopic;
 
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
-import at.aau.serg.websocketdemoserver.msg.ChatMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.ChatMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerChatMessage;
 import com.google.gson.Gson;
@@ -36,7 +36,7 @@ public class HandlerChatMessageTest {
 
     private static final Gson gson = new Gson();
     private List<WebSocketSession> sessions;
-    private ChatMessageImpl chatMessage;
+    private ChatMessage chatMessage;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
     private String playerId1;
@@ -73,7 +73,7 @@ public class HandlerChatMessageTest {
     public void setup () {
         MockitoAnnotations.openMocks(this);
 
-        chatMessage = new ChatMessageImpl();
+        chatMessage = new ChatMessage();
         initTestRooms();
         sessions = new ArrayList<>();
         sessions.add(session1);
@@ -107,10 +107,10 @@ public class HandlerChatMessageTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            ChatMessageImpl responseChatMessage = gson.fromJson(message.getPayload(), ChatMessageImpl.class);
+            ChatMessage responseChatMessage = gson.fromJson(message.getPayload(), ChatMessage.class);
 
             assertNotNull(responseChatMessage);
-            assertEquals(ChatMessageImpl.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK, responseChatMessage.getActionTypeChat());
+            assertEquals(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK, responseChatMessage.getActionTypeChat());
             assertEquals(playerId1, responseChatMessage.getPlayerId());
             assertEquals("FranzSissi", responseChatMessage.getPlayerName());
             assertEquals("testMessage", responseChatMessage.getText());
@@ -146,10 +146,10 @@ public class HandlerChatMessageTest {
         int count = 0;
         for (TextMessage message : capturedMessages) {
             count++;
-            ChatMessageImpl responseChatMessage = gson.fromJson(message.getPayload(), ChatMessageImpl.class);
+            ChatMessage responseChatMessage = gson.fromJson(message.getPayload(), ChatMessage.class);
 
             assertNotNull(responseChatMessage);
-            assertEquals(ChatMessageImpl.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK, responseChatMessage.getActionTypeChat());
+            assertEquals(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK, responseChatMessage.getActionTypeChat());
             assertEquals(playerId1, responseChatMessage.getPlayerId());
             assertEquals("FranzSissi", responseChatMessage.getPlayerName());
             assertEquals("***** testMessage", responseChatMessage.getText());
@@ -176,10 +176,10 @@ public class HandlerChatMessageTest {
         verify(session1, times(1)).sendMessage(captor.capture());
 
         TextMessage capturedMessage = captor.getValue();
-        ChatMessageImpl responseChatMessage = gson.fromJson(capturedMessage.getPayload(), ChatMessageImpl.class);
+        ChatMessage responseChatMessage = gson.fromJson(capturedMessage.getPayload(), ChatMessage.class);
 
         assertNotNull(responseChatMessage);
-        assertEquals(ChatMessageImpl.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR, responseChatMessage.getActionTypeChat());
+        assertEquals(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR, responseChatMessage.getActionTypeChat());
     }
 
 

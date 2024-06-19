@@ -10,20 +10,12 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 @Component
-//@Repository
 public class InMemoryRoomRepo {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    //private static final InMemoryRoomRepo instance = new InMemoryRoomRepo();
-    private final Set<Room> roomsRepo = new HashSet();
+    private final Set<Room> roomsRepo = new HashSet<>();
 
-
-    //for checking select room and join room
-    /*public void initTestRoom() {
-        Room testRoom = new Room(4, "testRoom");
-        roomsRepo.add(testRoom);
-    }*/
 
     public void addRoom(Room room) {
         if (room == null) {
@@ -40,23 +32,14 @@ public class InMemoryRoomRepo {
         for (Room room : roomsRepo) {
             if (room.getRoomID().equals(roomID)) {
                 return room;
-                //raum gefunden
+                //room found --> return room
             }
         }
         return null;
-        //raum nicht gefunden
+        //room not found --> return null
     }
 
-    /*public Room findRoomByName (String roomName) {
-        for (Room room : roomsRepo) {
-            if (room.getRoomName().equals(roomName)) {
-                return room;
-                //gefunden
-            }
-        }
-        return null;
-        //nicht gefunden
-    }*/
+
     public Player getPlayerById(String spielerID) {
         for (Room room : roomsRepo) {
             Player player = room.getPlayerById(spielerID);
@@ -77,11 +60,8 @@ public class InMemoryRoomRepo {
             return null;
         }
         logger.info("Searching for room with name: " + roomName);
-
         for (Room room : roomsRepo) {
-            //assert (room != null && room.getRoomName() != null);
             if (room.getRoomName().equals(roomName)) {
-                //room != null && room.getRoomName() != null &&
                 logger.info("Room found: " + room);
                 return room;
             }
@@ -89,9 +69,7 @@ public class InMemoryRoomRepo {
         return null;
     }
 
-    /*public Set<Room> listAllRooms() {
-        return roomsRepo;
-    }*/
+
     public ArrayList<Room> listAllRooms() {
         return new ArrayList<>(roomsRepo);
     }
@@ -101,7 +79,7 @@ public class InMemoryRoomRepo {
         if (room != null) {
             room.addPlayer(player);
         } else {
-            logger.info("Raum nicht gefunden.");
+            logger.info("room not found, when trying to add a player to a room.");
         }
     }
 

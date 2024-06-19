@@ -3,8 +3,7 @@ package at.aau.serg.websocketdemoserver.msg;
 import lombok.Data;
 
 @Data
-public class JoinRoomMessageImpl implements BaseMessageImpl {
-    //private final MessageType messageType = MessageType.JOIN_ROOM;
+public class JoinRoomMessage implements BaseMessageImpl {
     MessageType messageType;
 
     String roomId;

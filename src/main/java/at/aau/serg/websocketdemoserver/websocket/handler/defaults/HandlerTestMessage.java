@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.websocket.handler.defaults;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.msg.MessageType;
-import at.aau.serg.websocketdemoserver.msg.TestMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.TestMessage;
 import org.springframework.web.socket.WebSocketSession;
 import java.util.logging.Logger;
 
@@ -14,8 +14,8 @@ public class HandlerTestMessage {
 
         TransportUtils.validateSessionAndPayload(session, payload);
 
-        //1 user message aus der payload extrahieren
-        TestMessageImpl testMessage = TransportUtils.helpFromJson(payload, TestMessageImpl.class);
+        //1 extract user message from the payload
+        TestMessage testMessage = TransportUtils.helpFromJson(payload, TestMessage.class);
 
         TransportUtils.nullCheck(testMessage);
 
@@ -29,8 +29,8 @@ public class HandlerTestMessage {
         String response = TransportUtils.helpToJson(testMessage);
         //print to terminal
         logger.info("testmessage changed and send " + testMessage.getText());
-        // Send echo back to the client --> export
-        //umbedingt payload verwenden!!!!!!
+        //send echo back to the client --> export
+        //important: use payload !!!!!!
         TransportUtils.sendMsg(session, response);
 
 

@@ -1,15 +1,13 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class SpielerMessageImpl implements BaseMessageImpl {
+public class PlayerMessage implements BaseMessageImpl {
 
-    //private final MessageType messageType = MessageType.SPIELER;
     MessageType messageType;
     private ActionType actionType;
     private String spielerID;
     private String name;
 
-    //constructor or default constructor???
-    public SpielerMessageImpl() {
+    public PlayerMessage() {
 
     }
 

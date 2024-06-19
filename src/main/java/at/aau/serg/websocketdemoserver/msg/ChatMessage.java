@@ -1,6 +1,6 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class ChatMessageImpl implements BaseMessageImpl {
+public class ChatMessage implements BaseMessageImpl {
 
     MessageType messageType;
     String playerName;
@@ -13,14 +13,14 @@ public class ChatMessageImpl implements BaseMessageImpl {
     /* message need to be broadcasted */
 
 
-    public ChatMessageImpl(String playerName, String playerId, String text, String roomID) {
+    public ChatMessage(String playerName, String playerId, String text, String roomID) {
         this.playerName = playerName;
         this.playerId = playerId;
         this.text = text;
         this.roomID = roomID;
     }
 
-    public ChatMessageImpl() {
+    public ChatMessage() {
         //default
     }
 

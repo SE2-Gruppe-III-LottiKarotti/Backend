@@ -2,9 +2,8 @@ package at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
-import at.aau.serg.websocketdemoserver.msg.GameMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.GameMessage;
 import at.aau.serg.websocketdemoserver.msg.MessageType;
-import at.aau.serg.websocketdemoserver.msg.MoveMessageImpl;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,7 +21,7 @@ public class HandlerGameMessage {
 
         gameboard = new Gameboard();
 
-        GameMessageImpl gameMessage = new GameMessageImpl();
+        GameMessage gameMessage = new GameMessage();
         gameMessage.setFields(gameboard.getFelder());
         gameMessage.setMessageType(MessageType.GAME);
 

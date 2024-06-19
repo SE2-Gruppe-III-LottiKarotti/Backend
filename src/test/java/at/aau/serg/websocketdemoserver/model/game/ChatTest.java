@@ -1,7 +1,7 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-import at.aau.serg.websocketdemoserver.msg.ChatMessageImpl;
-import at.aau.serg.websocketdemoserver.msg.ChatMessageImpl.ActionTypeChat;
+import at.aau.serg.websocketdemoserver.msg.ChatMessage;
+import at.aau.serg.websocketdemoserver.msg.ChatMessage.ActionTypeChat;
 import at.aau.serg.websocketdemoserver.msg.MessageType;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,11 +9,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ChatTest {
-    private ChatMessageImpl message;
+    private ChatMessage message;
 
     @Before
     public void setup() {
-        message = new ChatMessageImpl();
+        message = new ChatMessage();
     }
 
     @Test
@@ -23,7 +23,7 @@ public class ChatTest {
         String text = "Hello, Daniel!";
         String roomID = "room123";
 
-        ChatMessageImpl message = new ChatMessageImpl(playerName, playerId, text, roomID);
+        ChatMessage message = new ChatMessage(playerName, playerId, text, roomID);
 
         assertEquals(playerName, message.getPlayerName());
         assertEquals(playerId, message.getPlayerId());

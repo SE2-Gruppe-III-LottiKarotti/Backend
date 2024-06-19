@@ -4,19 +4,21 @@ import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class Room {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private String roomID;
     private String roomName;
     private ArrayList<Player> listOfPlayers;
     private int maxPlayers;
     private int availablePlayersSpace;
     private Gameboard gameboard;
-    private String currentPlayerId; // Spieler der aktuell dran ist
+    private String currentPlayerId;
     private ArrayList<String> cheaters;
     private String creatorName;
     private String winner;
-    private Player currentPlayer; // oder spielerID ...
+    private Player currentPlayer;
 
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
@@ -129,8 +131,8 @@ public class Room {
             listOfPlayers.add(player);
             availablePlayersSpace--;
         } else {
-            System.out.println("raum voll");
-            //der punkt sollte eigentlich nie erreicht werden
+            logger.info("room full!");
+            //this point should never be reached
         }
     }
 

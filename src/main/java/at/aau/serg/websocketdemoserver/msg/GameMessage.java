@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class GameMessageImpl implements BaseMessageImpl{
+public class GameMessage implements BaseMessageImpl{
     MessageType messageType;
 
     @JsonProperty("fields")

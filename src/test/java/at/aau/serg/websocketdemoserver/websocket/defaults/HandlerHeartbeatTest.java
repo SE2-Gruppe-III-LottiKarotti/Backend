@@ -1,7 +1,7 @@
 package at.aau.serg.websocketdemoserver.websocket.defaults;
 
 
-import at.aau.serg.websocketdemoserver.msg.HeartbeatMessageImpl;
+import at.aau.serg.websocketdemoserver.msg.HeartbeatMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import com.google.gson.Gson;
 
@@ -19,12 +19,12 @@ import static org.mockito.Mockito.*;
 public class HandlerHeartbeatTest {
     private static final Gson gson = new Gson();
     private WebSocketSession session;
-    private HeartbeatMessageImpl heartbeatMessage;
+    private HeartbeatMessage heartbeatMessage;
 
     @BeforeEach
     public void setup() {
         session = mock(WebSocketSession.class);
-        heartbeatMessage = new HeartbeatMessageImpl();
+        heartbeatMessage = new HeartbeatMessage();
     }
 
     @Test
@@ -37,7 +37,7 @@ public class HandlerHeartbeatTest {
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        HeartbeatMessageImpl responseHeartbeatMessage = gson.fromJson(responseMessage.getPayload(), HeartbeatMessageImpl.class);
+        HeartbeatMessage responseHeartbeatMessage = gson.fromJson(responseMessage.getPayload(), HeartbeatMessage.class);
 
         assertNotNull(responseHeartbeatMessage);
         assertEquals("pong", responseHeartbeatMessage.getText());

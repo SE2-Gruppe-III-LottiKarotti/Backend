@@ -5,7 +5,7 @@ import at.aau.serg.websocketdemoserver.model.game.PlayingPiece;
 import lombok.Data;
 
 @Data
-public class MoveMessageImpl implements BaseMessageImpl {
+public class MoveMessage implements BaseMessageImpl {
     MessageType messageType;
 
     String roomId;

@@ -1,23 +1,13 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class TestMessageImpl implements BaseMessageImpl {
-    //private final MessageType messageType = MessageType.TEST;
-    //private MessageType messageType;// = MessageType.TEST;
+public class TestMessage implements BaseMessageImpl {
+
     MessageType messageType;
     String text;
 
     String messageIdentifier;
 
 
-
-
-
-    //private String text;
-
-
-    /*public TestMessage(String text) {
-        this.text = text;
-    }*/
     public String getMessageIdentifier() {
         return messageIdentifier;
     }

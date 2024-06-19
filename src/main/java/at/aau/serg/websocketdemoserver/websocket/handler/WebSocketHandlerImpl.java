@@ -1,7 +1,6 @@
 package at.aau.serg.websocketdemoserver.websocket.handler;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
-import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.raum.TestRoomInit;
 import at.aau.serg.websocketdemoserver.msg.*;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
@@ -19,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
@@ -38,7 +35,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     private static final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    static long counter = 0; // wird nur für die initialisierung der testRooms verwendet
+    static long counter = 0; // this variable is used to init the default testing rooms
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -46,7 +43,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             sessions.add(session);
         }
         catch (Exception e) {
-            throw new Exception (e);
+            throw new Exception ("error when establishing connection", e);
         }
 
     }
@@ -54,13 +51,12 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (counter == 0) {
-            //initTestRooms(); //for checking if list is working and default room till that time
+
             TestRoomInit.initTestRooms(roomRepo);
             counter++;
         }
         logger.info("reached point handleMessage");
         // TODO handle the messages here
-        //session.sendMessage(new TextMessage("echo from handler: " + message.getPayload()));
 
         String payload = (String) message.getPayload();
         logger.info("from client" + payload);
@@ -79,26 +75,17 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 //msg for constant load on network (ping - pong - ping - ...)
                 case HEARTBEAT -> HandlerHeartbeat.handleHeartbeat(session, payload);
                 //messages for opening, joining and listing rooms
-                //case OPEN_ROOM -> handleOpenRoomMessage(session, payload);
-                case OPEN_ROOM -> HandlerOpenRoom.handleOpenRoomMessage(session, payload);
+                case OPEN_ROOM -> HandlerOpenRoom.handleOpenRoomMessage(session, payload, roomRepo);
                 case JOIN_ROOM -> HandlerJoinRoom.handleAskForJoinRoom(session, payload, roomRepo);
-                //case LIST_ROOMS -> handleAskForRoomList(session, payload);
                 case LIST_ROOMS -> HandlerRoomList.handleAskForRoomList(session, payload, roomRepo);
-                //case CHAT -> handleChatMessage(session, payload);
+                //messages for gameplay
                 case CHAT -> HandlerChatMessage.handleChatMessage(session, payload, sessions);
-                //case DRAW_CARD -> handleDrawCard(session, payload);
                 case DRAW_CARD -> HandlerDrawCard.handleDrawCard(session, payload, sessions, roomRepo);
                 case GAME -> HandlerGameMessage.handleGameMessage(session, payload, sessions, roomRepo);
                 case MOVE -> HandlerMoveMessage.handleMoveMessage(session, payload, sessions, roomRepo);
                 default -> logger.info("unknown message type received");
             }
         }
-    }
-
-
-    private void handleGuessCheater(WebSocketSession session, String payload) throws Exception {
-        //Gson gson = new Gson();
-        //RoomMessage roomMessage = gson.fromJson(payload, RoomMessage.class);
     }
 
 
@@ -109,7 +96,12 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-        //sessions.remove(session);
+        try {
+            sessions.remove(session);
+        }
+        catch (Exception e) {
+            throw new Exception ("error after closing connection",e);
+        }
     }
 
     @Override

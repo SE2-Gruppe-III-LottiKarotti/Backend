@@ -3,14 +3,14 @@ package at.aau.serg.websocketdemoserver.msg;
 import lombok.Data;
 
 @Data
-public class OpenRoomMessageImpl implements BaseMessageImpl {
+public class OpenRoomMessage implements BaseMessageImpl {
     MessageType messageType;
     String roomId;
     String roomName;
     String playerId;
     String playerName;
     String numPlayers;
-    OpenRoomMessageImpl.OpenRoomActionType openRoomActionType;
+    OpenRoomMessage.OpenRoomActionType openRoomActionType;
 
     public enum OpenRoomActionType {
         /**open room*/

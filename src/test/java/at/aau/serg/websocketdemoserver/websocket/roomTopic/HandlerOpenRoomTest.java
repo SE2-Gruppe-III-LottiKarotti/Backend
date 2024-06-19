@@ -1,7 +1,10 @@
 package at.aau.serg.websocketdemoserver.websocket.roomTopic;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
-import at.aau.serg.websocketdemoserver.msg.OpenRoomMessageImpl;
+import at.aau.serg.websocketdemoserver.model.game.Player;
+import at.aau.serg.websocketdemoserver.model.raum.Room;
+import at.aau.serg.websocketdemoserver.msg.OpenRoomMessage;
+import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -21,17 +24,43 @@ public class HandlerOpenRoomTest {
 
     private WebSocketSession session;
 
-    private OpenRoomMessageImpl openRoomMessage;
+    private OpenRoomMessage openRoomMessage;
+
+    private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
+
+    private void initTestRooms() {
+        String playerName = "FranzSissi";
+        String player2 = "Daniel";
+        Player player1 = new Player(playerName);
+        Player spieler2 = new Player(player2);
+        Room testRoom1 = new Room(2, "TestRoom");
+        testRoom1.setCreatorName(playerName);
+        testRoom1.addPlayer(player1);
+        Room testRoom2 = new Room(3, "TestRo2");
+        testRoom2.setCreatorName(playerName);
+        testRoom2.addPlayer(player1);
+        Room testRoom3 = new Room(2, "TestRo3");
+        testRoom3.setCreatorName(playerName);
+        testRoom3.addPlayer(player1);
+        testRoom3.addPlayer(spieler2);
+        //testRoom3 dient dem Test, ob ein voller Raum übermittelt wird oder nicht...
+
+
+        //add
+        inMemoryRoomRepoTest.addRoom(testRoom1);
+        inMemoryRoomRepoTest.addRoom(testRoom2);
+        inMemoryRoomRepoTest.addRoom(testRoom3);
+    }
 
     @BeforeEach
     public void setup() {
         session = mock(WebSocketSession.class);
-        openRoomMessage = new OpenRoomMessageImpl();
+        openRoomMessage = new OpenRoomMessage();
     }
 
     @Test
     public void testValidOpenRoom() throws Exception {
-        OpenRoomMessageImpl openRoomMessage = new OpenRoomMessageImpl();
+        OpenRoomMessage openRoomMessage = new OpenRoomMessage();
         openRoomMessage.setRoomName("roomDani");
         openRoomMessage.setPlayerName("Daniel");
         openRoomMessage.setNumPlayers("2");
@@ -39,14 +68,14 @@ public class HandlerOpenRoomTest {
 
         ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
 
-        HandlerOpenRoom.handleOpenRoomMessage(session, payload);
+        HandlerOpenRoom.handleOpenRoomMessage(session, payload, inMemoryRoomRepoTest);
 
         verify(session, times(1)).sendMessage(captor.capture());
         TextMessage responseMessage = captor.getValue();
-        OpenRoomMessageImpl responseOpenRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), OpenRoomMessageImpl.class);
+        OpenRoomMessage responseOpenRoomMessage = TransportUtils.helpFromJson(responseMessage.getPayload(), OpenRoomMessage.class);
 
         assertNotNull(responseOpenRoomMessage);
-        assertEquals(OpenRoomMessageImpl.OpenRoomActionType.OPEN_ROOM_OK, responseOpenRoomMessage.getOpenRoomActionType());
+        assertEquals(OpenRoomMessage.OpenRoomActionType.OPEN_ROOM_OK, responseOpenRoomMessage.getOpenRoomActionType());
         assertNotNull(responseOpenRoomMessage.getRoomId());
         assertEquals("roomDani", responseOpenRoomMessage.getRoomName());
         assertEquals("Daniel", responseOpenRoomMessage.getPlayerName());
@@ -57,18 +86,18 @@ public class HandlerOpenRoomTest {
     @Test
     public void sessionIsNULL () {
         String payload = gson.toJson(openRoomMessage);
-        assertThrows(NullPointerException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(null, payload));
+        assertThrows(NullPointerException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(null, payload, inMemoryRoomRepoTest));
     }
 
     @Test
     public void payloadIsNULL () {
-        assertThrows(NullPointerException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(session, null));
+        assertThrows(NullPointerException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(session, null, inMemoryRoomRepoTest));
     }
 
     @Test
     public void testJsonErrMsg () {
         String payload = "{error}";
-        assertThrows(JsonParseException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(session, payload));
+        assertThrows(JsonParseException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(session, payload, inMemoryRoomRepoTest));
     }
 
     @AfterEach

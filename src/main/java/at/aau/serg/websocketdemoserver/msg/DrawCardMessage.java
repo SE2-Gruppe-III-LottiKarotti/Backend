@@ -3,7 +3,7 @@ package at.aau.serg.websocketdemoserver.msg;
 import lombok.Data;
 
 @Data
-public class DrawCardMessageImpl implements BaseMessageImpl {
+public class DrawCardMessage implements BaseMessageImpl {
     MessageType messageType;
     String roomID;
     String playerID;
