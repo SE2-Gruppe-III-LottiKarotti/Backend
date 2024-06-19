@@ -90,7 +90,7 @@ public class HandlerDrawCardTest {
         String roomId = roomToFind.getRoomID();
         drawCardMessage.setRoomID(roomId);
         drawCardMessage.setPlayerID(playerId1);
-        drawCardMessage.setCard("random");
+        drawCardMessage.setCard("RANDOM");
         String payload = gson.toJson(drawCardMessage);
 
         ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
