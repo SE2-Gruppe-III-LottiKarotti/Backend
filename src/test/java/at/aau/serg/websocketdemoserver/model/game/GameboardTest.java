@@ -17,7 +17,7 @@ public class GameboardTest {
     @Test
     public void testGameboardInitialization() {
         assertNotNull(gameboard.getFelder());
-        assertEquals(26, gameboard.getFelder().length);
+        assertEquals(27, gameboard.getFelder().length);
     }
 
     @Test
@@ -61,13 +61,14 @@ public class GameboardTest {
 
     @Test
     public void testInsertFigureToGameboard() {
-        gameboard.insertFigureToGameboard(player, player.getPlayerID(), "2");
+        PlayingPiece playingPiece = new PlayingPiece();
+        gameboard.insertFigureToGameboard(playingPiece, "3", -1);
 
         // Überprüfen, ob eine Spielfigur zum ersten Feld hinzugefügt wurde
-        assertNotNull(gameboard.getFelder()[0].getPlayingPiece());
+        assertNotNull(gameboard.getFelder()[2].getPlayingPiece());
 
         // Optional: Überprüfen, ob es sich um die korrekte Spielfigur handelt
-        PlayingPiece addedFigure = gameboard.getFelder()[0].getPlayingPiece();
+        PlayingPiece addedFigure = gameboard.getFelder()[2].getPlayingPiece();
         assertNotNull(addedFigure);
     }
 
@@ -76,7 +77,7 @@ public class GameboardTest {
         PlayingPiece playingPiece = new PlayingPiece();
         gameboard.getFelder()[0].addPlayingPieceToField(playingPiece);
 
-        gameboard.moveFigureForward(player.getPlayerID(), "2", 0);
+        gameboard.moveFigureForward(player.getPlayerID(), "2", 0, playingPiece );
         // Überprüfen, dass die Spielfigur vom Startfeld entfernt wurde
         assertNull(gameboard.getFelder()[0].getPlayingPiece());
         // Überprüfen, dass die Spielfigur auf das neue Feld gesetzt wurde

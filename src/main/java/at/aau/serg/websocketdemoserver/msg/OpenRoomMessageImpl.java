@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class OpenRoomMessageImpl implements BaseMessageImpl {
-    //private final MessageType messageType = MessageType.OPEN_ROOM;
     MessageType messageType;
     String roomId;
     String roomName;

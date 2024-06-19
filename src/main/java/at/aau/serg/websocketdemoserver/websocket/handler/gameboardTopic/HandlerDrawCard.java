@@ -6,10 +6,14 @@ import at.aau.serg.websocketdemoserver.logic.RandomCardGenerator;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.msg.DrawCardMessageImpl;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
+import at.aau.serg.websocketdemoserver.websocket.handler.WebSocketHandlerImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
 import java.util.logging.Logger;
+
+import static at.aau.serg.websocketdemoserver.model.game.Gameboard.logger;
 
 
 public class HandlerDrawCard {
@@ -17,10 +21,12 @@ public class HandlerDrawCard {
     private static final Logger logger = Logger.getLogger(HandlerDrawCard.class.getName());
 
 
-    public static void handleDrawCard(WebSocketSession session, String payload, List<WebSocketSession> sessions, InMemoryRoomRepo roomRepo)  {
+    public static void handleDrawCard(WebSocketSession session, String payload, List<WebSocketSession> sessions, InMemoryRoomRepo roomRepo) throws Exception {
 
         TransportUtils.validateSessionAndPayload(session, payload);
         DrawCardMessageImpl drawCardMessage = TransportUtils.helpFromJson(payload, DrawCardMessageImpl.class);//gson.fromJson(payload, DrawCardMessage.class);
+
+        ObjectMapper mapper = new ObjectMapper();
 
         //error check1
         if (drawCardMessage == null) {
@@ -63,7 +69,7 @@ public class HandlerDrawCard {
         String cardReturned;
 
         switch (inputCard) {
-            case "random" -> cardReturned = RandomCardGenerator.startCardGenerator();
+            case "RANDOM" -> cardReturned = RandomCardGenerator.startCardGenerator();
             case "ONE", "TWO", "THREE", "CARROT" -> {
                 room.addPlayerToCheatList(playerId);
                 cardReturned = inputCard;
@@ -78,14 +84,10 @@ public class HandlerDrawCard {
         drawCardMessage.setActionTypeDrawCard(DrawCardMessageImpl.ActionTypeDrawCard.RETURN_CARD_OK);
         drawCardMessage.setCard(cardReturned);
         drawCardMessage.setNextPlayerId(nextPlayerId);
-        String exportPayload = TransportUtils.helpToJson(drawCardMessage);//gson.toJson(drawCardMessage);
-        //broadcastMsg(exportPayload, session);
-        TransportUtils.broadcastMsg(exportPayload, session, sessions);
-        //TransportUtils.sendMsg(session, exportPayload);
+        String payloadExport = mapper.writeValueAsString(drawCardMessage); //gson.toJson(chatMessage);
+        TransportUtils.broadcastMsg(payloadExport, session, sessions);
 
-
-        logger.info("toClient: " + exportPayload);
-
+        logger.info("toClient: " + payloadExport);
     }
 
 }

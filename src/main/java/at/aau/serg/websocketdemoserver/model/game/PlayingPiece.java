@@ -1,27 +1,19 @@
 package at.aau.serg.websocketdemoserver.model.game;
 
-public class PlayingPiece {
-    //playingPiece == spielfigur
-    private int playingPiece;
-    private Player player;
+import lombok.Data;
 
+@Data
+public class PlayingPiece {
+    private int playingPiece;
+    private String playerId;
+
+    public PlayingPiece(int playingPiece, String playerId) {
+        this.playingPiece = playingPiece;
+        this.playerId = playerId;
+    }
 
     public PlayingPiece() {
-    }
 
-    public int getPlayingPiece() {
-        return playingPiece;
-    }
-
-    public void setPlayingPiece(int piece) {
-        this.playingPiece = playingPiece;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 }
+

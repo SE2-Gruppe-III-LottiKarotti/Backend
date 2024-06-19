@@ -15,7 +15,7 @@ public class Gameboard {
     int oldHole;
 
     public Gameboard() {
-        this.fields = new Field[26]; // 26 felder inkl. karotte
+        this.fields = new Field[27]; // 26 felder inkl. karotte
         this.holes = new int[]{3, 6, 9, 15, 18, 20, 24};
         this.holeCounter = holes[random.nextInt(holes.length - 1)];
         winner = null;
@@ -76,77 +76,45 @@ public class Gameboard {
         }
         logger.info("New holeCounter: " + holeCounter);
 
-        // Öffne die neuen Löcher, wenn es Maulwurfslöcher sind
-        if (holeCounter >= 0 && holeCounter < fields.length && fields[holeCounter].isMoleHole()) {
             fields[holeCounter].setOpen(true);
             oldPositionCounter = holeCounter;
             logger.info("New Position Counter: " + holeCounter + IS_OPEN_STATUS + fields[holeCounter].isOpen() + ")");
-        } else {
-            logger.warning("New hole position is out of bounds or not a Maulwurfloch: " + holeCounter);
-        }
     }
 
     public int getPlayingPiecePosition(PlayingPiece playingPiece) {
         for (int i = 0; i < fields.length; i++) {
-            if (fields[i].getPlayingPiece() == playingPiece) {
+            if (fields[i].getPlayingPiece() != null && fields[i].getPlayingPiece().equals(playingPiece)) {
                 return i;
             }
         }
         return -1;
     }
 
-    public void insertFigureToGameboard(Player player, String playerID, String card) {
-        PlayingPiece addNewPlayingPiece = new PlayingPiece(); // Korrekte KonstruktoraufrufSpielfigur addNewSpielfigur = new Spielfigur();
-        int beginningPosition = 0;
-        fields[beginningPosition].addPlayingPieceToField(addNewPlayingPiece);
+    public void insertFigureToGameboard(PlayingPiece newPlayingPiece, String card, int currenPosition) {
+        int cardValue = Integer.parseInt(card);
+        int newPosition = currenPosition + cardValue;
 
-        // Debugging-Ausgabe
-        if (fields[beginningPosition].getPlayingPiece() == addNewPlayingPiece) {
-            logger.info("Spielfigur wurde korrekt hinzugefügt.");
-        } else {
-            logger.severe("Spielfigur konnte nicht zum Spielfeld hinzugefügt werden.");
+        while(!(fields[newPosition].getPlayingPiece() == null)) {
+            newPosition++;
         }
+
+        fields[newPosition].addPlayingPieceToField(newPlayingPiece);
     }
 
 
-    public void moveFigureForward(String playerID, String card, int currentPosition) {
-        int oldPosition = currentPosition;
+    public void moveFigureForward(String playerID, String card, int currentPosition, PlayingPiece playingPiece) {
         int cardValue = Integer.parseInt(card);
+        int newPosition = currentPosition + cardValue;
 
-        logger.info("Starting move from position: " + oldPosition + " with card value: " + cardValue);
-
-        while (cardValue > 0) {
-            int newPosition = currentPosition + 1;
-            logger.info("Trying to move to position: " + newPosition);
-
-            if (newPosition < fields.length) {
-                if (!fields[newPosition].isOccupiedByPlayingPiece()) {
-                    // Wenn das Feld frei ist
-                    currentPosition = newPosition;
-                    cardValue--;
-                    logger.info("Moved to position: " + currentPosition + ", remaining card value: " + cardValue);
-                } else {
-                    // Wenn das Feld besetzt ist, nur die Position aktualisieren
-                    currentPosition = newPosition;
-                    logger.info("Position " + newPosition + " is occupied. Current position remains: " + currentPosition);
-                }
-            } else {
-                // Wenn die neue Position außerhalb des Spielfeldes liegt, beenden Sie die Schleife
-                logger.info("New position out of bounds, breaking loop.");
-                break;
-            }
+        while(!(fields[newPosition].getPlayingPiece() == null)) {
+            newPosition++;
         }
 
-        fields[oldPosition].removePlayingPieceFromField();
-        fields[currentPosition].addPlayingPieceToField(new PlayingPiece());
+        fields[currentPosition].removePlayingPieceFromField();
+        fields[newPosition].addPlayingPieceToField(playingPiece);
 
-        logger.info("Moved figure from position " + oldPosition + " to " + currentPosition);
-
-        if (currentPosition == 25) {
-            // Spieler gewinnt...
+        if (newPosition == 26) {
             winner = playerID;
-            // Diese öffentliche Variable kann von außen zugegriffen werden
-            logger.info("Player " + playerID + " wins!");
         }
     }
 
