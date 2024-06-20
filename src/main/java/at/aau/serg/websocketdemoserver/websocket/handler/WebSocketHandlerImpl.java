@@ -14,7 +14,6 @@ import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerM
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerRoomList;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
@@ -25,12 +24,7 @@ import java.util.logging.Logger;
 @Component
 public class WebSocketHandlerImpl implements WebSocketHandler {
 
-    @Autowired
     private static final InMemoryRoomRepo roomRepo = new InMemoryRoomRepo();
-
-    public static InMemoryRoomRepo getRoomRepo () {
-        return roomRepo;
-    }
 
     private static final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -56,7 +50,6 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
             counter++;
         }
         logger.info("reached point handleMessage");
-        // TODO handle the messages here
 
         String payload = (String) message.getPayload();
         logger.info("from client" + payload);
