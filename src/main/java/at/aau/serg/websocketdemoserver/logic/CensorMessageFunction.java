@@ -21,12 +21,5 @@ public class CensorMessageFunction {
             text = matcher.replaceAll(replacement);
         }
         return text;
-        /*
-        for (String word : CensoredWordsDB.getCensoredWords()) {
-            String replacement = "*".repeat(word.length());
-            text = text.replaceAll("(?i)" + word, replacement);
-        }
-
-        return text;*/
     }
 }
