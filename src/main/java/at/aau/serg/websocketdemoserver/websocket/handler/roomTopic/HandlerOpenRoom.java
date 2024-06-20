@@ -75,12 +75,8 @@ public class HandlerOpenRoom {
         openRoomMessage.setPlayerName(creator.getName());
         openRoomMessage.setNumPlayers(Integer.toString(maxPlayers));
 
-        //openRoomMessage.setMessageIdentifier(messageIdentifier);
 
-
-
-        //5_3 hier wird schlussendlich die positive nachricht versendet...
-        //prepare positive payload
+        //5_3 here the message will be sent finally with the positive payload
         String positivePayload = TransportUtils.helpToJson(openRoomMessage);
         TransportUtils.sendMsg(session, positivePayload);
         logger.info("end of player hinzugefügt");

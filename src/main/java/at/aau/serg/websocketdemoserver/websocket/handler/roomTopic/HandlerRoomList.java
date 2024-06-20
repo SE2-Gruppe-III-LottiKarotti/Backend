@@ -25,7 +25,7 @@ public class HandlerRoomList {
             response.setActionTypeRoomListMessage(RoomListMessage.ActionTypeRoomListMessage.ANSWER_ROOM_LIST_ERR);
 
             //prepare and send
-            String responseErrorPayload = TransportUtils.helpToJson(response);//gson.toJson(response);
+            String responseErrorPayload = TransportUtils.helpToJson(response);
             TransportUtils.sendMsg(session, responseErrorPayload);
         }
 
@@ -59,7 +59,7 @@ public class HandlerRoomList {
         response.setRoomInfoArrayList(roomInfoList);
 
         //prepare and send
-        String responsePayload = TransportUtils.helpToJson(response);//gson.toJson(response);
+        String responsePayload = TransportUtils.helpToJson(response);
         TransportUtils.sendMsg(session, responsePayload);
 
         logger.info("###");

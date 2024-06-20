@@ -6,10 +6,10 @@ import lombok.Data;
 public class GuessCheaterMessage implements BaseMessageImpl {
 
     MessageType messageType;
-    //der spieler, welcher beschuldigt
+    //the player who blame the other player to be a cheater (blamer)
     String accusingPlayerId;
     String accusingPlayerName;
-    //der spieler, welcher beschuldigt wird
+    //the player who should be the cheater (cheater)
     String playerToBlameName;
     String playerToBlameId;
     String roomId;

@@ -2,7 +2,7 @@ package at.aau.serg.websocketdemoserver.msg;
 
 public class HeartbeatMessage implements BaseMessageImpl {
     MessageType messageType;
-    private String text;// = "ping/pong";
+    private String text;// = "ping";
 
 
     public String getText() {

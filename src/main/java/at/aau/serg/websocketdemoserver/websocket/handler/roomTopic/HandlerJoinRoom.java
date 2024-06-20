@@ -19,7 +19,7 @@ public class HandlerJoinRoom {
         TransportUtils.validateSessionAndPayload(session, payload);
 
 
-        JoinRoomMessage joinRoomMessage = TransportUtils.helpFromJson(payload, JoinRoomMessage.class); //gson.fromJson(payload, JoinRoomMessage.class);
+        JoinRoomMessage joinRoomMessage = TransportUtils.helpFromJson(payload, JoinRoomMessage.class);
 
         //2 set local variables
         String roomName = joinRoomMessage.getRoomName();
@@ -27,7 +27,7 @@ public class HandlerJoinRoom {
 
         //3 check
         if (roomName == null || roomName.isEmpty() || playerName == null || playerName.isEmpty()) {
-            //fehlerhafte Werte
+            //error values
             joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR);
             String errorPayload = TransportUtils.helpToJson(joinRoomMessage);
             TransportUtils.sendMsg(session, errorPayload);
@@ -44,7 +44,7 @@ public class HandlerJoinRoom {
         // if room exists, add player to room
         if (foundRoom == null) {
             logger.info("foundRoom == null");
-            // raum existiert nicht
+            // room does not exist
             joinRoomMessage.setActionTypeJoinRoom(JoinRoomMessage.ActionTypeJoinRoom.JOIN_ROOM_ERR);
             String errorPayload = TransportUtils.helpToJson(joinRoomMessage);
             TransportUtils.sendMsg(session, errorPayload);
