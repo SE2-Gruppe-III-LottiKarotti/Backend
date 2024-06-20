@@ -1,12 +1,9 @@
 package at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic;
 
 import at.aau.serg.websocketdemoserver.logic.TransportUtils;
-import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.PlayingPiece;
 import at.aau.serg.websocketdemoserver.msg.MoveMessageImpl;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
-import at.aau.serg.websocketdemoserver.websocket.handler.WebSocketHandlerImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.WebSocketSession;
 

@@ -5,7 +5,6 @@ import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.msg.GameMessageImpl;
 import at.aau.serg.websocketdemoserver.msg.MessageType;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
-import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerChatMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -113,18 +112,12 @@ public class HandlerGameMessageTest {
     @Test
     public void sessionIsNULL () {
         String payload = gson.toJson(gameMessage);
-        assertThrows(NullPointerException.class, () -> HandlerChatMessage.handleChatMessage(null, payload, sessions));
+        assertThrows(NullPointerException.class, () -> HandlerGameMessage.handleGameMessage(null, payload, sessions, inMemoryRoomRepoTest));
     }
 
     @Test
     public void payloadIsNULL () {
-        assertThrows(NullPointerException.class, () -> HandlerChatMessage.handleChatMessage(session1, null, sessions));
-    }
-
-    @Test
-    public void testJsonErrMsg () {
-        String payload = "{error}";
-        assertThrows(JsonParseException.class, () -> HandlerChatMessage.handleChatMessage(session1, payload, sessions));
+        assertThrows(NullPointerException.class, () -> HandlerGameMessage.handleGameMessage(session1, null, sessions, inMemoryRoomRepoTest));
     }
 
     @AfterEach
