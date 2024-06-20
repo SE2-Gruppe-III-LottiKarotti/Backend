@@ -41,7 +41,7 @@ public class HandlerChatMessage {
 
         inputText = chatMessage.getText();
 
-        String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.INSTANCE);
+        String outputText = CensorMessageFunction.censorText(inputText, CensoredWordsDB.getCensoredWords());
 
         chatMessage.setText(outputText);
         chatMessage.setActionTypeChat(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_OK);
