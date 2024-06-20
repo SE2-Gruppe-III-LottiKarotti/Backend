@@ -4,8 +4,10 @@ import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.game.PlayingPiece;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
+import at.aau.serg.websocketdemoserver.msg.GameMessage;
 import at.aau.serg.websocketdemoserver.msg.MoveMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
+import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerMoveMessage;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
@@ -20,7 +22,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage.gameboard;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -76,23 +77,27 @@ class HandleMoveMessageTest {
     @Test
     void testHandleMoveMessage_CarrotCard() throws Exception {
         // Arrange
-        gameboard = new Gameboard();
+        Gameboard gameboard = new Gameboard();
         moveMessage.setCard("CARROT");
         moveMessage.setFields(gameboard.getFelder());
         String jsonMessageMove = gson.toJson(moveMessage);
 
+        GameMessage gameMessage = new GameMessage();
+        String jsonMessageGame = gson.toJson(gameMessage);
+
         // Act
+        HandlerGameMessage.handleGameMessage(session1, jsonMessageGame, sessions, inMemoryRoomRepoTest);
         HandlerMoveMessage.handleMoveMessage(session1, jsonMessageMove, sessions, inMemoryRoomRepoTest);
 
         // Verify that the message was sent to both sessions
-        verify(session1, times(1)).sendMessage(any(TextMessage.class));
-        verify(session2, times(1)).sendMessage(any(TextMessage.class));
+        verify(session1, times(2)).sendMessage(any(TextMessage.class));
+        verify(session2, times(2)).sendMessage(any(TextMessage.class));
 
         // Verify that the message is correct
         ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
-        verify(session1, times(1)).sendMessage(captor.capture());
+        verify(session1, times(2)).sendMessage(captor.capture());
         TextMessage message1 = captor.getValue();
-        verify(session2, times(1)).sendMessage(captor.capture());
+        verify(session2, times(2)).sendMessage(captor.capture());
         TextMessage message2 = captor.getValue();
 
         MoveMessage responseMoveMessage1 = gson.fromJson(message1.getPayload(), MoveMessage.class);
@@ -110,24 +115,28 @@ class HandleMoveMessageTest {
     void testHandleMoveMessage_InsertFigure() throws Exception {
         // Arrange
         PlayingPiece playingPiece = new PlayingPiece(1, "123456");
-        gameboard = new Gameboard();
+        Gameboard gameboard = new Gameboard();
         moveMessage.setCard("1");
         moveMessage.setPlayingPiece(playingPiece);
         moveMessage.setSpielerId("123456");
         moveMessage.setFields(gameboard.getFelder());
         String jsonMessageMove = gson.toJson(moveMessage);
 
+        GameMessage gameMessage = new GameMessage();
+        String jsonMessageGame = gson.toJson(gameMessage);
+
         // Act
+        HandlerGameMessage.handleGameMessage(session1, jsonMessageGame, sessions, inMemoryRoomRepoTest);
         HandlerMoveMessage.handleMoveMessage(session1, jsonMessageMove, sessions, inMemoryRoomRepoTest);
         // Verify that the message was sent to both sessions
-        verify(session1, times(1)).sendMessage(any(TextMessage.class));
-        verify(session2, times(1)).sendMessage(any(TextMessage.class));
+        verify(session1, times(2)).sendMessage(any(TextMessage.class));
+        verify(session2, times(2)).sendMessage(any(TextMessage.class));
 
         // Verify that the message is correct
         ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
-        verify(session1, times(1)).sendMessage(captor.capture());
+        verify(session1, times(2)).sendMessage(captor.capture());
         TextMessage message1 = captor.getValue();
-        verify(session2, times(1)).sendMessage(captor.capture());
+        verify(session2, times(2)).sendMessage(captor.capture());
         TextMessage message2 = captor.getValue();
 
         MoveMessage responseMoveMessage1 = gson.fromJson(message1.getPayload(), MoveMessage.class);
@@ -148,25 +157,29 @@ class HandleMoveMessageTest {
     void testHandleMoveMessage_MoveFigureForward() throws Exception {
         // Arrange
         PlayingPiece playingPiece = new PlayingPiece(1, "123456");
-        gameboard = new Gameboard();
+        Gameboard gameboard = new Gameboard();
         moveMessage.setCard("2");
         moveMessage.setPlayingPiece(playingPiece);
         moveMessage.setSpielerId("123456");
         moveMessage.setFields(gameboard.getFelder());
         String jsonMessageMove = gson.toJson(moveMessage);
 
+        GameMessage gameMessage = new GameMessage();
+        String jsonMessageGame = gson.toJson(gameMessage);
+
         // Act
+        HandlerGameMessage.handleGameMessage(session1, jsonMessageGame, sessions, inMemoryRoomRepoTest);
         HandlerMoveMessage.handleMoveMessage(session1, jsonMessageMove, sessions, inMemoryRoomRepoTest);
 
         // Verify that the message was sent to both sessions
-        verify(session1, times(1)).sendMessage(any(TextMessage.class));
-        verify(session2, times(1)).sendMessage(any(TextMessage.class));
+        verify(session1, times(2)).sendMessage(any(TextMessage.class));
+        verify(session2, times(2)).sendMessage(any(TextMessage.class));
 
         // Verify that the message is correct
         ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
-        verify(session1, times(1)).sendMessage(captor.capture());
+        verify(session1, times(2)).sendMessage(captor.capture());
         TextMessage message1 = captor.getValue();
-        verify(session2, times(1)).sendMessage(captor.capture());
+        verify(session2, times(2)).sendMessage(captor.capture());
         TextMessage message2 = captor.getValue();
 
         MoveMessage responseMoveMessage1 = gson.fromJson(message1.getPayload(), MoveMessage.class);

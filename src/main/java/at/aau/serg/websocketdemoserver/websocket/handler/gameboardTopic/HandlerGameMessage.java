@@ -13,7 +13,7 @@ import java.util.List;
 import static at.aau.serg.websocketdemoserver.model.game.Gameboard.logger;
 
 public class HandlerGameMessage {
-    public static Gameboard gameboard;
+    static Gameboard gameboard;
     public static void handleGameMessage(WebSocketSession session, String payload, List<WebSocketSession> sessions, InMemoryRoomRepo roomRepo) throws Exception {
         TransportUtils.validateSessionAndPayload(session, payload);
 

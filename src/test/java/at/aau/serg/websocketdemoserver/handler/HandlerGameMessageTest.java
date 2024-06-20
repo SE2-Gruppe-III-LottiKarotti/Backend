@@ -19,7 +19,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.ArrayList;
 import java.util.List;
 
-import static at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage.gameboard;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -81,9 +80,6 @@ class HandlerGameMessageTest {
         // Call the method under test
         HandlerGameMessage.handleGameMessage(session1, jsonMessage, sessions, inMemoryRoomRepoTest);
 
-        // Verify that the game board was initialized
-        assertNotNull(gameboard);
-
         // Verify that the message was sent to both sessions
         verify(session1, times(1)).sendMessage(any(TextMessage.class));
         verify(session2, times(1)).sendMessage(any(TextMessage.class));
@@ -100,9 +96,11 @@ class HandlerGameMessageTest {
 
         assertNotNull(responseGameMessage1);
         assertEquals(MessageType.GAME, responseGameMessage1.getMessageType());
+        assertNotNull(responseGameMessage1.getFields());
 
         assertNotNull(responseGameMessage2);
         assertEquals(MessageType.GAME, responseGameMessage2.getMessageType());
+        assertNotNull(responseGameMessage2.getFields());
     }
 
     @Test
