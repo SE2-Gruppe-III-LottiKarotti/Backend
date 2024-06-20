@@ -41,6 +41,6 @@ public class PlayerMessage implements BaseMessageImpl {
 
     @Override
     public MessageType getMessageType() {
-        return messageType = MessageType.DRAW_CARD;
+        return messageType = MessageType.PLAYER;
     }
 }
