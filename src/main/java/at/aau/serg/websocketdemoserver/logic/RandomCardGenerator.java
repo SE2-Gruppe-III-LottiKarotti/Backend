@@ -19,10 +19,10 @@ public class RandomCardGenerator {
         if (numberToCalc <=3) { // no barrier below, because result of modulo can't be negative
             return returningCard.THREE.toString();
         }
-        else if (numberToCalc >= 4 && numberToCalc <=10) {
+        else if (numberToCalc <=10) {
             return returningCard.TWO.toString();
         }
-        else if (numberToCalc >=11 && numberToCalc <=21) {
+        else if (numberToCalc <=21) {
             return returningCard.CARROT.toString();
         }
         else {
