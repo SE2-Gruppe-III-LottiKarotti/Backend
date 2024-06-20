@@ -33,7 +33,6 @@ public class HandlerOpenRoom {
         }
 
         //3_2 check2
-        //Room foundRoom = WebSocketHandlerImpl.getRoomRepo().findRoomByName(roomName);
         Room foundRoom = roomRepo.findRoomByName(roomName);
 
         //4 checks → if the room already exists...
@@ -63,7 +62,6 @@ public class HandlerOpenRoom {
         logger.info("after adding player " + roomToAdd.getAvailablePlayersSpace());
 
         //5_1 add the created room to the repo
-        //WebSocketHandlerImpl.getRoomRepo().addRoom(roomToAdd);
         roomRepo.addRoom(roomToAdd);
 
         //5_2 message vorbereiten und senden --> serialisieren
