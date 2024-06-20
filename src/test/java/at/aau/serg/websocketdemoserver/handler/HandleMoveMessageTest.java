@@ -8,7 +8,6 @@ import at.aau.serg.websocketdemoserver.msg.MoveMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerMoveMessage;
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class HandleMoveMessageTest {
+class HandleMoveMessageTest {
     @Mock
     private WebSocketSession session1;
 
@@ -38,13 +37,11 @@ public class HandleMoveMessageTest {
     private MoveMessage moveMessage;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
-    private void initTestRooms() {
+    void initTestRooms() {
         String playerName = "FranzSissi";
         String playerName2 = "Daniel";
         Player player1 = new Player(playerName);
         Player player2 = new Player(playerName2);
-        String playerId1 = player1.getPlayerID();
-        String playerId2 = player2.getPlayerID();
         Room testRoom1 = new Room(2, "TestRoom");
         testRoom1.setCreatorName(playerName);
         testRoom1.addPlayer(player1);
@@ -64,7 +61,7 @@ public class HandleMoveMessageTest {
     }
 
     @BeforeEach
-    public void setup () {
+    void setup () {
         MockitoAnnotations.openMocks(this);
 
         moveMessage = new MoveMessage();
@@ -77,7 +74,7 @@ public class HandleMoveMessageTest {
     }
 
     @Test
-    public void testHandleMoveMessage_CarrotCard() throws Exception {
+    void testHandleMoveMessage_CarrotCard() throws Exception {
         // Arrange
         gameboard = new Gameboard();
         moveMessage.setCard("CARROT");
@@ -110,7 +107,7 @@ public class HandleMoveMessageTest {
     }
 
     @Test
-    public void testHandleMoveMessage_InsertFigure() throws Exception {
+    void testHandleMoveMessage_InsertFigure() throws Exception {
         // Arrange
         PlayingPiece playingPiece = new PlayingPiece(1, "123456");
         gameboard = new Gameboard();
@@ -148,7 +145,7 @@ public class HandleMoveMessageTest {
     }
 
     @Test
-    public void testHandleMoveMessage_MoveFigureForward() throws Exception {
+    void testHandleMoveMessage_MoveFigureForward() throws Exception {
         // Arrange
         PlayingPiece playingPiece = new PlayingPiece(1, "123456");
         gameboard = new Gameboard();
@@ -187,18 +184,18 @@ public class HandleMoveMessageTest {
     }
 
     @Test
-    public void sessionIsNULL () {
+    void sessionIsNULL () {
         String payload = gson.toJson(moveMessage);
         assertThrows(NullPointerException.class, () -> HandlerMoveMessage.handleMoveMessage(null, payload, sessions, inMemoryRoomRepoTest));
     }
 
     @Test
-    public void payloadIsNULL () {
+    void payloadIsNULL () {
         assertThrows(NullPointerException.class, () -> HandlerMoveMessage.handleMoveMessage(session1, null, sessions, inMemoryRoomRepoTest));
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         session1 = null;
         session2 = null;
         sessions = null;

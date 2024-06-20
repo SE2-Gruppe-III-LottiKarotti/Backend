@@ -7,7 +7,6 @@ import at.aau.serg.websocketdemoserver.msg.MessageType;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage;
 import com.google.gson.Gson;
-import com.google.gson.JsonParseException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class HandlerGameMessageTest {
+class HandlerGameMessageTest {
     @Mock
     private WebSocketSession session1;
 
@@ -38,13 +37,11 @@ public class HandlerGameMessageTest {
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
 
-    private void initTestRooms() {
+    void initTestRooms() {
         String playerName = "FranzSissi";
         String playerName2 = "Daniel";
         Player player1 = new Player(playerName);
         Player player2 = new Player(playerName2);
-        String playerId1 = player1.getPlayerID();
-        String playerId2 = player2.getPlayerID();
         Room testRoom1 = new Room(2, "TestRoom");
         testRoom1.setCreatorName(playerName);
         testRoom1.addPlayer(player1);
@@ -64,7 +61,7 @@ public class HandlerGameMessageTest {
     }
 
     @BeforeEach
-    public void setup () {
+    void setup () {
         MockitoAnnotations.openMocks(this);
 
         gameMessage = new GameMessage();
@@ -77,7 +74,7 @@ public class HandlerGameMessageTest {
     }
 
     @Test
-    public void testHandleGameMessage() throws Exception {
+    void testHandleGameMessage() throws Exception {
         // Convert the GameMessage object to JSON
         String jsonMessage = new Gson().toJson(gameMessage);
 
@@ -109,18 +106,18 @@ public class HandlerGameMessageTest {
     }
 
     @Test
-    public void sessionIsNULL () {
+    void sessionIsNULL () {
         String payload = gson.toJson(gameMessage);
         assertThrows(NullPointerException.class, () -> HandlerGameMessage.handleGameMessage(null, payload, sessions, inMemoryRoomRepoTest));
     }
 
     @Test
-    public void payloadIsNULL () {
+    void payloadIsNULL () {
         assertThrows(NullPointerException.class, () -> HandlerGameMessage.handleGameMessage(session1, null, sessions, inMemoryRoomRepoTest));
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         session1 = null;
         session2 = null;
         sessions = null;
