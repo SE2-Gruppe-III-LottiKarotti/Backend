@@ -5,7 +5,6 @@ import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.msg.OpenRoomMessage;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
-import at.aau.serg.websocketdemoserver.websocket.handler.WebSocketHandlerImpl;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.logging.Logger;
@@ -34,7 +33,7 @@ public class HandlerOpenRoom {
         }
 
         //3_2 check2
-        Room foundRoom = WebSocketHandlerImpl.getRoomRepo().findRoomByName(roomName);
+        Room foundRoom = roomRepo.findRoomByName(roomName);
 
         //4 checks → if the room already exists...
         if (foundRoom != null) {
@@ -63,7 +62,6 @@ public class HandlerOpenRoom {
         logger.info("after adding player " + roomToAdd.getAvailablePlayersSpace());
 
         //5_1 add the created room to the repo
-        //WebSocketHandlerImpl.getRoomRepo().addRoom(roomToAdd);
         roomRepo.addRoom(roomToAdd);
 
         //5_2 message vorbereiten und senden --> serialisieren

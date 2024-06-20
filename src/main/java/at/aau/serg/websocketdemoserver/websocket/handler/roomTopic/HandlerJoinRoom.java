@@ -36,7 +36,6 @@ public class HandlerJoinRoom {
 
         //TODO: check FIXME -> maybe need to be syncronised
 
-        //Room foundRoom = WebSocketHandlerImpl.getRoomRepo().findRoomByName(roomName);
         Room foundRoom = roomRepo.findRoomByName(roomName);
 
 
