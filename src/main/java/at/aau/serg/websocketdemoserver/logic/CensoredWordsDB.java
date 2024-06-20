@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class CensoredWordsDB {
 
-    public static Set<String> censoredWords = new HashSet<>();
+    private final static Set<String> censoredWords = new HashSet<>();
 
     static {
         censoredWords.add("Fuck");
