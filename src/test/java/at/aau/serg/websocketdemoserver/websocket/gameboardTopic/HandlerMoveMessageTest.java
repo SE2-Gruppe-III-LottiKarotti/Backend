@@ -6,7 +6,6 @@ import at.aau.serg.websocketdemoserver.model.game.PlayingPiece;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import at.aau.serg.websocketdemoserver.msg.MoveMessageImpl;
 import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
-import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerChatMessage;
 import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerMoveMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
