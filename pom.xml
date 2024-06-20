@@ -14,7 +14,7 @@
     <name>WebSocketDemo-Server</name>
     <description>WebSocketDemo-Server</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>22</java.version>
         <sonar.organization>se2-gruppe-iii-lottikarotti</sonar.organization>
              <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>
@@ -42,7 +42,7 @@
             <version>3.2.3</version>
             <scope>test</scope>
         </dependency>
-        
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>
