@@ -85,6 +85,7 @@ public class HandlerOpenRoomTest {
 
     @Test
     public void sessionIsNULL () {
+        //handleOpenRoomMsg_ShouldThrowNullPointerExeptionIfSessionIsNull
         String payload = gson.toJson(openRoomMessage);
         assertThrows(NullPointerException.class, () -> HandlerOpenRoom.handleOpenRoomMessage(null, payload, inMemoryRoomRepoTest));
     }

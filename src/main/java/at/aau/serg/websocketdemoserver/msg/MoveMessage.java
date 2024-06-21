@@ -3,19 +3,21 @@ package at.aau.serg.websocketdemoserver.msg;
 import at.aau.serg.websocketdemoserver.model.game.Field;
 import at.aau.serg.websocketdemoserver.model.game.PlayingPiece;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class MoveMessage implements BaseMessageImpl {
-    MessageType messageType;
+@EqualsAndHashCode(callSuper = true)
+public class MoveMessage extends BaseMessage {
 
-    String roomId;
-    String spielerId;
-    String card;
-    Field[] fields;
-    PlayingPiece playingPiece;
+    private String roomId;
+    private String spielerId;
+    private String card;
+    private Field[] fields;
+    private PlayingPiece playingPiece;
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.MOVE;
+    public MoveMessage () {
+        //default
+        this.messageType = MessageType.MOVE;
     }
+
 }

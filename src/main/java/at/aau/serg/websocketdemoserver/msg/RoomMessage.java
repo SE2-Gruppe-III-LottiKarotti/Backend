@@ -3,13 +3,16 @@ package at.aau.serg.websocketdemoserver.msg;
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 
-@Data
-public class RoomMessage implements BaseMessageImpl {
+//TODO: Delete this unused class in next refactoring
 
- MessageType messageType;
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class RoomMessage extends BaseMessage {
+
 
  private RoomMessage.ActionType actionType;
 
@@ -27,6 +30,7 @@ public class RoomMessage implements BaseMessageImpl {
 
  public RoomMessage() {
   //default
+  this.messageType = MessageType.ROOM;
  }
 
  public enum ActionType {
