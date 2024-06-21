@@ -1,8 +1,8 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class BaseMessageClass implements BaseMessageImpl{
+public class BaseMessage implements BaseMessageInterface {
 
-    private MessageType messageType;
+    protected MessageType messageType;
 
     @Override
     public MessageType getMessageType() {

@@ -3,17 +3,20 @@ package at.aau.serg.websocketdemoserver.msg;
 import at.aau.serg.websocketdemoserver.model.game.Field;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class GameMessage implements BaseMessageImpl{
-    MessageType messageType;
+@EqualsAndHashCode(callSuper = true)
+public class GameMessage extends BaseMessage {
+
+    public GameMessage() {
+        //default
+        this.messageType = MessageType.GAME;
+    }
 
     @JsonProperty("fields")
     Field fields[];
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.GAME;
-    }
+
 }
 

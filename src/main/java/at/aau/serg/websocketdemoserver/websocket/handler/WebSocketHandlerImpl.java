@@ -58,10 +58,10 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
     }
 
     private void handleMessageByType(WebSocketSession session, String payload) throws Exception {
-        BaseMessageClass baseMessageClass = TransportUtils.helpFromJson(payload, BaseMessageClass.class);
+        BaseMessage baseMessage = TransportUtils.helpFromJson(payload, BaseMessage.class);
 
-        if (baseMessageClass != null) {
-            MessageType messageType = baseMessageClass.getMessageType();
+        if (baseMessage != null) {
+            MessageType messageType = baseMessage.getMessageType();
             switch (messageType) {
                 //testMsg at startup
                 case TEST -> HandlerTestMessage.handleTestMessage(session, payload);

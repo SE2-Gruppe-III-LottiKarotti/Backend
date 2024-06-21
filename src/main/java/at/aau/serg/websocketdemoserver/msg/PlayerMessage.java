@@ -1,13 +1,17 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class PlayerMessage implements BaseMessageImpl {
 
-    MessageType messageType;
+//TODO: Delete this unused class in next refactoring
+
+public class PlayerMessage extends BaseMessage {
+
     private ActionType actionType;
     private String spielerID;
     private String name;
 
     public PlayerMessage() {
+        //default
+        this.messageType = MessageType.PLAYER;
 
     }
 
@@ -39,8 +43,5 @@ public class PlayerMessage implements BaseMessageImpl {
         this.name = name;
     }
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.PLAYER;
-    }
+
 }

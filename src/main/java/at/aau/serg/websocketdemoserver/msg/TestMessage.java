@@ -1,11 +1,15 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class TestMessage implements BaseMessageImpl {
+public class TestMessage extends BaseMessage {
 
-    MessageType messageType;
-    String text;
+    private String text;
 
-    String messageIdentifier;
+    private String messageIdentifier;
+
+    public TestMessage() {
+        //default
+        this.messageType = MessageType.TEST;
+    }
 
 
     public String getMessageIdentifier() {
@@ -29,8 +33,5 @@ public class TestMessage implements BaseMessageImpl {
         this.text = text;
     }
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.TEST;
-    }
+
 }

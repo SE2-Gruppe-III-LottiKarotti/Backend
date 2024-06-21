@@ -1,16 +1,23 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class OpenRoomMessage implements BaseMessageImpl {
-    MessageType messageType;
-    String roomId;
-    String roomName;
-    String playerId;
-    String playerName;
-    String numPlayers;
-    OpenRoomMessage.OpenRoomActionType openRoomActionType;
+@EqualsAndHashCode(callSuper = true)
+public class OpenRoomMessage extends BaseMessage {
+
+    private String roomId;
+    private String roomName;
+    private String playerId;
+    private String playerName;
+    private String numPlayers;
+    private OpenRoomMessage.OpenRoomActionType openRoomActionType;
+
+    public OpenRoomMessage () {
+        //default
+        this.messageType = MessageType.OPEN_ROOM;
+    }
 
     public enum OpenRoomActionType {
         /**open room*/
@@ -20,8 +27,4 @@ public class OpenRoomMessage implements BaseMessageImpl {
 
     }
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.OPEN_ROOM;
-    }
 }

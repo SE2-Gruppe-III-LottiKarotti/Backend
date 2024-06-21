@@ -1,6 +1,5 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public interface BaseMessageImpl {
+public interface BaseMessageInterface {
     MessageType getMessageType();
-
 }

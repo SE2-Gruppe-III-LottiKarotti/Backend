@@ -1,10 +1,12 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class HeartbeatMessage implements BaseMessageImpl {
-    MessageType messageType;
+public class HeartbeatMessage extends BaseMessage {
     private String text;// = "ping";
 
 
+    public HeartbeatMessage () {
+        this.messageType = MessageType.HEARTBEAT;
+    }
     public String getText() {
         return text;
     }
@@ -13,9 +15,5 @@ public class HeartbeatMessage implements BaseMessageImpl {
         this.text = text;
     }
 
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.HEARTBEAT;
-    }
 
 }

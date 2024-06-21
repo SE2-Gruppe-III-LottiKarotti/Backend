@@ -1,22 +1,25 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class GuessCheaterMessage implements BaseMessageImpl {
+@EqualsAndHashCode(callSuper = true)
+public class GuessCheaterMessage extends BaseMessage {
 
-    MessageType messageType;
+
     //the player who blame the other player to be a cheater (blamer)
-    String accusingPlayerId;
-    String accusingPlayerName;
+    private String accusingPlayerId;
+    private String accusingPlayerName;
     //the player who should be the cheater (cheater)
-    String playerToBlameName;
-    String playerToBlameId;
-    String roomId;
+    private String playerToBlameName;
+    private String playerToBlameId;
+    private String roomId;
 
     /*message need to be broadcasted*/
-    @Override
-    public MessageType getMessageType() {
-        return messageType = MessageType.CHEAT;
+
+    public GuessCheaterMessage () {
+        //default
+        this.messageType = MessageType.CHEAT;
     }
 }
