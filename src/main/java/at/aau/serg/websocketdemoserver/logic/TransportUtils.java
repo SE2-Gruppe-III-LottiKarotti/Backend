@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class TransportUtils {
 
-    private static final Logger logger = Logger.getLogger(TransportUtils.class.getName());
+    public static Logger logger = Logger.getLogger(TransportUtils.class.getName());
     private static final Gson gson = new Gson();
 
 

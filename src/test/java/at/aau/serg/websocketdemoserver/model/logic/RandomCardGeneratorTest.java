@@ -3,8 +3,7 @@ package at.aau.serg.websocketdemoserver.model.logic;
 import at.aau.serg.websocketdemoserver.logic.RandomCardGenerator;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RandomCardGeneratorTest {
 
@@ -93,6 +92,13 @@ public class RandomCardGeneratorTest {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> RandomCardGenerator.calculate(Integer.MAX_VALUE));
         assertEquals("error - number has to be between 0 and 45", exception.getMessage());
     }
+    @Test
+    public void testStartCardGeneratorReturnsValidCard() {
+        for (int i = 0; i < 1000; i++) { // Run multiple times to cover randomness
+            String card = RandomCardGenerator.startCardGenerator();
+            assertTrue(card.equals("ONE") || card.equals("TWO") || card.equals("THREE") || card.equals("CARROT"));
+        }
+        }
 
 
 }
