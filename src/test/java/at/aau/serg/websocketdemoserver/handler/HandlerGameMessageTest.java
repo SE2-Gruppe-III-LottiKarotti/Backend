@@ -33,6 +33,8 @@ class HandlerGameMessageTest {
     private static final Gson gson = new Gson();
     private List<WebSocketSession> sessions;
     private GameMessage gameMessage;
+    private String roomId;
+    private String playerId;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
 
@@ -45,6 +47,8 @@ class HandlerGameMessageTest {
         testRoom1.setCreatorName(playerName);
         testRoom1.addPlayer(player1);
         testRoom1.addPlayer(player2);
+        roomId = testRoom1.getRoomID();
+        playerId = player1.getPlayerID();
         Room testRoom2 = new Room(3, "TestRo2");
         testRoom2.setCreatorName(playerName);
         testRoom2.addPlayer(player1);
@@ -63,8 +67,8 @@ class HandlerGameMessageTest {
     void setup () {
         MockitoAnnotations.openMocks(this);
 
-        gameMessage = new GameMessage();
         initTestRooms();
+        gameMessage = new GameMessage();
         sessions = new ArrayList<>();
         sessions.add(session1);
         sessions.add(session2);
@@ -74,7 +78,9 @@ class HandlerGameMessageTest {
 
     @Test
     void testHandleGameMessage() throws Exception {
-        // Convert the GameMessage object to JSON
+        // Convert the GameMessage object to
+        gameMessage.setRoomId(roomId);
+        gameMessage.setPlayerId(playerId);
         String jsonMessage = new Gson().toJson(gameMessage);
 
         // Call the method under test

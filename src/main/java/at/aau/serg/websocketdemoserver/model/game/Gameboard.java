@@ -71,11 +71,10 @@ public class Gameboard {
             logger.warning("Old hole position is out of bounds: " + oldHole);
         }
 
-        holeCounter = holes[random.nextInt(holes.length - 1)];
+        do {
+            holeCounter = holes[random.nextInt(holes.length)];
+        } while (holeCounter == oldHole);
 
-        if (holeCounter == oldHole) {
-            holeCounter = holes[random.nextInt(holes.length - 1)];
-        }
         logger.info("New holeCounter: " + holeCounter);
 
             fields[holeCounter].setOpen(true);

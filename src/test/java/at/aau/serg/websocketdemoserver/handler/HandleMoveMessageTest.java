@@ -36,6 +36,8 @@ class HandleMoveMessageTest {
     private static final Gson gson = new Gson();
     private List<WebSocketSession> sessions;
     private MoveMessage moveMessage;
+    private String roomId;
+    private String playerId;
     private final InMemoryRoomRepo inMemoryRoomRepoTest = new InMemoryRoomRepo();
 
     void initTestRooms() {
@@ -47,6 +49,8 @@ class HandleMoveMessageTest {
         testRoom1.setCreatorName(playerName);
         testRoom1.addPlayer(player1);
         testRoom1.addPlayer(player2);
+        roomId = testRoom1.getRoomID();
+        playerId = player1.getPlayerID();
         Room testRoom2 = new Room(3, "TestRo2");
         testRoom2.setCreatorName(playerName);
         testRoom2.addPlayer(player1);
@@ -83,6 +87,8 @@ class HandleMoveMessageTest {
         String jsonMessageMove = gson.toJson(moveMessage);
 
         GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setPlayerId(playerId);
         String jsonMessageGame = gson.toJson(gameMessage);
 
         // Act
@@ -123,6 +129,8 @@ class HandleMoveMessageTest {
         String jsonMessageMove = gson.toJson(moveMessage);
 
         GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setPlayerId(playerId);
         String jsonMessageGame = gson.toJson(gameMessage);
 
         // Act
@@ -165,6 +173,8 @@ class HandleMoveMessageTest {
         String jsonMessageMove = gson.toJson(moveMessage);
 
         GameMessage gameMessage = new GameMessage();
+        gameMessage.setRoomId(roomId);
+        gameMessage.setPlayerId(playerId);
         String jsonMessageGame = gson.toJson(gameMessage);
 
         // Act
