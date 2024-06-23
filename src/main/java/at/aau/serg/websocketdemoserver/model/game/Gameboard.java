@@ -107,12 +107,14 @@ public class Gameboard {
         int cardValue = Integer.parseInt(card);
         int newPosition = currentPosition + cardValue;
 
-        while(!(fields[newPosition].getPlayingPiece() == null)) {
-            newPosition++;
-        }
+        if(currentPosition+cardValue < fields.length) {
+            while (!(fields[newPosition].getPlayingPiece() == null)) {
+                newPosition++;
+            }
 
-        fields[currentPosition].removePlayingPieceFromField();
-        fields[newPosition].addPlayingPieceToField(playingPiece);
+            fields[currentPosition].removePlayingPieceFromField();
+            fields[newPosition].addPlayingPieceToField(playingPiece);
+        }
 
         if (newPosition == 26) {
             winner = playerID;
