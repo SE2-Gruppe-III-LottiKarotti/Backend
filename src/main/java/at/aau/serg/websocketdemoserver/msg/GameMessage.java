@@ -16,7 +16,8 @@ public class GameMessage extends BaseMessage {
 
     @JsonProperty("fields")
     Field fields[];
-
-
+    String playerId;
+    String roomId;
+    String[] playerNames;
 }
 
