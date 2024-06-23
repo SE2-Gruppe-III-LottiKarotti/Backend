@@ -94,7 +94,7 @@ public class RandomCardGeneratorTest {
     }
     @Test
     public void testStartCardGeneratorReturnsValidCard() {
-        for (int i = 0; i < 1000; i++) { // Run multiple times to cover randomness
+        for (int i = 0; i < 1000; i++) {
             String card = RandomCardGenerator.startCardGenerator();
             assertTrue(card.equals("ONE") || card.equals("TWO") || card.equals("THREE") || card.equals("CARROT"));
         }

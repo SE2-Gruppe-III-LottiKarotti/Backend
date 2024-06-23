@@ -208,5 +208,34 @@ public class HandlerChatMessageTest {
         chatMessage = null;
 
     }
+    @Test
+    public void testEmptyMessageText() throws Exception {
+        Room roomToFind = inMemoryRoomRepoTest.findRoomByName("TestRoom");
+        String roomId = roomToFind.getRoomID();
+
+        chatMessage.setRoomID(roomId);
+        chatMessage.setPlayerId(playerId1);
+        chatMessage.setPlayerName("FranzSissi");
+        chatMessage.setText("");
+        String payload = gson.toJson(chatMessage);
+
+        ArgumentCaptor<TextMessage> captor = ArgumentCaptor.forClass(TextMessage.class);
+
+        HandlerChatMessage.handleChatMessage(session1, payload, sessions);
+
+        verify(session1, times(1)).sendMessage(captor.capture());
+
+        TextMessage capturedMessage = captor.getValue();
+        ChatMessage responseChatMessage = gson.fromJson(capturedMessage.getPayload(), ChatMessage.class);
+
+        assertNotNull(responseChatMessage);
+        assertEquals(ChatMessage.ActionTypeChat.CHAT_MSG_TO_CLIENTS_ERR, responseChatMessage.getActionTypeChat());
+    }
+    @Test
+    public void testInvalidJsonPayload() {
+        String payload = "{ invalid json }";
+
+        assertThrows(JsonParseException.class, () -> HandlerChatMessage.handleChatMessage(session1, payload, sessions));
+    }
 
 }
