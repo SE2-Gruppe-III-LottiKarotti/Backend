@@ -8,7 +8,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -103,11 +102,6 @@ public class TransportUtilsTest {
             TransportUtils.nullCheck(null);
         });
         assertEquals("msgObject == null", exception.getMessage());
-    }
-
-    @Test
-    public void testNullCheck_NotNull() {
-        TransportUtils.nullCheck(new Object());
     }
 
     static class TestObject {

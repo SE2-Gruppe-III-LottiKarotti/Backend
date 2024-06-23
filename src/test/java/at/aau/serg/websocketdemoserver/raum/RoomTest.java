@@ -1,6 +1,5 @@
 package at.aau.serg.websocketdemoserver.raum;
 
-import at.aau.serg.websocketdemoserver.model.game.Gameboard;
 import at.aau.serg.websocketdemoserver.model.game.Player;
 import at.aau.serg.websocketdemoserver.model.raum.Room;
 import org.junit.Before;
