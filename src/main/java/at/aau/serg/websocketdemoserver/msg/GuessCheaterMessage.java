@@ -1,5 +1,7 @@
 package at.aau.serg.websocketdemoserver.msg;
 
+import at.aau.serg.websocketdemoserver.model.game.Field;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -7,16 +9,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class GuessCheaterMessage extends BaseMessage {
 
-
-    //the player who blame the other player to be a cheater (blamer)
     private String accusingPlayerId;
-    private String accusingPlayerName;
-    //the player who should be the cheater (cheater)
     private String playerToBlameName;
     private String playerToBlameId;
     private String roomId;
-
-    /*message need to be broadcasted*/
+    private String cheater;
+    private Field[] fields;
 
     public GuessCheaterMessage () {
         //default

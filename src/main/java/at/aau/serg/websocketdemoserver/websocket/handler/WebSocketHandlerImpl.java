@@ -7,10 +7,7 @@ import at.aau.serg.websocketdemoserver.repository.InMemoryRoomRepo;
 
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerHeartbeat;
 import at.aau.serg.websocketdemoserver.websocket.handler.defaults.HandlerTestMessage;
-import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerChatMessage;
-import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerDrawCard;
-import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerGameMessage;
-import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.HandlerMoveMessage;
+import at.aau.serg.websocketdemoserver.websocket.handler.gameboardTopic.*;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerJoinRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerOpenRoom;
 import at.aau.serg.websocketdemoserver.websocket.handler.roomTopic.HandlerRoomList;
@@ -76,6 +73,7 @@ public class WebSocketHandlerImpl implements WebSocketHandler {
                 case DRAW_CARD -> HandlerDrawCard.handleDrawCard(session, payload, sessions, roomRepo);
                 case GAME -> HandlerGameMessage.handleGameMessage(session, payload, sessions, roomRepo);
                 case MOVE -> HandlerMoveMessage.handleMoveMessage(session, payload, sessions, roomRepo);
+                case CHEAT -> HandlerCheatMessage.handleCheatMessage(session, payload, sessions, roomRepo);
                 default -> logger.info("unknown message type received");
             }
         }
