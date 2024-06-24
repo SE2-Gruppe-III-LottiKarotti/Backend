@@ -1,5 +1,7 @@
 package at.aau.serg.websocketdemoserver;
 
+import at.aau.serg.websocketdemoserver.logic.TransportUtils;
+import at.aau.serg.websocketdemoserver.msg.TestMessage;
 import at.aau.serg.websocketdemoserver.websocket.WebSocketHandlerClientImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,17 +33,23 @@ class WebSocketHandlerIntegrationTest {
      */
     BlockingQueue<String> messages = new LinkedBlockingDeque<>();
 
-    /*@Test
+    @Test
     public void testWebSocketMessageBroker() throws Exception {
         WebSocketSession session = initStompSession();
 
         // send a message to the server
-        String message = "Test message";
+        TestMessage testMessage = new TestMessage();
+        testMessage.setText("Test message");
+        String message = TransportUtils.helpToJson(testMessage);
         session.sendMessage(new TextMessage(message));
+        testMessage.setText("juhu");
+        message = TransportUtils.helpToJson(testMessage);
 
-        var expectedResponse = "echo from handler: " + message;
+
+
+        var expectedResponse = message;
         assertThat(messages.poll(1, TimeUnit.SECONDS)).isEqualTo(expectedResponse);
-    }*/
+    }
 
     /**
      * @return The basic session for the WebSocket connection.
