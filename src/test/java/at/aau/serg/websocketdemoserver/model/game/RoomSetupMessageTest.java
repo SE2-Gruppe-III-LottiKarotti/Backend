@@ -7,11 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-<<<<<<< HEAD
-
-// FIXME add tests!
-=======
->>>>>>> development
 public class RoomSetupMessageTest {
 
     @Test
