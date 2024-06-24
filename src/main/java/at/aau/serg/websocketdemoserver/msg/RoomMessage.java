@@ -1,33 +1,39 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
-import at.aau.serg.websocketdemoserver.model.game.Spieler;
+import at.aau.serg.websocketdemoserver.model.game.Player;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 
+//TODO: Delete this unused class in next refactoring
+
 @Data
-public class RoomMessage {
+@EqualsAndHashCode(callSuper = true)
+public class RoomMessage extends BaseMessage {
 
-   // private final MessageType messageType = MessageType.GAMEBOARD;
-    private RoomMessage.ActionType actionType;
 
-    private String roomID;
-    private String roomName;
-    private ArrayList<Spieler> listOfPlayers;
-    private int maxPlayers;
-    private Gameboard gameboard;
-    private Spieler currentPlayer; // oder spielerID ...
-    private Spieler nextPlayer;
-    private Spieler addPlayer;
-    private String randomCart;
-    private int playerIndex;
+ private RoomMessage.ActionType actionType;
 
-    public RoomMessage() {
-        //default
-    }
 
-    public enum ActionType {
-        OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER, NEXTPlAYER,
-    }
+ private String roomID;
+ private String roomName;
+ private ArrayList<Player> listOfPlayers;
+ private int maxPlayers;
+ private Gameboard gameboard;
+ private Player currentPlayer; //or player id both can be used
+ private Player nextPlayer;
+ private Player addPlayer;
+ private String randomCart;
+ private int playerIndex;
+
+ public RoomMessage() {
+  //default
+  this.messageType = MessageType.ROOM;
+ }
+
+ public enum ActionType {
+  OPENROOM, JOINROOM, GAMEPLAY, DRAWCARD, CHAT, SETUPFIELD, GUESSCHEATER, NEXTPlAYER,
+ }
 }

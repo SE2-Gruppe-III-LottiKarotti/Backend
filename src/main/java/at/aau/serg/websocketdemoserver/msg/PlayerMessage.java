@@ -1,14 +1,17 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class SpielerMessage {
 
-    private final MessageType messageType = MessageType.SPIELER;
+//TODO: Delete this unused class in next refactoring
+
+public class PlayerMessage extends BaseMessage {
+
     private ActionType actionType;
     private String spielerID;
     private String name;
 
-    //constructor or default constructor???
-    public SpielerMessage () {
+    public PlayerMessage() {
+        //default
+        this.messageType = MessageType.PLAYER;
 
     }
 
@@ -39,4 +42,6 @@ public class SpielerMessage {
     public void setName(String name) {
         this.name = name;
     }
+
+
 }

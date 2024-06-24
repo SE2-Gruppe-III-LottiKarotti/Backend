@@ -1,31 +1,30 @@
 package at.aau.serg.websocketdemoserver.model.raum;
 
 import at.aau.serg.websocketdemoserver.model.game.Gameboard;
-import at.aau.serg.websocketdemoserver.model.game.Spieler;
-
+import at.aau.serg.websocketdemoserver.model.game.Player;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Logger;
 
-// FIXME way too many field, god class
 public class Room {
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private String roomID;
     private String roomName;
-    private ArrayList<Spieler> listOfPlayers;
+    private ArrayList<Player> listOfPlayers;
     private int maxPlayers;
-  private int availablePlayersSpace;
+    private int availablePlayersSpace;
     private Gameboard gameboard;
-    private String currentPlayerId; // Spieler der aktuell dran ist
+    private String currentPlayerId;
     private ArrayList<String> cheaters;
     private String creatorName;
     private String winner;
-    private Spieler currentPlayer; // oder spielerID ...
-
+    private Player currentPlayer;
 
     public Room(int maxPlayers, String roomName) {
         this.roomID = UUID.randomUUID().toString();
-      this.roomName = roomName;
+        this.roomName = roomName;
         this.maxPlayers = maxPlayers;
-      this.availablePlayersSpace = maxPlayers;
+        this.availablePlayersSpace = maxPlayers;
         this.listOfPlayers = new ArrayList<>();
         this.cheaters = new ArrayList<>();
         this.gameboard = new Gameboard();
@@ -44,11 +43,16 @@ public class Room {
         this.winner = winner;
     }
 
-    // FIXME (optional) could be easily solved with a map.
-    public Spieler getPlayerById(String spielerID) {
-        for (Spieler spieler : listOfPlayers) {
-            if (spieler.getSpielerID().equals(spielerID)) {
-                return spieler;
+
+    public String getWinner() {
+        return this.winner;
+    }
+
+    public Player getPlayerById(String playerID) {
+        for (Player player : listOfPlayers) {
+            if (player.getPlayerID().equals(playerID)) {
+                return player;
+
             }
         }
         return null;
@@ -60,7 +64,6 @@ public class Room {
 
     public void setAvailabePlayersSpace(int availabePlayersSpace) {
         this.availablePlayersSpace = availabePlayersSpace;
-
     }
 
     public String getRoomID() {
@@ -79,11 +82,11 @@ public class Room {
         this.roomName = roomName;
     }
 
-    public ArrayList<Spieler> getListOfPlayers() {
+    public ArrayList<Player> getListOfPlayers() {
         return listOfPlayers;
     }
 
-    public void setListOfPlayers(ArrayList<Spieler> listOfPlayers) {
+    public void setListOfPlayers(ArrayList<Player> listOfPlayers) {
         this.listOfPlayers = listOfPlayers;
     }
 
@@ -103,42 +106,53 @@ public class Room {
         this.gameboard = gameboard;
     }
 
-    public Spieler getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Spieler currentPlayer) {
+    public void setCurrentPlayer(Player currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
-  
-  public String getCurrentPlayerId() {
+
+    public String getCurrentPlayerId() {
         return currentPlayerId;
     }
 
     public void setCurrentPlayerId(String currentPlayerId) {
         this.currentPlayerId = currentPlayerId;
     }
-  
-  public void addPlayer(Spieler spieler) {
-        if (availablePlayersSpace > 0) {
-            listOfPlayers.add(spieler);
-            availablePlayersSpace--;
-        } else {
-            // FIXME throw here, do not use sout
-            System.out.println("raum voll");
-            //der punkt sollte eigentlich nie erreicht werden
-        }
-    }
-  
-  //cheating operations
-    public boolean searchPlayerIdInCheatList(String playerId) {
-        return cheaters.contains(playerId);
+
+    public void setCreatorName(String playerName) {
+        this.creatorName = playerName;
     }
 
-    public void addPlayerToCheatList(String playerId) {
-        // FIXME (optional) could be a Set instead of a list based on your usage
-        if (!cheaters.contains(playerId)) {
-            cheaters.add(playerId);
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void addPlayer(Player player) {
+        if (availablePlayersSpace > 0) {
+            listOfPlayers.add(player);
+            availablePlayersSpace--;
+        } else {
+            logger.info("room full!");
+            //this point should never be reached
+        }
+    }
+
+    //cheating operations
+    public ArrayList<String> getCheaters() {
+        return this.cheaters;
+    }
+
+    public boolean searchPlayerIdInCheatList(String playerID) {
+        return cheaters.contains(playerID);
+    }
+
+    public void addPlayerToCheatList(String playerID) {
+        if (!cheaters.contains(playerID)) {
+            cheaters.add(playerID);
+
         }
     }
 
@@ -149,12 +163,12 @@ public class Room {
         }
     }
 
-    public Spieler getNextPlayer(String currentPlayerId) {
+    public Player getNextPlayer(String currentPlayerId) {
         int index = -1;
 
         // FIXME duplicate code getPlayerById, consider listOfPlayers.indexOf?
         for (int i = 0; i < listOfPlayers.size(); i++) {
-            if (listOfPlayers.get(i).getSpielerID().equals(currentPlayerId)) {
+            if (listOfPlayers.get(i).getPlayerID().equals(currentPlayerId)) {
                 index = i;
                 break;
             }
@@ -168,14 +182,4 @@ public class Room {
         int nextPlayer = (index + 1) % listOfPlayers.size();
         return listOfPlayers.get(nextPlayer);
     }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
-  
-  
 }

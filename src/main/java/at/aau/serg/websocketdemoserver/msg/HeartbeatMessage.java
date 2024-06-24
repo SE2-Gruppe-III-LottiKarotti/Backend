@@ -1,13 +1,12 @@
 package at.aau.serg.websocketdemoserver.msg;
 
-public class HeartbeatMessage {
-    private final MessageType messageType = MessageType.HEARTBEAT;
-    private String text;// = "pong";
+public class HeartbeatMessage extends BaseMessage {
+    private String text;// = "ping";
 
-    public MessageType getMessageType() {
-        return messageType;
+
+    public HeartbeatMessage () {
+        this.messageType = MessageType.HEARTBEAT;
     }
-
     public String getText() {
         return text;
     }
@@ -15,5 +14,6 @@ public class HeartbeatMessage {
     public void setText(String text) {
         this.text = text;
     }
+
 
 }

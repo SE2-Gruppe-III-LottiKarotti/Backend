@@ -1,17 +1,22 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class DrawCardMessage {
-    MessageType messageType;
-    String roomID;
-    String playerID;
-    String card;
-    ActionTypeDrawCard actionTypeDrawCard;
+@EqualsAndHashCode(callSuper = true)
+public class DrawCardMessage extends BaseMessage {
 
-    /*message maybe need to be broadcasted*/
+    private String roomID;
+    private String playerID;
+    private String card = "random";
+    private String nextPlayerId;
+    private ActionTypeDrawCard actionTypeDrawCard;
 
+    public DrawCardMessage() {
+        //default
+        this.messageType = MessageType.DRAW_CARD;
+    }
 
     public enum ActionTypeDrawCard {
         ASK_FOR_CARD,

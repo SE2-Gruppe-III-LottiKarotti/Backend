@@ -1,16 +1,22 @@
 package at.aau.serg.websocketdemoserver.msg;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class JoinRoomMessage {
-    private final MessageType messageType = MessageType.JOIN_ROOM;
+@EqualsAndHashCode(callSuper = true)
+public class JoinRoomMessage extends BaseMessage {
 
-    String roomId;
-    String roomName;
-    String playerId;
-    String playerName;
-    ActionTypeJoinRoom actionTypeJoinRoom;
+    private String roomId;
+    private String roomName;
+    private String playerId;
+    private String playerName;
+    private ActionTypeJoinRoom actionTypeJoinRoom;
+
+    public JoinRoomMessage() {
+        //default
+        this.messageType = MessageType.JOIN_ROOM;
+    }
 
     public enum ActionTypeJoinRoom {
         /**join room*/
@@ -19,5 +25,6 @@ public class JoinRoomMessage {
         JOIN_ROOM_FULL,
         JOIN_ROOM_ERR
     }
+
 
 }

@@ -1,12 +1,17 @@
-package at.aau.serg.websocketdemoserver.model.logic;
+package at.aau.serg.websocketdemoserver.logic;
 
+
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CensorMessageFunction {
+    public static String censorText(String text, Set<String> censoredWordsDB) {
+        if (text == null || censoredWordsDB == null) {
+            return text;
+        }
 
-    public static String censorText(String text, String[] censoredWords) {
-        for (String word : censoredWords) {
+        for (String word : censoredWordsDB) {
             //regex pattern
             //matcht groß und kleinschreibung --> einstellbar bei CASE_INSENSITIVE --> auch andere Parameter möglich
             Pattern pattern = Pattern.compile("\\b" + Pattern.quote(word) + "\\b", Pattern.CASE_INSENSITIVE);
@@ -17,7 +22,4 @@ public class CensorMessageFunction {
         }
         return text;
     }
-
 }
-
-

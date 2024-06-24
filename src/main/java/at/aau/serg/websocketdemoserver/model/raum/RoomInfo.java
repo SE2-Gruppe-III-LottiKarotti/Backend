@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class RoomInfo {
     private String roomID;
     private String roomName;
-    //private int maxPlayers;
     private String creator;
     private int availablePlayersSpace;
 
